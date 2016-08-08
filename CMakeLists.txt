@@ -22,6 +22,6 @@ set(SOURCE_FILES
     osx/osx/AppDelegate.h
     osx/osx/GameViewController.h
     osx/osx/OpenGLView.h
-    osx/osx/SharedStructures.h)
+    osx/osx/SharedStructures.h core/core/test/MatrixTest.cpp core/core/test/MatrixTest.hpp core/core/JsonTest.cpp core/core/JsonTest.hpp)
 
 add_executable(SimpleEngine ${SOURCE_FILES})

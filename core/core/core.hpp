@@ -16,7 +16,7 @@
 class core
 {
 	public:
-		void HelloWorld(const char *);
+	void HelloWorld(const char *);
 };
 
 #pragma GCC visibility pop

@@ -6,7 +6,6 @@
 //  Copyright © 2016 ITBA. All rights reserved.
 //
 
-#include <vector>
 #include "Matrix4x4.hpp"
 
 
