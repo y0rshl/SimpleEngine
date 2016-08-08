@@ -8,7 +8,24 @@
 
 #ifndef Matrix4x4_hpp
 #define Matrix4x4_hpp
+#define SIZE 4
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <memory>
+/**
+ * Row-major matrix
+ **/
+class Matrix4x4 {
+public:
 
+    Matrix4x4(float[SIZE][SIZE]);
+
+    std::vector<std::vector<float>> getValues();
+    Matrix4x4* operator+(const Matrix4x4&);
+    std::vector<std::vector<float>> matrix;
+
+
+private:
+};
 #endif /* Matrix4x4_hpp */

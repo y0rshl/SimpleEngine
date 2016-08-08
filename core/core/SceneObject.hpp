@@ -10,5 +10,19 @@
 #define SceneObject_hpp
 
 #include <stdio.h>
+#include <stdlib.h>
+#include "Transform.hpp"
+
+class SceneObject {
+    
+public:
+    std::vector<std::shared_ptr<SceneObject>> m_children;
+    std::weak_ptr<SceneObject> parent;
+    
+    std::shared_ptr<Transform> m_transform;
+    
+public:
+    
+};
 
 #endif /* SceneObject_hpp */

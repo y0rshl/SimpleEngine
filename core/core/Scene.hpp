@@ -10,5 +10,15 @@
 #define Scene_hpp
 
 #include <stdio.h>
+#include <memory>
+#include <vector>
+#include "SceneObject.hpp"
+
+class Scene {
+    std::shared_ptr<SceneObject> m_rootSceneObjects;
+    
+public:
+    
+};
 
 #endif /* Scene_hpp */

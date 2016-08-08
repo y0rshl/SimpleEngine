@@ -11,4 +11,10 @@
 
 #include <stdio.h>
 
+class Mesh {
+    
+public:
+    static void Load();
+};
+
 #endif /* Mesh_hpp */
