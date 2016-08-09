@@ -13,6 +13,7 @@
 #include "core.hpp"
 #include "corePriv.hpp"
 #include "Matrix4x4.hpp"
+#include "Engine.hpp"
 
 using namespace std;
 void core::HelloWorld(const char * s)
@@ -56,7 +57,11 @@ int main( int argc, const char* argv[] )
         }
         printf("\n");
     }
-	return 0;
+
+    Engine engine;
+    engine.run();
+
+    return 0;
 
 	for(int i=0;i<4*4.;i++){
 		cout << vals[i][i];
