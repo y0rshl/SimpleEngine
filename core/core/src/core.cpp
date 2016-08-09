@@ -12,8 +12,8 @@
 #include <list>
 #include "core.hpp"
 #include "corePriv.hpp"
-#include "JsonTest.hpp"
-#include "test/MatrixTest.hpp"
+#include "../JsonTest.hpp"
+#include "../test/MatrixTest.hpp"
 #include "Matrix4x4.hpp"
 #include "Engine.hpp"
 
@@ -53,11 +53,5 @@ int main( int argc, const char* argv[] )
     engine.run();
 
     return 0;
-
-	for(int i=0;i<4*4.;i++){
-		cout << vals[i][i];
-		printf( "%f", vals[i][i] );
-	}
-	printf( "\nHello World\n\n" );
 }
 

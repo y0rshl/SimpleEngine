@@ -5,7 +5,7 @@
 #ifndef SIMPLEENGINE_MATRIXTEST_H
 #define SIMPLEENGINE_MATRIXTEST_H
 
-#include "../Matrix4x4.hpp"
+#include "Matrix4x4.hpp"
 #include <vector>
 
 
