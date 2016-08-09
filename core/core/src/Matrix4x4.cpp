@@ -19,8 +19,6 @@ Matrix4x4::Matrix4x4(float val[SIZE][SIZE] ) {
     {
         for (int j = 0; j < SIZE; j++)
         {
-            // fill in some initial values
-            // (filling in zeros would be more logic, but this is just for the example)
             matrix[i][j] = val[i][j];
         }
     }
@@ -38,6 +36,24 @@ Matrix4x4* Matrix4x4::operator+(const Matrix4x4& matrix){
         }
     }
     Matrix4x4* result = new Matrix4x4(sumVals);
+    return result;
+}
+
+Matrix4x4* Matrix4x4::operator*(const Matrix4x4& matrix) {
+    std::vector<std::vector<float>> valsMatrix = matrix.matrix;
+    std::vector<std::vector<float>> vals = this->matrix;
+    float multVals[SIZE][SIZE];
+
+    for (int x = 0; x < 4; x++) { // row number of output
+        for (int y = 0; y < 4; y++) { // column number of output
+            multVals[x][y] = 0;
+            for (int z = 0; z < 4; z++) { // four elements are added for this output
+                multVals[x][y] += valsMatrix[x][z] * vals[z][y];
+            }
+        }
+    }
+
+    Matrix4x4* result = new Matrix4x4(multVals);
     return result;
 }
 

@@ -30,4 +30,15 @@ void MatrixTest::testMatrix(){
         }
         printf("\n");
     }
+
+    Matrix4x4* matrixMult = (*matrix4x4)*(*matrix4x4);
+    std::vector<std::vector<float>> multVals = matrixMult->getValues();
+
+    printf(" Mult Values : \n");
+    for(int i = 0 ; i < 4 ; i++){
+        for(int j = 0 ; j < 4 ; j++){
+            printf(" %f ", multVals[i][j]);
+        }
+        printf("\n");
+    }
 }
