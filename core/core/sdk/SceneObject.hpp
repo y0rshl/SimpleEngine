@@ -22,7 +22,7 @@ public:
     std::shared_ptr<Transform> m_transform;
     
 public:
-    
+    Matrix4x4* getPosition();
 };
 
 #endif /* SceneObject_hpp */

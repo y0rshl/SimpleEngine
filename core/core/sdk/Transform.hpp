@@ -12,12 +12,15 @@
 #include <stdio.h>
 #include <memory>
 #include <vector>
+#include "Matrix4x4.hpp"
 
 class Transform {
     
     
 public:
-    
+    Matrix4x4* TRS;
+
+    Transform(Matrix4x4* TRS);
 };
 
 #endif /* Transform_hpp */
