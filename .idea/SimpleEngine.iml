@@ -10,10 +10,12 @@
       <sourceFolder url="file://$MODULE_DIR$/core/core/src/Transform.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/core/src/SceneObject.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/core/src/Vector4.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/core/JsonTest.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/core/core/JsonTest.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/core/test/JsonTest.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/core/test/MatrixTest.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/core/test/SceneObjectTest.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/core/test/SceneObjectTest.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/core/core/test/MatrixTest.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core/core/test/JsonTest.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

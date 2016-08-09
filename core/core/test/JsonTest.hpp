@@ -5,7 +5,7 @@
 #ifndef SIMPLEENGINE_JSONTEST_H
 #define SIMPLEENGINE_JSONTEST_H
 
-#include "json.hpp"
+#include "../json.hpp"
 #include <sstream>
 #include <fstream>
 #include <string>

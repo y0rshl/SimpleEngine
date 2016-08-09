@@ -12,10 +12,11 @@
 #include <list>
 #include "core.hpp"
 #include "corePriv.hpp"
-#include "../JsonTest.hpp"
+#include "../test/JsonTest.hpp"
 #include "../test/MatrixTest.hpp"
 #include "Matrix4x4.hpp"
 #include "Engine.hpp"
+#include "../test/SceneObjectTest.hpp"
 
 using namespace std;
 void core::HelloWorld(const char * s)
@@ -40,6 +41,13 @@ int main( int argc, const char* argv[] )
      */
 	MatrixTest* matrixTest = new MatrixTest();
 	matrixTest->testMatrix();
+
+    /**
+     * Test SceneObjectTree
+     */
+
+    SceneObjectTest* sceneObjectTest = new SceneObjectTest;
+    sceneObjectTest->testSceneTree();
 
     /**
      * Test json

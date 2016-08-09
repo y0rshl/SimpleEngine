@@ -13,6 +13,17 @@ std::vector<std::vector<float>> Matrix4x4::getValues() {
     return matrix;
 }
 
+Matrix4x4::Matrix4x4() {
+    matrix = std::vector<std::vector<float>>(SIZE, std::vector<float>(SIZE, 0));
+    for (int i = 0; i < SIZE; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
+        {
+            matrix[i][j] = 0;
+        }
+    }
+}
+
 Matrix4x4::Matrix4x4(float val[SIZE][SIZE] ) {
     matrix = std::vector<std::vector<float>>(SIZE, std::vector<float>(SIZE, 0));
     for (int i = 0; i < SIZE; i++)
@@ -22,7 +33,6 @@ Matrix4x4::Matrix4x4(float val[SIZE][SIZE] ) {
             matrix[i][j] = val[i][j];
         }
     }
-
 }
 
 Matrix4x4* Matrix4x4::operator+(const Matrix4x4& matrix){

@@ -22,6 +22,7 @@ class Matrix4x4 {
 public:
 
     Matrix4x4(float[SIZE][SIZE]);
+    Matrix4x4();
 
     std::vector<std::vector<float>> getValues();
     Matrix4x4* operator+(const Matrix4x4&);
