@@ -13,7 +13,8 @@ set(SOURCE_FILES
         core/core/src/SceneObject.cpp
         core/core/src/Transform.cpp
         core/core/src/Vector4.cpp
-        core/core/src/Engine.cpp)
+        core/core/src/Engine.cpp
+        core/core/test/MatrixTest.cpp core/core/test/MatrixTest.hpp core/core/JsonTest.cpp core/core/JsonTest.hpp)
 
 add_executable(SimpleEngine ${SOURCE_FILES})
 #add_library(SimpleEngine ${SOURCE_FILES})

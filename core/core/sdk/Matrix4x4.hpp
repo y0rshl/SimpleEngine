@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory>
+#include <vector>
+
 /**
  * Row-major matrix
  **/
