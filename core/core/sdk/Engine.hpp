@@ -5,6 +5,7 @@
 #ifndef SIMPLEENGINE_ENGINE_HPP
 #define SIMPLEENGINE_ENGINE_HPP
 
+#include <memory>
 
 class Engine {
 
@@ -15,6 +16,5 @@ protected:
     void update(double dt);
     void render();
 };
-
 
 #endif //SIMPLEENGINE_ENGINE_HPP

@@ -6,7 +6,7 @@
 //  Copyright © 2016 ITBA. All rights reserved.
 //
 
-#include <Matrix4x4.hpp>
+#include "Matrix4x4.hpp"
 #include "SceneObject.hpp"
 
 /**
@@ -20,4 +20,9 @@ Matrix4x4* SceneObject::getPosition() {
     }
 
     return this->m_transform->TRS;
+}
+
+void update(double dt) {
+    //for each Component
+    //c->update(dt);
 }

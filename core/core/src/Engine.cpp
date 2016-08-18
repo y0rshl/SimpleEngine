@@ -6,6 +6,9 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <iostream>
+
+using namespace std;
 
 void Engine::run() {
     auto lastTime = std::chrono::high_resolution_clock::now();
@@ -35,5 +38,6 @@ void Engine::update(double dt) {
 }
 
 void Engine::render() {
+
 
 }

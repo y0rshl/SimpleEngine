@@ -12,17 +12,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Transform.hpp"
+#include "Component.hpp"
+
+using namespace std;
 
 class SceneObject {
     
 public:
-    std::vector<std::shared_ptr<SceneObject>> m_children;
-    std::weak_ptr<SceneObject> parent;
+    vector<shared_ptr<SceneObject>> m_children;
+    weak_ptr<SceneObject> parent;
     
-    std::shared_ptr<Transform> m_transform;
-    
+    shared_ptr<Transform> m_transform;
+
+    vector<shared_ptr<Component>> m_components;
+
 public:
     Matrix4x4* getPosition();
+
+    void update(double dt);
 };
 
 #endif /* SceneObject_hpp */

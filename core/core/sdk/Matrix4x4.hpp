@@ -8,7 +8,6 @@
 
 #ifndef Matrix4x4_hpp
 #define Matrix4x4_hpp
-#define SIZE 4
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,20 +15,21 @@
 #include <vector>
 
 /**
- * Row-major matrix
+ * Column-major matrix
  **/
 class Matrix4x4 {
 public:
 
-    Matrix4x4(float[SIZE][SIZE]);
+    Matrix4x4(float* values);
     Matrix4x4();
 
-    std::vector<std::vector<float>> getValues();
+    float* getValues();
     Matrix4x4* operator+(const Matrix4x4&);
     Matrix4x4* operator*(const Matrix4x4&);
-    std::vector<std::vector<float>> matrix;
+//    std::vector<std::vector<float>> matrix;
 
-
+    std::string toString();
 private:
+    float matrix[16];
 };
 #endif /* Matrix4x4_hpp */

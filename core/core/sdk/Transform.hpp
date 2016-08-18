@@ -16,7 +16,10 @@
 
 class Transform {
     
-    
+    float x, y, z;
+    float rx, ry, rz;
+    float sx, sy, sz;
+
 public:
     Matrix4x4* TRS;
 

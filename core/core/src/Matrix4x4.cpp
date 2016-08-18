@@ -6,65 +6,77 @@
 //  Copyright © 2016 ITBA. All rights reserved.
 //
 
+#include <string>
 #include "Matrix4x4.hpp"
 
 
-std::vector<std::vector<float>> Matrix4x4::getValues() {
-    return matrix;
+float* Matrix4x4::getValues() {
+    return &matrix[0];
 }
 
 Matrix4x4::Matrix4x4() {
-    matrix = std::vector<std::vector<float>>(SIZE, std::vector<float>(SIZE, 0));
-    for (int i = 0; i < SIZE; i++)
-    {
-        for (int j = 0; j < SIZE; j++)
-        {
-            matrix[i][j] = 0;
-        }
-    }
+    matrix[0] = 1;
+
 }
 
-Matrix4x4::Matrix4x4(float val[SIZE][SIZE] ) {
-    matrix = std::vector<std::vector<float>>(SIZE, std::vector<float>(SIZE, 0));
-    for (int i = 0; i < SIZE; i++)
+Matrix4x4::Matrix4x4(float* values) {
+    for (int i = 0; i < 16; i++)
     {
-        for (int j = 0; j < SIZE; j++)
-        {
-            matrix[i][j] = val[i][j];
-        }
+        matrix[i] = values[i];
     }
 }
 
 Matrix4x4* Matrix4x4::operator+(const Matrix4x4& matrix){
-    std::vector<std::vector<float>> valsMatrix = matrix.matrix;
-    std::vector<std::vector<float>> vals = this->matrix;
-    float sumVals[SIZE][SIZE];
+    const float* valsMatrix = &(matrix.matrix[0]);
+    float* vals = this->matrix;
+    float sumVals[16];
 
-    for(int i = 0 ; i<valsMatrix.size() ; i++){
-        for(int j = 0 ; j<valsMatrix[i].size() ; j++){
-            sumVals[i][j] = vals[i][j] + valsMatrix[i][j];
-        }
+    for(int i = 0 ; i<16 ; i++){
+        sumVals[i] = vals[i] + valsMatrix[i];
     }
-    Matrix4x4* result = new Matrix4x4(sumVals);
+    Matrix4x4* result = new Matrix4x4(&sumVals[0]);
     return result;
 }
 
 Matrix4x4* Matrix4x4::operator*(const Matrix4x4& matrix) {
-    std::vector<std::vector<float>> valsMatrix = matrix.matrix;
-    std::vector<std::vector<float>> vals = this->matrix;
-    float multVals[SIZE][SIZE];
+    float* m1 = this->matrix;
+    const float* m2 = matrix.matrix;
+    float r[16];
 
-    for (int x = 0; x < 4; x++) { // row number of output
-        for (int y = 0; y < 4; y++) { // column number of output
-            multVals[x][y] = 0;
-            for (int z = 0; z < 4; z++) { // four elements are added for this output
-                multVals[x][y] += valsMatrix[x][z] * vals[z][y];
-            }
-        }
-    }
+    r[0] = m1[0]*m2[0] + m1[4]*m2[1] + m1[8]*m2[2] + m1[12]*m2[3];
+    r[1] = m1[1]*m2[0] + m1[5]*m2[1] + m1[9]+m2[2] + m1[13]*m2[3];
+    r[2] = m1[2]*m2[0] + m1[6]*m2[1] + m1[10]+m2[2] + m1[14]*m2[3];
+    r[3] = m1[3]*m2[0] + m1[7]*m2[1] + m1[11]+m2[2] + m1[15]*m2[3];
 
-    Matrix4x4* result = new Matrix4x4(multVals);
+    r[4] = m1[0]*m2[4] + m1[4]*m2[5] + m1[8]*m2[6] + m1[12]*m2[7];
+    r[5] = m1[1]*m2[4] + m1[5]*m2[5] + m1[9]*m2[6] + m1[13]*m2[7];
+    r[6] = m1[2]*m2[4] + m1[6]*m2[5] + m1[10]*m2[6] + m1[14]*m2[7];
+    r[7] = m1[3]*m2[4] + m1[7]*m2[5] + m1[11]*m2[6] + m1[15]*m2[7];
+
+    r[8] = m1[0]*m2[8] + m1[4]*m2[9] + m1[8]*m2[10] + m1[12]*m2[11];
+    r[9] = m1[1]*m2[8] + m1[5]*m2[9] + m1[9]*m2[10] + m1[13]*m2[11];
+    r[10] = m1[2]*m2[8] + m1[6]*m2[9] + m1[10]*m2[10] + m1[14]*m2[11];
+    r[11] = m1[3]*m2[8] + m1[7]*m2[9] + m1[11]*m2[10] + m1[15]*m2[11];
+
+    r[12] = m1[0]*m2[12] + m1[4]*m2[13] + m1[8]*m2[14] + m1[12]*m2[15];
+    r[13] = m1[1]*m2[12] + m1[5]*m2[13] + m1[9]*m2[14] + m1[13]*m2[15];
+    r[14] = m1[2]*m2[12] + m1[6]*m2[13] + m1[10]*m2[14] + m1[14]*m2[15];
+    r[15] = m1[3]*m2[12] + m1[7]*m2[13] + m1[11]*m2[14] + m1[15]*m2[15];
+
+    Matrix4x4* result = new Matrix4x4(r);
     return result;
+}
+
+std::string Matrix4x4::toString() {
+    std::string str;
+//    for(int i = 0 ; i < 16 ; i++){
+//        char buff[100];
+//        std::snprintf(buff, 100, " %f", matrix[i*4 + j]);
+//
+//        str.append(buff);
+//        //printf("\n");
+//    }
+    return str;
 }
 
 
