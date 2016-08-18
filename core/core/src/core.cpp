@@ -17,6 +17,7 @@
 #include "Matrix4x4.hpp"
 #include "Engine.hpp"
 #include "../test/SceneObjectTest.hpp"
+#include "RenderPass.hpp"
 
 using namespace std;
 void core::HelloWorld(const char * s)
@@ -53,10 +54,13 @@ int main( int argc, const char* argv[] )
      * Test json
      */
 
-    JsonTest* jsonTest = new JsonTest();
-    jsonTest->parseJson();
-	return 0;
+//    JsonTest* jsonTest = new JsonTest();
+//    jsonTest->parseJson();
+//	return 0;
 
+	RenderPass renderPass;
+	renderPass.setViewport(200,200,200,200);
+	renderPass.execute();
     Engine engine;
     engine.run();
 

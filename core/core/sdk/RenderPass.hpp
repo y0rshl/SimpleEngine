@@ -6,6 +6,8 @@
 #define SIMPLEENGINE_RENDERPASS_HPP
 
 
+#include <GL/glew.h>
+
 class RenderPass {
 
 public:
@@ -16,6 +18,10 @@ protected:
     int viewportY;
     int viewportWidth;
     int viewportHeight;
+
+private:
+    void initContext();
+    void initShaders();
 };
 
 
