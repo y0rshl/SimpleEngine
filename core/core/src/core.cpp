@@ -58,9 +58,9 @@ int main( int argc, const char* argv[] )
 //    jsonTest->parseJson();
 //	return 0;
 
-	RenderPass renderPass;
-	renderPass.setViewport(200,200,200,200);
-	renderPass.execute();
+	RenderPass* renderPass = new RenderPass();
+	renderPass->setViewport(200,200,200,200);
+	renderPass->execute();
     Engine engine;
     engine.run();
 
