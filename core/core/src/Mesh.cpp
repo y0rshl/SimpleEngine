@@ -24,6 +24,13 @@ shared_ptr<Mesh> Mesh::createBox() {
     glGenVertexArrays(1, &mesh->m_vertexArrayID);
     glBindVertexArray(mesh->m_vertexArrayID);
 
+
+//    static const GLfloat positionData[] = {
+//            -0.5f, -1.0f, 0.0f,
+//            1.0f, -1.0f, 0.0f,
+//            0.0f, 1.0f, 0.0f,
+//    };
+
     static const GLfloat positionData[] = {
             -1.0f,1.0f,1.0f, //adelante - 0
             1.0f,1.0f,1.0f,
@@ -70,6 +77,10 @@ shared_ptr<Mesh> Mesh::createBox() {
             (void*)0            // array buffer offset
     );
 
+//    static const GLuint indices[] = {
+//            0, 1, 2
+//    };
+
     static const GLuint indices[] = {
         0, 3, 1, //adelante
         1, 3, 2,
@@ -91,6 +102,7 @@ shared_ptr<Mesh> Mesh::createBox() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
 
+    mesh->m_indexCount = sizeof(indices) / sizeof(GLuint);
     mesh->m_indexBuffer = elementbuffer;
 
     glBindVertexArray(0); // Unbind our Vertex Array Object
@@ -110,6 +122,9 @@ void Mesh::use() {
 
 void Mesh::draw() {
     use();
+
+//    glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+
     glDrawElements(
             GL_TRIANGLES,      // mode
             m_indexCount,    // count

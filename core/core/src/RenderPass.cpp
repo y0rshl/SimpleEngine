@@ -36,7 +36,7 @@ void RenderPass::execute() {
 
         // Use our shader
         shaderProgram->use();
-        shaderProgram->setVec4("outColor", 1, 0, 1, 1);
+        shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 
         mesh->draw();
 
