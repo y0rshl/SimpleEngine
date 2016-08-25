@@ -6,9 +6,10 @@
 #define SIMPLEENGINE_SHADERPROGRAM_HPP
 
 
-#include <string>
+#include <cstring>
 #include <memory>
-#include <opengl/gl.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
 
 using namespace std;
 

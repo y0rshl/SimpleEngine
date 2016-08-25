@@ -23,33 +23,37 @@ shared_ptr<Mesh> Mesh::createBox() {
     //create vao
     glGenVertexArrays(1, &mesh->m_vertexArrayID);
     glBindVertexArray(mesh->m_vertexArrayID);
-
     static const GLfloat positionData[] = {
-            -1.0f,1.0f,1.0f, //adelante - 0
-            1.0f,1.0f,1.0f,
-            1.0f,-1.0f,1.0f,
-            -1.0f,-1.0f,1.0f,
-            -1.0f,1.0f,-1.0f, //atras - 4
-            1.0f,1.0f,-1.0f,
-            -1.0f,-1.0f,-1.0f,
-            1.0f,-1.0f,-1.0f,
-            -1.0f,1.0f,1.0f, //izq - 8
-            -1.0f,1.0f,-1.0f,
-            -1.0f,-1.0f,1.0f,
-            -1.0f,-1.0f,-1.0f,
-            1.0f,1.0f,1.0f, //der - 12
-            1.0f,1.0f,-1.0f,
-            1.0f,-1.0f,1.0f,
-            1.0f,-1.0f,-1.0f,
-            -1.0f, -1.0f, 1.0f, //abajo - 16
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f, //arriba - 20
-            -1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f
     };
+//    static const GLfloat positionData[] = {
+//            -1.0f,1.0f,1.0f, //adelante - 0
+//            1.0f,1.0f,1.0f,
+//            1.0f,-1.0f,1.0f,
+//            -1.0f,-1.0f,1.0f,
+//            -1.0f,1.0f,-1.0f, //atras - 4
+//            1.0f,1.0f,-1.0f,
+//            -1.0f,-1.0f,-1.0f,
+//            1.0f,-1.0f,-1.0f,
+//            -1.0f,1.0f,1.0f, //izq - 8
+//            -1.0f,1.0f,-1.0f,
+//            -1.0f,-1.0f,1.0f,
+//            -1.0f,-1.0f,-1.0f,
+//            1.0f,1.0f,1.0f, //der - 12
+//            1.0f,1.0f,-1.0f,
+//            1.0f,-1.0f,1.0f,
+//            1.0f,-1.0f,-1.0f,
+//            -1.0f, -1.0f, 1.0f, //abajo - 16
+//            -1.0f, -1.0f, -1.0f,
+//            1.0f, -1.0f, -1.0f,
+//            1.0f, -1.0f, 1.0f,
+//            -1.0f, 1.0f, 1.0f, //arriba - 20
+//            -1.0f, 1.0f, -1.0f,
+//            1.0f, 1.0f, -1.0f,
+//            1.0f, 1.0f, 1.0f,
+//    };
 
     //create vbo
     glGenBuffers(1, &mesh->m_positionBuffer);
@@ -110,10 +114,10 @@ void Mesh::use() {
 
 void Mesh::draw() {
     use();
-    glDrawElements(
-            GL_TRIANGLES,      // mode
-            m_indexCount,    // count
-            GL_UNSIGNED_INT,   // type
-            (void*)0           // element array buffer offset
-    );
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+//            GL_TRIANGLES,      // mode
+//            m_indexCount,    // count
+//            GL_UNSIGNED_INT,   // type
+//            (void*)0           // element array buffer offset
+//    );
 }

@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <memory>
 #include <GL/glew.h>
-#include <opengl/gl.h>
+#include <GL/gl.h>
 
 using namespace std;
 
