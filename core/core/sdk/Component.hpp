@@ -13,6 +13,7 @@ class SceneObject;
 
 class Component {
 
+protected:
     weak_ptr<SceneObject> owner;
 
 public:
