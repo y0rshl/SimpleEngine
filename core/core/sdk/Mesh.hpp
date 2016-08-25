@@ -10,11 +10,31 @@
 #define Mesh_hpp
 
 #include <stdio.h>
+#include <memory>
+#include <GL/glew.h>
+#include <GL/gl.h>
+
+using namespace std;
 
 class Mesh {
     
 public:
     static void Load();
+
+    static shared_ptr<Mesh> createBox();
+
+    ~Mesh();
+
+    void use();
+
+    void draw();
+
+private:
+    GLuint m_positionBuffer;
+    GLuint m_indexBuffer;
+    GLuint m_vertexArrayID;
+
+    unsigned int m_indexCount;
 };
 
 #endif /* Mesh_hpp */

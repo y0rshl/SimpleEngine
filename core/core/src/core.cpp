@@ -57,7 +57,7 @@ int main( int argc, const char* argv[] )
 	Matrix4x4* inverse2 = matrix2->inverse();
 	printf("\n Inversa lista!\n");
 	inverse2->toString();
-	return 0;
+
     /**
      * Test matrix
      */
@@ -79,9 +79,9 @@ int main( int argc, const char* argv[] )
 //    jsonTest->parseJson();
 //	return 0;
 
-	RenderPass renderPass;
-	renderPass.setViewport(200,200,200,200);
-	renderPass.execute();
+	RenderPass* renderPass = new RenderPass();
+	renderPass->setViewport(200,200,200,200);
+	renderPass->execute();
     Engine engine;
     engine.run();
 

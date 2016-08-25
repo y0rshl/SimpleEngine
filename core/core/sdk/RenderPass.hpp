@@ -21,7 +21,6 @@ protected:
 
 private:
     void initContext();
-    void initShaders();
 };
 
 
