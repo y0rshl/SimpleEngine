@@ -37,6 +37,27 @@ int main( int argc, const char* argv[] )
 	corePriv corePriv1;
 	corePriv1.HelloWorldPriv("HOLA!");
 
+	/**
+	 * My Matrix to test inverse
+	 */
+	//Identity
+	float array[16] = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+	Matrix4x4* matrix = new Matrix4x4(array);
+	matrix->toString();
+	printf("\n Invirtiendo... \n");
+	Matrix4x4* inverse = matrix->inverse();
+	printf("\n Inversa lista!\n");
+	inverse->toString();
+
+	// OTra
+	float array2[16] = {1.0, 1.0, 1.0, 1.0, 2.0, 1.0, -1.0, -2.0, 1.0, -1.0, -1.0, 1.0, 1.0, -2.0, 2.0, -1.0};
+	Matrix4x4* matrix2 = new Matrix4x4(array2);
+	matrix2->toString();
+	printf("\n Invirtiendo... \n");
+	Matrix4x4* inverse2 = matrix2->inverse();
+	printf("\n Inversa lista!\n");
+	inverse2->toString();
+	return 0;
     /**
      * Test matrix
      */

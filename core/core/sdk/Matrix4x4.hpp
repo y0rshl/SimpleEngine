@@ -26,8 +26,9 @@ public:
     float* getValues();
     Matrix4x4* operator+(const Matrix4x4&);
     Matrix4x4* operator*(const Matrix4x4&);
+    Matrix4x4* inverse();
 //    std::vector<std::vector<float>> matrix;
-
+// TODO: Crear método estático que calcule la inversa de una matriz
     std::string toString();
 private:
     float matrix[16];

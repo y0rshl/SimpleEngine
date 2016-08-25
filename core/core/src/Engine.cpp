@@ -11,6 +11,7 @@
 using namespace std;
 
 void Engine::run() {
+
     auto lastTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> targetFrameMs = std::chrono::nanoseconds{16666666};
     std::chrono::duration<double, std::milli> accumulatorMs = std::chrono::milliseconds{0};
