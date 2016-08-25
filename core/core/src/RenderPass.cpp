@@ -18,6 +18,7 @@ GLFWwindow* window;
 #include <memory>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
+#include "Texture.hpp"
 
 using namespace glm;
 
@@ -30,6 +31,11 @@ void RenderPass::execute() {
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
+    //Create Texture
+    shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
+    // Get a handle for our "myTextureSampler" uniform
+    GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
+
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT );
@@ -37,6 +43,12 @@ void RenderPass::execute() {
         // Use our shader
         shaderProgram->use();
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
+
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+        // Set our "myTextureSampler" sampler to user Texture Unit 0
+        glUniform1i(TextureID, 0);
 
         mesh->draw();
 

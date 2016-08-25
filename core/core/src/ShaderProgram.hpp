@@ -25,6 +25,8 @@ public:
     void use();
 
     void setVec4(string var, float x, float y, float z, float w);
+
+    GLuint getProgramId();
 private:
     bool m_valid;
 //    GLuint m_vertexShaderId;

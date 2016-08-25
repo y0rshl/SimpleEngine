@@ -129,3 +129,7 @@ void ShaderProgram::setVec4(string var, float x, float y, float z, float w) {
         glUniform4f(loc, x, y, z, w);
     }
 }
+
+GLuint ShaderProgram::getProgramId(){
+    return m_programId;
+}
