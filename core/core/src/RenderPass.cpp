@@ -38,6 +38,7 @@ void RenderPass::execute() {
         shaderProgram->use();
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
 
+        // Setear matrix
         mesh->draw();
 
 //        // Draw the triangle !
