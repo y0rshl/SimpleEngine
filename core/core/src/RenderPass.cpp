@@ -36,6 +36,10 @@ void RenderPass::execute() {
 
         // Use our shader
         shaderProgram->use();
+
+        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
+
+        shaderProgram->setMat4("mvp", scale);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 
         mesh->draw();

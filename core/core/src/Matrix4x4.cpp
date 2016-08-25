@@ -16,7 +16,25 @@ float* Matrix4x4::getValues() {
 
 Matrix4x4::Matrix4x4() {
     matrix[0] = 1;
+    matrix[1] = 0;
+    matrix[2] = 0;
+    matrix[3] = 0;
+    matrix[4] = 0;
+    matrix[5] = 1;
+    matrix[6] = 0;
+    matrix[7] = 0;
+    matrix[8] = 0;
+    matrix[9] = 0;
+    matrix[10] = 1;
+    matrix[11] = 0;
+    matrix[12] = 0;
+    matrix[13] = 0;
+    matrix[14] = 0;
+    matrix[15] = 1;
+}
 
+Matrix4x4::Matrix4x4(const Matrix4x4 &obj) {
+    memcpy(matrix, obj.matrix, sizeof(matrix));
 }
 
 Matrix4x4::Matrix4x4(float* values) {
@@ -64,6 +82,14 @@ Matrix4x4* Matrix4x4::operator*(const Matrix4x4& matrix) {
     r[15] = m1[3]*m2[12] + m1[7]*m2[13] + m1[11]*m2[14] + m1[15]*m2[15];
 
     Matrix4x4* result = new Matrix4x4(r);
+    return result;
+}
+
+Matrix4x4 Matrix4x4::makeScaleMatrix(float sx, float sy, float sz) {
+    Matrix4x4 result;
+    result.matrix[0] = sx;
+    result.matrix[5] = sy;
+    result.matrix[10] = sz;
     return result;
 }
 
