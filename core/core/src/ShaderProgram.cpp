@@ -133,3 +133,10 @@ void ShaderProgram::setVec4(string var, float x, float y, float z, float w) {
 GLuint ShaderProgram::getProgramId(){
     return m_programId;
 }
+void ShaderProgram::setMat4(string var, Matrix4x4& mat4) {
+    GLint loc = glGetUniformLocation(m_programId, var.c_str());
+    if (loc != -1)
+    {
+        glUniformMatrix4fv(loc, 1, GL_FALSE, mat4.getValues());
+    }
+}
