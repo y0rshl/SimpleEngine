@@ -27,9 +27,14 @@ public:
 
     void use();
 
+    void draw();
+
 private:
     GLuint m_positionBuffer;
+    GLuint m_indexBuffer;
     GLuint m_vertexArrayID;
+
+    unsigned int m_indexCount;
 };
 
 #endif /* Mesh_hpp */

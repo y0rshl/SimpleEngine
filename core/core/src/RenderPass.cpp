@@ -38,10 +38,10 @@ void RenderPass::execute() {
         shaderProgram->use();
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
 
-        mesh->use();
+        mesh->draw();
 
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+//        // Draw the triangle !
+//        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
 
         // Swap buffers
         glfwSwapBuffers(window);

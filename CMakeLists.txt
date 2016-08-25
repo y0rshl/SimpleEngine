@@ -54,6 +54,11 @@ set(SOURCE_FILES
         core/core/src/shaders/SimpleVertexShader.vertexshader
         core/core/src/shaders/SimpleFragmentShader.fragmentshader core/core/src/ShaderProgram.cpp core/core/src/ShaderProgram.hpp)
 
+
+message(STATUS "Copy resources")
+configure_file(core/core/src/shaders/SimpleVertexShader.vertexshader SimpleVertexShader.vertexshader COPYONLY)
+configure_file(core/core/src/shaders/SimpleFragmentShader.fragmentshader SimpleFragmentShader.fragmentshader COPYONLY)
+
 add_executable(SimpleEngine ${SOURCE_FILES})
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 target_link_libraries(SimpleEngine ${ALL_LIBS})
