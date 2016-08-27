@@ -38,7 +38,8 @@ void RenderPass::execute() {
     sceneObject.m_transform->setPosition(1, 1, 1);
     sceneObject.m_transform->setRotation(1, 0, 0);
     sceneObject.m_transform->setScale(1, 1, 1);
-    
+    sceneObject.m_transform->setTRS(trs->makeTRS(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+
     OrthographicCamera* camera = new OrthographicCamera(0.5f, 0.5f, 1.0f, 1.0f);
     printf("Before Do while\n");
 
