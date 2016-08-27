@@ -40,7 +40,7 @@ void RenderPass::execute() {
     sceneObject.m_transform->setScale(1, 1, 1);
     sceneObject.m_transform->setTRS(trs->makeTRS(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
 
-    OrthographicCamera* camera = new OrthographicCamera(0.5f, 0.5f, 1.0f, 1.0f);
+    OrthographicCamera* camera = new OrthographicCamera(sceneObject, 0.5f, 0.5f, 1.0f, 1.0f);
     printf("Before Do while\n");
 
     do{
@@ -58,11 +58,11 @@ void RenderPass::execute() {
 
         printf("MPV Created!!!\nMultiply Matrixes... ");
         // Multiply Matrixes
-//        Matrix4x4* aux = m->operator*(*v);
-//        aux = aux->operator*(*p);
+        Matrix4x4* aux = m->operator*(*v);
+        aux = aux->operator*(*p);
         printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
-        shaderProgram->setMVP("mvp", m);
+        shaderProgram->setMVP("mvp", aux);
         printf("Shader Matrix ready!!!\n");
         mesh->draw();
 

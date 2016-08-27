@@ -8,7 +8,7 @@
 #include "Component.hpp"
 #include "Matrix4x4.hpp"
 
-class CameraComponent:Component {
+class CameraComponent:public Component {
 public:
     bool enabled;
     void update(double dt);

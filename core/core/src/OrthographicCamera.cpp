@@ -4,7 +4,8 @@
 
 #include "OrthographicCamera.hpp"
 
-OrthographicCamera::OrthographicCamera(float width, float height, float near, float far) {
+OrthographicCamera::OrthographicCamera(SceneObject _owner, float width, float height, float near, float far) {
+    this->owner = _owner;
     this->width = width;
     this->height = height;
     this->near = near;
