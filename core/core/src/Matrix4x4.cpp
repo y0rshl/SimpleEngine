@@ -8,6 +8,7 @@
 
 #include <string>
 #include "Matrix4x4.hpp"
+#include "cmath"
 
 
 float* Matrix4x4::getValues() {
@@ -119,20 +120,44 @@ std::string Matrix4x4::toString() {
 }
 
 Matrix4x4 Matrix4x4::makeTranslationMatrix(float x, float y, float z) {
-    //TODO: Make transalation Matrix
+    Matrix4x4 result;
+    result.matrix[3] = x;
+    result.matrix[7] = y;
+    result.matrix[11] = z;
+    return result;
 }
 
 Matrix4x4 Matrix4x4::makeRotationMatrix(float rx, float ry, float rz) {
-    //TODO: Make Rotation MAtrix
+    Matrix4x4 mx, my, mz;
+    mx.matrix[4] = float(cos(rx));
+    mx.matrix[5] = float(sin(rx));
+    mx.matrix[7] = float(-sin(rx));
+    mx.matrix[8] = float(cos(rx));
+
+    my.matrix[0] = float(cos(ry));
+    my.matrix[2] = -float(sin(ry));
+    my.matrix[6] = float(sin(ry));
+    my.matrix[8] = float(cos(ry));
+
+    my.matrix[0] = float(cos(rz));
+    my.matrix[1] = float(sin(rz));
+    my.matrix[3] = float(-sin(rz));
+    my.matrix[4] = float(cos(rz));
+
+    return *mx.operator*(my)->operator*(mz);
 }
 
 Matrix4x4 Matrix4x4::makeScaleMatrix(float sx, float sy, float sz) {
-    // TODO: Make Scale Matrix
+    Matrix4x4 result;
+    result.matrix[0] = sx;
+    result.matrix[5] = sy;
+    result.matrix[10] = sz;
+    return result;
 }
 
-Matrix4x4 Matrix4x4::makeTRS(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz) {
+Matrix4x4* Matrix4x4::makeTRS(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz) {
     Matrix4x4 t = makeTranslationMatrix(x, y, z);
     Matrix4x4 r = makeRotationMatrix(rx, ry, rz);
     Matrix4x4 s = makeScaleMatrix(sx, sy, sz);
-    return *t.operator*(r)->operator*(s);
+    return t.operator*(r)->operator*(s);
 }

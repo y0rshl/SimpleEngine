@@ -9,12 +9,8 @@ OrthographicCamera::OrthographicCamera(float width, float height, float near, fl
     this->height = height;
     this->near = near;
     this->far = far;
-
 }
 
-Matrix4x4* OrthographicCamera::getViewMatrix(){
-
-}
 
 Matrix4x4* OrthographicCamera::getProjectionMatrix(){
     float r[16];
@@ -30,10 +26,10 @@ Matrix4x4* OrthographicCamera::getProjectionMatrix(){
     r[8] = 0;
     r[9] = 0;
     r[10] = -(2/(far-near));
-    r[11] = -(far+near/(far-near));
+    r[11] = 0;
     r[12] = 0;
     r[13] = 0;
-    r[14] = 0;
+    r[14] = -(far+near/(far-near));
     r[15] = 1;
 
     Matrix4x4* result = new Matrix4x4(r);

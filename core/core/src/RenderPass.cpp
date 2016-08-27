@@ -33,33 +33,36 @@ void RenderPass::execute() {
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
     SceneObject sceneObject;
+    Matrix4x4 *trs;
 
     sceneObject.m_transform->setPosition(1, 1, 1);
     sceneObject.m_transform->setRotation(1, 0, 0);
     sceneObject.m_transform->setScale(1, 1, 1);
-    OrthographicCamera* camera = new OrthographicCamera();
+    
+    OrthographicCamera* camera = new OrthographicCamera(0.5f, 0.5f, 1.0f, 1.0f);
+    printf("Before Do while\n");
 
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT );
-
+        printf("Set up shader... ");
         // Use our shader
         shaderProgram->use();
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
-
-        //TODO: Define MVP matrixes
+        printf("Shader Ready!!!\nCreate MVP... ");
+        // Define MVP matrixes
         Matrix4x4* m = sceneObject.getPosition();
-
         Matrix4x4* v = camera->getViewMatrix();
         Matrix4x4* p = camera->getProjectionMatrix();
 
+        printf("MPV Created!!!\nMultiply Matrixes... ");
         // Multiply Matrixes
 //        Matrix4x4* aux = m->operator*(*v);
 //        aux = aux->operator*(*p);
+        printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
-        // TODO: Replace m with m*v*p
         shaderProgram->setMVP("mvp", m);
-
+        printf("Shader Matrix ready!!!\n");
         mesh->draw();
 
 //        // Draw the triangle !

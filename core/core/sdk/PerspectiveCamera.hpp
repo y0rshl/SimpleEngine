@@ -7,7 +7,7 @@
 
 #include "CameraComponent.hpp"
 
-class PerspectiveCamera : CameraComponent {
+class PerspectiveCamera : public CameraComponent {
 
 public:
     PerspectiveCamera(float fovX, float fovY, float near, float far);

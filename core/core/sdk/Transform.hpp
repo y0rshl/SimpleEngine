@@ -27,6 +27,7 @@ public:
     void setPosition(float x, float y, float z);
     void setRotation(float rx, float ry, float rz);
     void setScale(float sx, float sy, float sz);
+    void setTRS(Matrix4x4* trs);
 };
 
 #endif /* Transform_hpp */

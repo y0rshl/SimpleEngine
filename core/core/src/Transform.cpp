@@ -35,3 +35,7 @@ void Transform::setScale(float sx, float sy, float sz) {
     this->sy = sy;
     this->sz = sz;
 }
+
+void Transform::setTRS(Matrix4x4* trs) {
+    this->TRS = trs;
+}

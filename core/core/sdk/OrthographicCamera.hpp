@@ -7,7 +7,8 @@
 
 #include "CameraComponent.hpp"
 
-class OrthographicCamera : CameraComponent {
+class OrthographicCamera : public CameraComponent {
+
 public:
     OrthographicCamera(float with, float height, float near, float far);
     Matrix4x4* getProjectionMatrix();
