@@ -22,8 +22,11 @@ class Transform {
 
 public:
     Matrix4x4* TRS;
-
+    Transform();
     Transform(Matrix4x4* TRS);
+    void setPosition(float x, float y, float z);
+    void setRotation(float rx, float ry, float rz);
+    void setScale(float sx, float sy, float sz);
 };
 
 #endif /* Transform_hpp */

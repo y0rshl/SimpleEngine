@@ -16,8 +16,10 @@ GLFWwindow* window;
 // Include shader library
 #include "shader.hpp"
 #include <memory>
+#include <core/core/sdk/OrthographicCamera.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
+#include "SceneObject.hpp"
 
 using namespace glm;
 
@@ -30,6 +32,13 @@ void RenderPass::execute() {
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
+    SceneObject sceneObject;
+
+    sceneObject.m_transform->setPosition(1, 1, 1);
+    sceneObject.m_transform->setRotation(1, 0, 0);
+    sceneObject.m_transform->setScale(1, 1, 1);
+    OrthographicCamera* camera = new OrthographicCamera();
+
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT );
@@ -38,7 +47,19 @@ void RenderPass::execute() {
         shaderProgram->use();
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
 
-        // Setear matrix
+        //TODO: Define MVP matrixes
+        Matrix4x4* m = sceneObject.getPosition();
+
+        Matrix4x4* v = camera->getViewMatrix();
+        Matrix4x4* p = camera->getProjectionMatrix();
+
+        // Multiply Matrixes
+//        Matrix4x4* aux = m->operator*(*v);
+//        aux = aux->operator*(*p);
+        // Set matrix in shader Program
+        // TODO: Replace m with m*v*p
+        shaderProgram->setMVP("mvp", m);
+
         mesh->draw();
 
 //        // Draw the triangle !

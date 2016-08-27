@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <Matrix4x4.hpp>
 
 using namespace std;
 
@@ -127,5 +128,14 @@ void ShaderProgram::setVec4(string var, float x, float y, float z, float w) {
     if (loc != -1)
     {
         glUniform4f(loc, x, y, z, w);
+    }
+}
+
+void ShaderProgram::setMVP(string var, Matrix4x4* mvp) {
+    GLint loc = glGetUniformLocation(m_programId, var.c_str());
+    if (loc != -1)
+    {
+        //TODO: Falta el código de asignación acá
+        glUniformMatrix4fv(loc, 1, GL_FALSE, mvp->getValues());
     }
 }

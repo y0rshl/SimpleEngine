@@ -27,6 +27,8 @@ public:
     vector<shared_ptr<Component>> m_components;
 
 public:
+    SceneObject();
+
     Matrix4x4* getPosition();
 
     void update(double dt);

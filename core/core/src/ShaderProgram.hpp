@@ -10,6 +10,7 @@
 #include <memory>
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <Matrix4x4.hpp>
 
 using namespace std;
 
@@ -26,6 +27,7 @@ public:
     void use();
 
     void setVec4(string var, float x, float y, float z, float w);
+    void setMVP(string var, Matrix4x4* mvp);
 private:
     bool m_valid;
 //    GLuint m_vertexShaderId;
