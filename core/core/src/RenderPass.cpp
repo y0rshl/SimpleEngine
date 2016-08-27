@@ -16,6 +16,10 @@ GLFWwindow* window;
 // Include shader library
 #include "shader.hpp"
 #include <memory>
+#include <core/core/sdk/SceneObject.hpp>
+#include <core/core/sdk/Camera.h>
+#include <core/core/sdk/PerspectiveCamera.hpp>
+#include <core/core/sdk/OrthographicCamera.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
 
@@ -30,6 +34,16 @@ void RenderPass::execute() {
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
+    //no se como llamar al metodo estatico de una sin crear la instancia
+    Matrix4x4 *trs;
+
+    SceneObject myso;
+    myso.m_transform->set_position(0.5f, 0.5f, 0.5f);
+    myso.m_transform->set_rotation(0.5f, 0.5f, 0.5f);
+    myso.m_transform->set_scale(1.0f,1.0f,1.0f);
+    myso.m_transform->set_TRS(trs->makeTRSMatrix(0.5f, 0.5f, 0.5f, 1, 1, 1, 1, 1, 1));
+
+
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT );
@@ -37,9 +51,19 @@ void RenderPass::execute() {
         // Use our shader
         shaderProgram->use();
 
-        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
+        Matrix4x4* m = myso.getPosition();
 
-        shaderProgram->setMat4("mvp", scale);
+        PerspectiveCamera* pc = new PerspectiveCamera(1,1,0.5f,3);
+        OrthographicCamera* oc = new OrthographicCamera(2,2,0.5f,3);
+
+        Matrix4x4* v = pc->getViewMatrix();
+        Matrix4x4* p = pc->getProjectionMatrix();
+
+        Matrix4x4* mvp = m->operator*((const Matrix4x4 &) v)->operator*((const Matrix4x4 &) p);
+
+        //Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
+
+        shaderProgram->setMat4("mvp", (Matrix4x4 &) mvp);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 
         mesh->draw();

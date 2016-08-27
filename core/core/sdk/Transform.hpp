@@ -21,9 +21,20 @@ class Transform {
     float sx, sy, sz;
 
 public:
+    //Completar este TRS con el makeTRSMatrix
     Matrix4x4* TRS;
 
     Transform(Matrix4x4* TRS);
+
+    Transform();
+
+    void set_TRS(Matrix4x4 *TRS);
+
+    void set_position (float x , float y , float z);
+
+    void set_rotation(float rx, float ry, float rz);
+
+    void set_scale(float sx, float sy, float sz);
 };
 
 #endif /* Transform_hpp */

@@ -1,5 +1,8 @@
 #version 330 core
 
+// Uniform es que no varía dentro del contexto actual
+// mat4 es un tipo de variable
+//mvp es el nombre de la variable
 uniform mat4 mvp;
 
 // Input vertex data, different for all executions of this shader.
@@ -8,7 +11,8 @@ layout(location = 0) in vec3 vertexPosition_modelspace;
 void main(){
 
     gl_Position = mvp * vec4(vertexPosition_modelspace.xyz, 1.0);
-    //gl_Position.w = 1.0;
+   // gl_Position.xyz = vertexPosition_modelspace;
+   // gl_Position.w = 1.0;
 
 }
 

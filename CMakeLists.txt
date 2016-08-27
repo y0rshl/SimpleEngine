@@ -50,7 +50,7 @@ set(SOURCE_FILES
         core/core/src/Vector4.cpp
         core/core/src/Engine.cpp
         core/core/src/shader.cpp
-        core/core/test/MatrixTest.cpp core/core/test/MatrixTest.hpp core/core/test/JsonTest.cpp core/core/test/JsonTest.hpp core/core/test/SceneObjectTest.cpp core/core/test/SceneObjectTest.hpp core/core/src/Component.cpp core/core/sdk/Component.hpp core/core/src/RenderPass.cpp core/core/sdk/RenderPass.hpp
+        core/core/test/MatrixTest.cpp core/core/test/MatrixTest.hpp core/core/test/JsonTest.cpp core/core/test/JsonTest.hpp core/core/test/SceneObjectTest.cpp core/core/test/SceneObjectTest.hpp core/core/src/Component.cpp core/core/sdk/Component.hpp core/core/src/RenderPass.cpp core/core/sdk/RenderPass.hpp core/core/src/MeshRenderer.cpp core/core/sdk/MeshRenderer.h core/core/src/Camera.cpp core/core/sdk/Camera.h core/core/src/PerspectiveCamera.cpp core/core/sdk/PerspectiveCamera.hpp core/core/src/OrthographicCamera.cpp core/core/sdk/OrthographicCamera.hpp
         core/core/src/shaders/SimpleVertexShader.vertexshader
         core/core/src/shaders/SimpleFragmentShader.fragmentshader core/core/src/ShaderProgram.cpp core/core/src/ShaderProgram.hpp)
 

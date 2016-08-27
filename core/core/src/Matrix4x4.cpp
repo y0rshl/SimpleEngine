@@ -7,6 +7,7 @@
 //
 
 #include <string>
+#include <cmath>
 #include "Matrix4x4.hpp"
 
 
@@ -92,6 +93,46 @@ Matrix4x4 Matrix4x4::makeScaleMatrix(float sx, float sy, float sz) {
     result.matrix[10] = sz;
     return result;
 }
+
+Matrix4x4 Matrix4x4::makeTranslationMatrix(float x, float y, float z) {
+    Matrix4x4 result;
+    result.matrix[3] = x;
+    result.matrix[7] = y;
+    result.matrix[11] = z;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::makeRotationMatrix(float rx, float ry, float rz) {
+    Matrix4x4 result, mx, my, mz;
+
+    mx.matrix[4] = float(cos(rx));
+    mx.matrix[5] = float(sin(rx));
+    mx.matrix[7] = float(-sin(rx));
+    mx.matrix[8] = float(cos(rx));
+
+    my.matrix[0] = float(cos(ry));
+    my.matrix[2] = -float(sin(ry));
+    my.matrix[6] = float(sin(ry));
+    my.matrix[8] = float(cos(ry));
+
+    my.matrix[0] = float(cos(rz));
+    my.matrix[1] = float(sin(rz));
+    my.matrix[3] = float(-sin(rz));
+    my.matrix[4] = float(cos(rz));
+
+    return *mx.operator*(my)->operator*(mz);
+}
+
+Matrix4x4* Matrix4x4::makeTRSMatrix(float x, float y, float z, float sx, float sy, float sz, float rx, float ry, float rz){
+    Matrix4x4 t, r, s;
+    t = makeTranslationMatrix(x,y,z);
+    r = makeRotationMatrix(rx, ry, rz);
+    s = makeScaleMatrix(sx, sy, sz);
+
+    return t.operator*(r)->operator*(s);
+
+}
+
 
 std::string Matrix4x4::toString() {
     std::string str;

@@ -26,3 +26,7 @@ void update(double dt) {
     //for each Component
     //c->update(dt);
 }
+
+SceneObject::SceneObject(){
+    m_transform = make_shared<Transform>();
+}
