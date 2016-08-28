@@ -33,6 +33,7 @@ private:
     GLuint m_positionBuffer;
     GLuint m_indexBuffer;
     GLuint m_vertexArrayID;
+    GLuint m_uvbuffer;
 
     unsigned int m_indexCount;
 };

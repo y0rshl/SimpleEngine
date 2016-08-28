@@ -12,6 +12,7 @@
 #include <GL/gl.h>
 #include <Matrix4x4.hpp>
 
+
 using namespace std;
 
 class ShaderProgram {
@@ -27,7 +28,11 @@ public:
     void use();
 
     void setVec4(string var, float x, float y, float z, float w);
-    void setMVP(string var, Matrix4x4* mvp);
+
+    GLuint getProgramId();
+
+    void setMat4(string var, Matrix4x4& mat4);
+
 private:
     bool m_valid;
 //    GLuint m_vertexShaderId;

@@ -20,8 +20,9 @@
 class Matrix4x4 {
 public:
 
-    Matrix4x4(float* values);
     Matrix4x4();
+    Matrix4x4(float* values);
+    Matrix4x4(const Matrix4x4 &obj);  // copy constructor
 
     float* getValues();
     Matrix4x4* operator+(const Matrix4x4&);
@@ -33,7 +34,6 @@ public:
     static Matrix4x4 makeScaleMatrix(float sx, float sy, float sz);
     static Matrix4x4* makeTRS(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
 
-//    std::vector<std::vector<float>> matrix;
     std::string toString();
 private:
     float matrix[16];

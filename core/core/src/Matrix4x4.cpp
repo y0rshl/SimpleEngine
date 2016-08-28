@@ -6,7 +6,7 @@
 //  Copyright © 2016 ITBA. All rights reserved.
 //
 
-#include <string>
+#include <cstring>
 #include "Matrix4x4.hpp"
 #include "cmath"
 
@@ -17,7 +17,25 @@ float* Matrix4x4::getValues() {
 
 Matrix4x4::Matrix4x4() {
     matrix[0] = 1;
+    matrix[1] = 0;
+    matrix[2] = 0;
+    matrix[3] = 0;
+    matrix[4] = 0;
+    matrix[5] = 1;
+    matrix[6] = 0;
+    matrix[7] = 0;
+    matrix[8] = 0;
+    matrix[9] = 0;
+    matrix[10] = 1;
+    matrix[11] = 0;
+    matrix[12] = 0;
+    matrix[13] = 0;
+    matrix[14] = 0;
+    matrix[15] = 1;
+}
 
+Matrix4x4::Matrix4x4(const Matrix4x4 &obj) {
+    memcpy(matrix, obj.matrix, sizeof(matrix));
 }
 
 Matrix4x4::Matrix4x4(float* values) {
@@ -93,8 +111,10 @@ Matrix4x4* Matrix4x4::inverse() {
 
     det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
 
-    if(det == 0)
+    if(det == 0) {
+        printf("\n[WARNING] Matrix has no inverse. Null returned.\n");
         return nullptr;
+    }
 
     det = 1.f / det;
 

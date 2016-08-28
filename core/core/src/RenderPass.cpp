@@ -20,6 +20,8 @@ GLFWwindow* window;
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
 #include "SceneObject.hpp"
+#include "Texture.hpp"
+
 
 using namespace glm;
 
@@ -35,15 +37,21 @@ void RenderPass::execute() {
     SceneObject sceneObject;
     Matrix4x4 *trs;
 
-    sceneObject.m_transform->setPosition( 0, 0, 0);
-    sceneObject.m_transform->setRotation( 0, 0, 0);
+    sceneObject.m_transform->setPosition( 1, 1, 1);
+    sceneObject.m_transform->setRotation( 1, 0, 0);
     sceneObject.m_transform->setScale( 1, 1, 1);
-    sceneObject.m_transform->setTRS(trs->makeTRS( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+    sceneObject.m_transform->setTRS(trs->makeTRS( 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
 
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
     OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 0.5f, 0.5f, 1.0f, 1.0f);
     printf("Before Do while\n");
+
+    //Create Texture
+    shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
+    // Get a handle for our "myTextureSampler" uniform
+    GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
+
 
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
@@ -51,6 +59,9 @@ void RenderPass::execute() {
         printf("Set up shader... ");
         // Use our shader
         shaderProgram->use();
+
+
+
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
         printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
@@ -64,8 +75,24 @@ void RenderPass::execute() {
         aux = aux->operator*(*p);
         printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
-        shaderProgram->setMVP("mvp", aux);
+        shaderProgram->setMat4("mvp", *aux);
         printf("Shader Matrix ready!!!\n");
+
+
+
+//        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
+//
+//        shaderProgram->setMat4("mvp", scale);
+//        shaderProgram->setVec4("outColor", 1, 1, 1, 1);
+//
+//        // Bind our texture in Texture Unit 0
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+//        // Set our "myTextureSampler" sampler to user Texture Unit 0
+//        glUniform1i(TextureID, 0);
+
+
+
         mesh->draw();
 
 //        // Draw the triangle !
