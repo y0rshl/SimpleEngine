@@ -61,7 +61,7 @@ void RenderPass::execute() {
         shaderProgram->use();
 
 
-
+        // MY CODE!
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
         printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
@@ -79,7 +79,7 @@ void RenderPass::execute() {
         printf("Shader Matrix ready!!!\n");
 
 
-
+//        MASTER CODE
 //        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
 //
 //        shaderProgram->setMat4("mvp", scale);

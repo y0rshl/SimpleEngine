@@ -4,6 +4,7 @@ overs JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, And
 .DS_Store
 # User-specific stuff:
 .idea/workspace.xml
+.idea/modules.xml
 .idea/tasks.xml
 .idea/dictionaries
 .idea/vcs.xml
