@@ -12,7 +12,7 @@
 class OrthographicCamera : public CameraComponent {
 
 public:
-    OrthographicCamera(SceneObject _owner, float with, float height, float near, float far);
+    OrthographicCamera(weak_ptr<SceneObject> _owner, float with, float height, float near, float far);
     Matrix4x4* getProjectionMatrix();
 
     void setWidth(float width);

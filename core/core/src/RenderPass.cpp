@@ -40,7 +40,9 @@ void RenderPass::execute() {
     sceneObject.m_transform->setScale(1, 1, 1);
     sceneObject.m_transform->setTRS(trs->makeTRS(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
 
-    OrthographicCamera* camera = new OrthographicCamera(sceneObject, 0.5f, 0.5f, 1.0f, 1.0f);
+    shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
+    weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
+    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 0.5f, 0.5f, 1.0f, 1.0f);
     printf("Before Do while\n");
 
     do{
