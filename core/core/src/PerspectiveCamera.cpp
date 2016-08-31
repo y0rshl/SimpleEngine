@@ -6,7 +6,8 @@
 #include "cmath"
 
 
-PerspectiveCamera::PerspectiveCamera(float fovX, float fovY, float near, float far){
+PerspectiveCamera::PerspectiveCamera(weak_ptr<SceneObject> _owner, float fovX, float fovY, float near, float far){
+    this->owner = _owner;
     this->fovX = fovX;
     this->fovY = fovY;
     this->near = near;

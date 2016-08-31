@@ -63,9 +63,9 @@ Matrix4x4* Matrix4x4::operator*(const Matrix4x4& matrix) {
     float r[16];
 
     r[0] = m1[0]*m2[0] + m1[4]*m2[1] + m1[8]*m2[2] + m1[12]*m2[3];
-    r[1] = m1[1]*m2[0] + m1[5]*m2[1] + m1[9]+m2[2] + m1[13]*m2[3];
-    r[2] = m1[2]*m2[0] + m1[6]*m2[1] + m1[10]+m2[2] + m1[14]*m2[3];
-    r[3] = m1[3]*m2[0] + m1[7]*m2[1] + m1[11]+m2[2] + m1[15]*m2[3];
+    r[1] = m1[1]*m2[0] + m1[5]*m2[1] + m1[9]*m2[2] + m1[13]*m2[3];
+    r[2] = m1[2]*m2[0] + m1[6]*m2[1] + m1[10]*m2[2] + m1[14]*m2[3];
+    r[3] = m1[3]*m2[0] + m1[7]*m2[1] + m1[11]*m2[2] + m1[15]*m2[3];
 
     r[4] = m1[0]*m2[4] + m1[4]*m2[5] + m1[8]*m2[6] + m1[12]*m2[7];
     r[5] = m1[1]*m2[4] + m1[5]*m2[5] + m1[9]*m2[6] + m1[13]*m2[7];
@@ -141,29 +141,30 @@ std::string Matrix4x4::toString() {
 
 Matrix4x4 Matrix4x4::makeTranslationMatrix(float x, float y, float z) {
     Matrix4x4 result;
-    result.matrix[3] = x;
-    result.matrix[7] = y;
-    result.matrix[11] = z;
+    result.matrix[12] = x;
+    result.matrix[13] = y;
+    result.matrix[14] = z;
     return result;
 }
 
 Matrix4x4 Matrix4x4::makeRotationMatrix(float rx, float ry, float rz) {
     Matrix4x4 mx, my, mz;
-    mx.matrix[4] = float(cos(rx));
-    mx.matrix[5] = float(sin(rx));
-    mx.matrix[7] = float(-sin(rx));
-    mx.matrix[8] = float(cos(rx));
+    mx.matrix[5] = float(cos(rx));
+    mx.matrix[6] = float(sin(rx));
+    mx.matrix[9] = float(-sin(rx));
+    mx.matrix[10] = float(cos(rx));
 
     my.matrix[0] = float(cos(ry));
     my.matrix[2] = -float(sin(ry));
-    my.matrix[6] = float(sin(ry));
-    my.matrix[8] = float(cos(ry));
+    my.matrix[8] = float(sin(ry));
+    my.matrix[10] = float(cos(ry));
 
     my.matrix[0] = float(cos(rz));
     my.matrix[1] = float(sin(rz));
-    my.matrix[3] = float(-sin(rz));
-    my.matrix[4] = float(cos(rz));
-
+    my.matrix[4] = float(-sin(rz));
+    my.matrix[5] = float(cos(rz));
+    Matrix4x4 aux1 = *mx.operator*(my);
+    Matrix4x4 aux2 = *aux1.operator*(mz);
     return *mx.operator*(my)->operator*(mz);
 }
 

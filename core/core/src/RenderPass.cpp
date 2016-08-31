@@ -17,6 +17,7 @@ GLFWwindow* window;
 #include "shader.hpp"
 #include <memory>
 #include <core/core/sdk/OrthographicCamera.hpp>
+#include <core/core/sdk/PerspectiveCamera.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
 #include "SceneObject.hpp"
@@ -37,14 +38,14 @@ void RenderPass::execute() {
     SceneObject sceneObject;
     Matrix4x4 *trs;
 
-    sceneObject.m_transform->setPosition( 1, 1, 1);
-    sceneObject.m_transform->setRotation( 1, 0, 0);
-    sceneObject.m_transform->setScale( 1, 1, 1);
-    sceneObject.m_transform->setTRS(trs->makeTRS( 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+    sceneObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
+    sceneObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
+    sceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
+    sceneObject.m_transform->setTRS(trs->makeTRS( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
 
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
-    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 0.5f, 0.5f, 1.0f, 1.0f);
+    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 0.0f, 0.0f, 1.0f, 0.0f);
     printf("Before Do while\n");
 
     //Create Texture
@@ -60,7 +61,6 @@ void RenderPass::execute() {
         // Use our shader
         shaderProgram->use();
 
-
         // MY CODE!
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
         printf("Shader Ready!!!\nCreate MVP... ");
@@ -75,13 +75,13 @@ void RenderPass::execute() {
         aux = aux->operator*(*p);
         printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
-        shaderProgram->setMat4("mvp", *aux);
+        shaderProgram->setMat4("mvp", *m);
         printf("Shader Matrix ready!!!\n");
 
 
 //        MASTER CODE
 //        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
-//
+//        scale.toString();
 //        shaderProgram->setMat4("mvp", scale);
 //        shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 //

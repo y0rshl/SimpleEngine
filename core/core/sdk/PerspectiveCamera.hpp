@@ -10,7 +10,7 @@
 class PerspectiveCamera : public CameraComponent {
 
 public:
-    PerspectiveCamera(float fovX, float fovY, float near, float far);
+    PerspectiveCamera(weak_ptr<SceneObject> _owner, float fovX, float fovY, float near, float far);
     Matrix4x4* getProjectionMatrix();
 
     void setFovX(float fovX);
