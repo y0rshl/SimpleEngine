@@ -5,6 +5,7 @@
 #include <core/core/sdk/SceneObject.hpp>
 #include "Camera.h"
 
+
 Camera::Camera(){
     enabled = true;
 }
@@ -67,7 +68,10 @@ bool Camera::invertColumnMajor(float *m, float *invOut) {
 }
 
 void Camera::setSO (SceneObject so) {
-    //Como crear/instanciar weak_ptr
-    //this->owner = so;
+    //Como crear/instanciar weak_ptr?
+
+    shared_ptr<SceneObject> sp = make_shared<SceneObject>(so);
+    weak_ptr<SceneObject> wpso(sp);
+    this->owner = wpso;
 }
 

@@ -38,10 +38,10 @@ void RenderPass::execute() {
     Matrix4x4 *trs;
 
     SceneObject myso;
-    myso.m_transform->set_position(0.5f, 0.5f, 0.5f);
-    myso.m_transform->set_rotation(0.5f, 0.5f, 0.5f);
+    myso.m_transform->set_position(0.0f, 0.0f, 0.0f);
+    myso.m_transform->set_rotation(0.0f, 0.0f, 0.0f);
     myso.m_transform->set_scale(1.0f,1.0f,1.0f);
-    myso.m_transform->set_TRS(trs->makeTRSMatrix(0.5f, 0.5f, 0.5f, 1, 1, 1, 1, 1, 1));
+    myso.m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
 
 
     do{
@@ -51,19 +51,22 @@ void RenderPass::execute() {
         // Use our shader
         shaderProgram->use();
 
+        PerspectiveCamera* pc = new PerspectiveCamera(1.0f,0.5f,0.5f,1.0f);
+        //OrthographicCamera* oc = new OrthographicCamera(2,2,0.5f,3);
+
+        pc->setSO(myso);
+
         Matrix4x4* m = myso.getPosition();
-
-        PerspectiveCamera* pc = new PerspectiveCamera(1,1,0.5f,3);
-        OrthographicCamera* oc = new OrthographicCamera(2,2,0.5f,3);
-
-        Matrix4x4* v = pc->getViewMatrix();
+/*        Matrix4x4* v = pc->getViewMatrix();
         Matrix4x4* p = pc->getProjectionMatrix();
 
-        Matrix4x4* mvp = m->operator*((const Matrix4x4 &) v)->operator*((const Matrix4x4 &) p);
+        Matrix4x4* mv = m->operator*(*v);
+        Matrix4x4* mvp = mv->operator*(*p);*/
 
         //Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
 
-        shaderProgram->setMat4("mvp", (Matrix4x4 &) mvp);
+        //shaderProgram->setMat4("mvp", *mvp);
+        shaderProgram->setMat4("mvp", *m);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 
         mesh->draw();

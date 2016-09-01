@@ -130,7 +130,8 @@ Matrix4x4* Matrix4x4::makeTRSMatrix(float x, float y, float z, float sx, float s
     r = makeRotationMatrix(rx, ry, rz);
     s = makeScaleMatrix(sx, sy, sz);
 
-    return t.operator*(r)->operator*(s);
+    Matrix4x4* tr = t.operator*(r);
+    return tr->operator*(s);
 
 }
 
