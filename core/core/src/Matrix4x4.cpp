@@ -159,12 +159,10 @@ Matrix4x4 Matrix4x4::makeRotationMatrix(float rx, float ry, float rz) {
     my.matrix[8] = float(sin(ry));
     my.matrix[10] = float(cos(ry));
 
-    my.matrix[0] = float(cos(rz));
-    my.matrix[1] = float(sin(rz));
-    my.matrix[4] = float(-sin(rz));
-    my.matrix[5] = float(cos(rz));
-    Matrix4x4 aux1 = *mx.operator*(my);
-    Matrix4x4 aux2 = *aux1.operator*(mz);
+    mz.matrix[0] = float(cos(rz));
+    mz.matrix[1] = float(sin(rz));
+    mz.matrix[4] = float(-sin(rz));
+    mz.matrix[5] = float(cos(rz));
     return *mx.operator*(my)->operator*(mz);
 }
 

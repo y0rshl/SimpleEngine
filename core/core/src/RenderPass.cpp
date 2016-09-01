@@ -40,8 +40,8 @@ void RenderPass::execute() {
 
     sceneObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
     sceneObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
-    sceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
-    sceneObject.m_transform->setTRS(trs->makeTRS( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
+    sceneObject.m_transform->setScale( 0.5f, 0.5f, 0.5f);
+    sceneObject.m_transform->refreshTRS();
 
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);

@@ -24,10 +24,37 @@ shared_ptr<Mesh> Mesh::createBox() {
     glGenVertexArrays(1, &mesh->m_vertexArrayID);
     glBindVertexArray(mesh->m_vertexArrayID);
 
+//    static const GLfloat positionData[] = {
+//            -1.0f, -1.0f, 0.0f,
+//            1.0f, -1.0f, 0.0f,
+//            0.0f, 1.0f, 0.0f
+//    };
+
     static const GLfloat positionData[] = {
-            -1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f
+            -1.0f,1.0f,1.0f, //adelante - 0
+            1.0f,1.0f,1.0f,
+            1.0f,-1.0f,1.0f,
+            -1.0f,-1.0f,1.0f,
+            -1.0f,1.0f,-1.0f, //atras - 4
+            1.0f,1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+            -1.0f,1.0f,1.0f, //izq - 8
+            -1.0f,1.0f,-1.0f,
+            -1.0f,-1.0f,1.0f,
+            -1.0f,-1.0f,-1.0f,
+            1.0f,1.0f,1.0f, //der - 12
+            1.0f,1.0f,-1.0f,
+            1.0f,-1.0f,1.0f,
+            1.0f,-1.0f,-1.0f,
+            -1.0f, -1.0f, 1.0f, //abajo - 16
+            -1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f, //arriba - 20
+            -1.0f, 1.0f, -1.0f,
+            1.0f, 1.0f, -1.0f,
+            1.0f, 1.0f, 1.0f,
     };
 
     // Two UV coordinatesfor each vertex. They were created withe Blender.
