@@ -35,17 +35,23 @@ void RenderPass::execute() {
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
-    SceneObject sceneObject;
-    Matrix4x4 *trs;
+    SceneObject meshObject;
+    meshObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
+    meshObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
+    meshObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
+    meshObject.m_transform->refreshTRS();
 
-    sceneObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
+    SceneObject sceneObject;
+
+    sceneObject.m_transform->setPosition( 0.0f, 0.0f, 10.0f);
     sceneObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
-    sceneObject.m_transform->setScale( 0.5f, 0.5f, 0.5f);
+    sceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     sceneObject.m_transform->refreshTRS();
 
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
-    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 0.0f, 0.0f, 1.0f, 0.0f);
+//    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
+    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
     printf("Before Do while\n");
 
     //Create Texture
@@ -53,8 +59,12 @@ void RenderPass::execute() {
     // Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
 
-
+    float rotation = 0.0f;
     do{
+        sceneObject.m_transform->setRotation( rotation, 0.0f, 0.0f);
+        sceneObject.m_transform->refreshTRS();
+        rotation += 0.1/60;
+
         glClearColor(1.0f, 0, 0 ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT );
         printf("Set up shader... ");
@@ -65,17 +75,17 @@ void RenderPass::execute() {
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
         printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
-        Matrix4x4* m = sceneObject.getPosition();
+        Matrix4x4* m = meshObject.getPosition();
         Matrix4x4* v = camera->getViewMatrix();
         Matrix4x4* p = camera->getProjectionMatrix();
 
         printf("MPV Created!!!\nMultiply Matrixes... ");
         // Multiply Matrixes
-        Matrix4x4* aux = m->operator*(*v);
-        aux = aux->operator*(*p);
+        Matrix4x4* aux = p->operator*(*v);
+        aux = aux->operator*(*m);
         printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
-        shaderProgram->setMat4("mvp", *m);
+        shaderProgram->setMat4("mvp", *aux);
         printf("Shader Matrix ready!!!\n");
 
 
