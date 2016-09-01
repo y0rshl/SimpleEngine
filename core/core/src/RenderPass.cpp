@@ -22,6 +22,7 @@ GLFWwindow* window;
 #include <core/core/sdk/OrthographicCamera.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
+#include "Texture.hpp"
 
 using namespace glm;
 
@@ -34,7 +35,12 @@ void RenderPass::execute() {
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
-    //no se como llamar al metodo estatico de una sin crear la instancia
+    //Create Texture
+    shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
+    // Get a handle for our "myTextureSampler" uniform
+    GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
+
+
     Matrix4x4 *trs;
 
     SceneObject myso;
@@ -42,7 +48,6 @@ void RenderPass::execute() {
     myso.m_transform->set_rotation(0.0f, 0.0f, 0.0f);
     myso.m_transform->set_scale(1.0f,1.0f,1.0f);
     myso.m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
-
 
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
@@ -68,6 +73,12 @@ void RenderPass::execute() {
         //shaderProgram->setMat4("mvp", *mvp);
         shaderProgram->setMat4("mvp", *m);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
+
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+        // Set our "myTextureSampler" sampler to user Texture Unit 0
+        glUniform1i(TextureID, 0);
 
         mesh->draw();
 

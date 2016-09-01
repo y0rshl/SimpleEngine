@@ -26,6 +26,9 @@ public:
     void use();
 
     void setVec4(string var, float x, float y, float z, float w);
+
+    GLuint getProgramId();
+
     void setMat4(string var, Matrix4x4& mat4);
 
 private:
