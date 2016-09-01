@@ -1,0 +1,17 @@
+#version 330 core
+
+uniform vec3 lightDirectional;
+uniform vec4 outColor;
+uniform sampler2D u_texture;
+in vec2 UV;
+// Normal de la superficice
+in vec3 normal;
+
+// Ouput data
+out vec4 color;
+
+void main()
+{
+	vec2 uvcoord = vec2(300,300);
+	color = texture(u_texture,UV);
+}
