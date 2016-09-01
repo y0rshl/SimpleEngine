@@ -30,3 +30,8 @@ void update(double dt) {
 SceneObject::SceneObject(){
     m_transform = make_shared<Transform>();
 }
+
+void SceneObject::addComponent(shared_ptr<Component> component) {
+    m_components.push_back(component);
+    component->owner = shared_from_this();
+}

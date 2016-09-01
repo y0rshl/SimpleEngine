@@ -17,18 +17,19 @@ void Camera::update(double dt) {
 Matrix4x4* Camera::getViewMatrix() {
     //this.owner.m_transform.inverse()
     shared_ptr<SceneObject> cam;
+
     cam = this->owner.lock();
 
     SceneObject *so = cam.get();
 
     Matrix4x4* m = so->getPosition();
-    float* inverse;
+    float* inverse = new float[16];
     if(invertColumnMajor(m->getValues(), inverse)){
         return new Matrix4x4(inverse);
     }
 
+    //nunca deberia salir por aca
     return nullptr;
-
 }
 
 bool Camera::invertColumnMajor(float *m, float *invOut) {
@@ -67,11 +68,8 @@ bool Camera::invertColumnMajor(float *m, float *invOut) {
 
 }
 
-void Camera::setSO (SceneObject so) {
+/*void Camera::setSO (SceneObject so) {
     //Como crear/instanciar weak_ptr?
-
-    shared_ptr<SceneObject> sp = make_shared<SceneObject>(so);
-    weak_ptr<SceneObject> wpso(sp);
-    this->owner = wpso;
-}
+    this->owner = make_shared<SceneObject>(so);
+}*/
 

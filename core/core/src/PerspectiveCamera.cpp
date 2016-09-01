@@ -41,7 +41,7 @@ Matrix4x4* PerspectiveCamera::getProjectionMatrix() {
     r[7] = 0;
     r[8] = 0;
     r[9] = 0;
-    r[10] = -(far+near/(far-near));
+    r[10] = -((far+near)/(far-near));
     r[11] = -1;
     r[12] = 0;
     r[13] = 0;

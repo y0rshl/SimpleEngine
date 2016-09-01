@@ -11,12 +11,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory>
 #include "Transform.hpp"
 #include "Component.hpp"
 
 using namespace std;
 
-class SceneObject {
+class SceneObject : public enable_shared_from_this<SceneObject> {
     
 public:
     vector<shared_ptr<SceneObject>> m_children;
@@ -34,7 +35,7 @@ public:
 
     void update(double dt);
 
-
+    void addComponent(shared_ptr<Component> component);
 };
 
 #endif /* SceneObject_hpp */

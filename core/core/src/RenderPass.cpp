@@ -43,12 +43,20 @@ void RenderPass::execute() {
 
     Matrix4x4 *trs;
 
-    SceneObject myso;
-    myso.m_transform->set_position(0.0f, 0.0f, 0.0f);
-    myso.m_transform->set_rotation(0.0f, 0.0f, 0.0f);
-    myso.m_transform->set_scale(1.0f,1.0f,1.0f);
-    myso.m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
+    shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
+    shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
+    camSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
+    camSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
+    camSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
+    //sacar esto, y q se arme con los set de arriba la TRS
+    camSceneObject->m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
+    meshSceneObject->m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
 
+    //shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
+    shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,1.0f,10.0f);
+    camSceneObject->addComponent(static_pointer_cast<Component>(oc));
+
+    float rx = 0.1f;
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT );
@@ -56,23 +64,27 @@ void RenderPass::execute() {
         // Use our shader
         shaderProgram->use();
 
-        PerspectiveCamera* pc = new PerspectiveCamera(1.0f,0.5f,0.5f,1.0f);
-        //OrthographicCamera* oc = new OrthographicCamera(2,2,0.5f,3);
+        //mi codigo
+        Matrix4x4* m = meshSceneObject->getPosition();
+        Matrix4x4* v = oc->getViewMatrix();
+        Matrix4x4* p = oc->getProjectionMatrix();
 
-        pc->setSO(myso);
-
-        Matrix4x4* m = myso.getPosition();
-/*        Matrix4x4* v = pc->getViewMatrix();
-        Matrix4x4* p = pc->getProjectionMatrix();
-
-        Matrix4x4* mv = m->operator*(*v);
-        Matrix4x4* mvp = mv->operator*(*p);*/
-
-        //Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
+        Matrix4x4* vm = (*v)*(*m);
+        //Column major pvm
+        Matrix4x4* pvm = (*p)*(*vm);
 
         //shaderProgram->setMat4("mvp", *mvp);
-        shaderProgram->setMat4("mvp", *m);
+        shaderProgram->setMat4("mvp", *pvm);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
+
+        camSceneObject->m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 10.0f, rx, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
+        rx += 0.01f;
+
+        //Su codigo
+
+//        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
+//        shaderProgram->setMat4("mvp", scale);
+//        shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 
         // Bind our texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);

@@ -32,7 +32,7 @@ public:
     static Matrix4x4 makeScaleMatrix(float sx, float sy, float sz);
     static Matrix4x4 makeTranslationMatrix(float x, float y, float z);
     static Matrix4x4 makeRotationMatrix(float rx, float ry, float rz);
-    static Matrix4x4* makeTRSMatrix(float x, float y, float z, float sx, float sy, float sz, float rx, float ry, float rz);
+    static Matrix4x4* makeTRSMatrix(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
 
     std::string toString();
 private:

@@ -124,7 +124,7 @@ Matrix4x4 Matrix4x4::makeRotationMatrix(float rx, float ry, float rz) {
     return *mxy.operator*(mz);
 }
 
-Matrix4x4* Matrix4x4::makeTRSMatrix(float x, float y, float z, float sx, float sy, float sz, float rx, float ry, float rz){
+Matrix4x4* Matrix4x4::makeTRSMatrix(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz){
     Matrix4x4 t, r, s;
     t = makeTranslationMatrix(x,y,z);
     r = makeRotationMatrix(rx, ry, rz);

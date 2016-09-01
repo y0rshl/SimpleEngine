@@ -12,6 +12,7 @@ using namespace std;
 class SceneObject;
 
 class Component {
+    friend class SceneObject;
 
 protected:
     weak_ptr<SceneObject> owner;

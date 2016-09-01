@@ -30,7 +30,7 @@ void OrthographicCamera::setNear(float near) {
 Matrix4x4* OrthographicCamera::getProjectionMatrix() {
     float r[16];
 
-    r[0] = 1/width;
+    r[0] = 2/width;
     r[1] = 0;
     r[2] = 0;
     r[3] = 0;
@@ -44,7 +44,7 @@ Matrix4x4* OrthographicCamera::getProjectionMatrix() {
     r[11] = 0;
     r[12] = 0;
     r[13] = 0;
-    r[14] = -(far+near/(far-near));
+    r[14] = -((far+near)/(far-near));
     r[15] = 1;
 
     Matrix4x4* result = new Matrix4x4(r);
