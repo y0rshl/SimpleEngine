@@ -96,31 +96,32 @@ Matrix4x4 Matrix4x4::makeScaleMatrix(float sx, float sy, float sz) {
 
 Matrix4x4 Matrix4x4::makeTranslationMatrix(float x, float y, float z) {
     Matrix4x4 result;
-    result.matrix[3] = x;
-    result.matrix[7] = y;
-    result.matrix[11] = z;
+    result.matrix[12] = x;
+    result.matrix[13] = y;
+    result.matrix[14] = z;
     return result;
 }
 
 Matrix4x4 Matrix4x4::makeRotationMatrix(float rx, float ry, float rz) {
     Matrix4x4 result, mx, my, mz;
 
-    mx.matrix[4] = float(cos(rx));
-    mx.matrix[5] = float(sin(rx));
-    mx.matrix[7] = float(-sin(rx));
-    mx.matrix[8] = float(cos(rx));
+    mx.matrix[5] = float(cos(rx));
+    mx.matrix[6] = float(sin(rx));
+    mx.matrix[9] = float(-sin(rx));
+    mx.matrix[10] = float(cos(rx));
 
     my.matrix[0] = float(cos(ry));
     my.matrix[2] = -float(sin(ry));
-    my.matrix[6] = float(sin(ry));
-    my.matrix[8] = float(cos(ry));
+    my.matrix[8] = float(sin(ry));
+    my.matrix[10] = float(cos(ry));
 
-    my.matrix[0] = float(cos(rz));
-    my.matrix[1] = float(sin(rz));
-    my.matrix[3] = float(-sin(rz));
-    my.matrix[4] = float(cos(rz));
+    mz.matrix[0] = float(cos(rz));
+    mz.matrix[1] = float(sin(rz));
+    mz.matrix[4] = float(-sin(rz));
+    mz.matrix[5] = float(cos(rz));
 
-    return *mx.operator*(my)->operator*(mz);
+    Matrix4x4 mxy = *mx.operator*(my);
+    return *mxy.operator*(mz);
 }
 
 Matrix4x4* Matrix4x4::makeTRSMatrix(float x, float y, float z, float sx, float sy, float sz, float rx, float ry, float rz){
