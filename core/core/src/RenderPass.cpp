@@ -50,8 +50,8 @@ void RenderPass::execute() {
 
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
-//    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
-    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
+    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 1.5f, 1.5f, 1.0f, 100.0f);
+//    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
     printf("Before Do while\n");
 
     //Create Texture
