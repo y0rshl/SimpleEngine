@@ -35,7 +35,7 @@ Matrix4x4* OrthographicCamera::getProjectionMatrix() {
     r[2] = 0;
     r[3] = 0;
     r[4] = 0;
-    r[5] = 1/height;
+    r[5] = 2/height;
     r[6] = 0;
     r[7] = 0;
     r[8] = 0;
