@@ -38,3 +38,7 @@ void Transform::set_scale(float sx, float sy, float sz){
 void Transform::set_TRS(Matrix4x4* TRS){
     this->TRS = TRS;
 };
+
+void Transform::refreshTRS(){
+    this->TRS = TRS->makeTRSMatrix(x,y,z,rx,ry,rz,sx,sy,sz);
+}

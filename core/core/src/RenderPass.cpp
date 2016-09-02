@@ -40,19 +40,24 @@ void RenderPass::execute() {
     // Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
 
-
-    Matrix4x4 *trs;
-
-    shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
+    //Mi codigo
+    //Objeto
     shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
-    camSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
+    meshSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
+    meshSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
+    meshSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
+    meshSceneObject->m_transform->refreshTRS();
+
+    //Camara
+    shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
+    camSceneObject->m_transform->set_position(0.0f, 0.0f, 10.0f);
     camSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
     camSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
-    //sacar esto, y q se arme con los set de arriba la TRS
-    camSceneObject->m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
-    meshSceneObject->m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
+    camSceneObject->m_transform->refreshTRS();
+
 
     //shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
+    //camSceneObject->addComponent(static_pointer_cast<Component>(pc));
     shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,1.0f,10.0f);
     camSceneObject->addComponent(static_pointer_cast<Component>(oc));
 
@@ -70,18 +75,17 @@ void RenderPass::execute() {
         Matrix4x4* p = oc->getProjectionMatrix();
 
         Matrix4x4* vm = (*v)*(*m);
-        //Column major pvm
+        //Es column major por eso es pvm
         Matrix4x4* pvm = (*p)*(*vm);
 
-        //shaderProgram->setMat4("mvp", *mvp);
         shaderProgram->setMat4("mvp", *pvm);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 
-        camSceneObject->m_transform->set_TRS(trs->makeTRSMatrix( 0.0f, 0.0f, 10.0f, rx, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
-        rx += 0.01f;
+        camSceneObject->m_transform->set_rotation(rx, 0.0f, 0.0f);
+        camSceneObject->m_transform->refreshTRS();
+        rx += 0.001f;
 
         //Su codigo
-
 //        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
 //        shaderProgram->setMat4("mvp", scale);
 //        shaderProgram->setVec4("outColor", 1, 1, 1, 1);

@@ -35,6 +35,8 @@ public:
     void set_rotation(float rx, float ry, float rz);
 
     void set_scale(float sx, float sy, float sz);
+
+    void refreshTRS();
 };
 
 #endif /* Transform_hpp */
