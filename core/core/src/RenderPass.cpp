@@ -18,6 +18,7 @@ GLFWwindow* window;
 #include <memory>
 #include <core/core/sdk/OrthographicCamera.hpp>
 #include <core/core/sdk/PerspectiveCamera.hpp>
+#include <core/core/sdk/lights/DirectionalLight.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
 #include "SceneObject.hpp"
@@ -48,10 +49,18 @@ void RenderPass::execute() {
     sceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     sceneObject.m_transform->refreshTRS();
 
+    // Cameras
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
-    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 1.5f, 1.5f, 1.0f, 100.0f);
-//    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
+
+//    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 1.5f, 1.5f, 1.0f, 100.0f);
+    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
+
+    // Lights
+    shared_ptr<SceneObject> sharedPtrLightOwner = make_shared<SceneObject>(sceneObject);
+    weak_ptr<SceneObject> weakPtrLightOwner(sharedPtrLightOwner);
+    DirectionalLight* light = new DirectionalLight(weakPtrLightOwner);
+
     printf("Before Do while\n");
 
     //Create Texture

@@ -50,8 +50,11 @@ int main( int argc, const char* argv[] )
 //	inverse->toString();
 //
 //	// OTra
-//	float array2[16] = {1.0, 1.0, 1.0, 1.0, 2.0, 1.0, -1.0, -2.0, 1.0, -1.0, -1.0, 1.0, 1.0, -2.0, 2.0, -1.0};
-//	Matrix4x4* matrix2 = new Matrix4x4(array2);
+	float array2[16] = {1.0, 1.0, 1.0, 1.0, 2.0, 1.0, -1.0, -2.0, 1.0, -1.0, -1.0, 1.0, 1.0, -2.0, 2.0, -1.0};
+	Matrix4x4* matrix2 = new Matrix4x4(array2);
+	float* vec = new float[ 1, 2, 3, 4];
+	float* ans = matrix2->vecRightMultiplyOperator(vec);
+	printf("%f %f %f %f\n", ans[0], ans[1], ans[2], ans[3]);
 //	matrix2->toString();
 //	printf("\n Invirtiendo... \n");
 //	Matrix4x4* inverse2 = matrix2->inverse();

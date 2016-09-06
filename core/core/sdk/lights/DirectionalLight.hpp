@@ -9,7 +9,9 @@
 
 class DirectionalLight:public LightComponent {
 public:
+    DirectionalLight(weak_ptr<SceneObject> _owner);
     void update(double dt);
+    float* getDirection();
 };
 
 #endif //SIMPLEENGINE_DIRECTIONALLIGHT_HPP

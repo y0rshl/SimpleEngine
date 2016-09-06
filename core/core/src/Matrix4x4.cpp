@@ -86,6 +86,18 @@ Matrix4x4* Matrix4x4::operator*(const Matrix4x4& matrix) {
     return result;
 }
 
+float* Matrix4x4::vecRightMultiplyOperator(const float* vec){
+    // TODO: Check vec size to avoid errors
+    float* ans = new float[4];
+    float* m1 = this->matrix;
+    printf("%f %f\n", ans[0], m1[0]);
+    ans[0] = m1[0]*vec[0] + m1[4]*vec[1] + m1[8]*vec[2] + m1[12]*vec[3];
+    ans[1] = m1[1]*vec[0] + m1[5]*vec[1] + m1[9]*vec[2] + m1[13]*vec[3];
+    ans[2] = m1[2]*vec[0] + m1[6]*vec[1] + m1[10]*vec[2] + m1[14]*vec[3];
+    ans[3] = m1[3]*vec[0] + m1[7]*vec[1] + m1[11]*vec[2] + m1[15]*vec[3];
+    return ans;
+}
+
 Matrix4x4* Matrix4x4::inverse() {
     float inv[16], det;
     int i;

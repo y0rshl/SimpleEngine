@@ -27,6 +27,8 @@ public:
     float* getValues();
     Matrix4x4* operator+(const Matrix4x4&);
     Matrix4x4* operator*(const Matrix4x4&);
+    // Multiplication Martix*vector
+    float* vecRightMultiplyOperator(const float* vec);
     Matrix4x4* inverse();
 
     static Matrix4x4 makeTranslationMatrix(float x, float y, float z);
