@@ -86,7 +86,7 @@ Matrix4x4* Matrix4x4::operator*(const Matrix4x4& matrix) {
     return result;
 }
 
-float* Matrix4x4::vecRightMultiplyOperator(const float* vec){
+float* Matrix4x4::vecRightMultiplyOperator(const float vec[]){
     // TODO: Check vec size to avoid errors
     float* ans = new float[4];
     float* m1 = this->matrix;
