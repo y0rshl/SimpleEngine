@@ -32,30 +32,42 @@ shared_ptr<Mesh> Mesh::createBox() {
 //    };
 
     static const GLfloat positionData[] = {
-            -1.0f,1.0f,1.0f, //adelante - 0
-            1.0f,1.0f,1.0f,
-            1.0f,-1.0f,1.0f,
-            -1.0f,-1.0f,1.0f,
-            -1.0f,1.0f,-1.0f, //atras - 4
-            1.0f,1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f,-1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f,-1.0f,
+            1.0f,-1.0f, 1.0f,
             -1.0f,-1.0f,-1.0f,
             1.0f,-1.0f,-1.0f,
-            -1.0f,1.0f,1.0f, //izq - 8
-            -1.0f,1.0f,-1.0f,
-            -1.0f,-1.0f,1.0f,
-            -1.0f,-1.0f,-1.0f,
-            1.0f,1.0f,1.0f, //der - 12
-            1.0f,1.0f,-1.0f,
-            1.0f,-1.0f,1.0f,
+            1.0f, 1.0f,-1.0f,
             1.0f,-1.0f,-1.0f,
-            -1.0f, -1.0f, 1.0f, //abajo - 16
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f, //arriba - 20
-            -1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f,-1.0f,
+            1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f,-1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f,
             1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f,-1.0f,
+            1.0f, 1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f,-1.0f,
+            -1.0f, 1.0f,-1.0f,
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f
     };
     // Two UV coordinatesfor each vertex. They were created withe Blender.
     static const GLfloat g_uv_buffer_data[] = {
@@ -107,36 +119,25 @@ shared_ptr<Mesh> Mesh::createBox() {
     glBindBuffer(GL_ARRAY_BUFFER, mesh->m_uvbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
 
-    // 1rst attribute buffer : vertices
-    glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->m_positionBuffer);
-    glVertexAttribPointer(
-            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-            3,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            (void*)0            // array buffer offset
-    );
 
 //    static const GLuint indices[] = {
 //            0, 1, 2
 //    };
 
     static const GLuint indices[] = {
-        0, 3, 1, //adelante
-        1, 3, 2,
-        5, 7, 6, //atras
-        6, 4, 5,
-        8, 11, 10, //izq
-        8, 9, 11,
-        12, 14, 15, //der
-        15, 13, 12,
-        16, 17, 18, //abajo
-        18, 19, 16,
-        20, 23, 22, //arriba
-        20, 22, 21
+        0, 1, 2, //adelante
+        3, 4, 5,
+        6, 7, 8, //atras
+        9, 10, 11,
+        12, 13, 14, //izq
+        15,16, 17,
+        18, 19, 20, //der
+        21, 22, 23,
+        24, 25, 26, //abajo
+        27, 28, 29,
+        30, 31, 32, //arriba
+        33, 34, 35
     };
 
     // create buffer for the indices
@@ -168,12 +169,19 @@ void Mesh::draw() {
 
 //    glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
 
-    glDrawElements(
-            GL_TRIANGLES,      // mode
-            m_indexCount,    // count
-            GL_UNSIGNED_INT,   // type
-            (void*)0           // element array buffer offset
+
+    // 1rst attribute buffer : vertices
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, m_positionBuffer);
+    glVertexAttribPointer(
+            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            3,                  // size
+            GL_FLOAT,           // type
+            GL_FALSE,           // normalized?
+            0,                  // stride
+            (void*)0            // array buffer offset
     );
+
     // 2nd attribute buffer : UVs
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, m_uvbuffer);
@@ -185,5 +193,13 @@ void Mesh::draw() {
             0,                                // stride
             (void*)0                          // array buffer offset
     );
+
+    glDrawElements(
+            GL_TRIANGLES,      // mode
+            m_indexCount,    // count
+            GL_UNSIGNED_INT,   // type
+            (void*)0           // element array buffer offset
+    );
+
 
 }
