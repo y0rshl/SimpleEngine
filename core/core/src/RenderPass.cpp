@@ -20,6 +20,7 @@ GLFWwindow* window;
 #include <core/core/sdk/Camera.h>
 #include <core/core/sdk/PerspectiveCamera.hpp>
 #include <core/core/sdk/OrthographicCamera.hpp>
+#include <core/core/sdk/DirectionalLight.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
 #include "Texture.hpp"
@@ -55,11 +56,20 @@ void RenderPass::execute() {
     camSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
     camSceneObject->m_transform->refreshTRS();
 
-
-    //shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
-    //camSceneObject->addComponent(static_pointer_cast<Component>(pc));
+  //  shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
+  //  camSceneObject->addComponent(static_pointer_cast<Component>(pc));
     shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,1.0f,10.0f);
     camSceneObject->addComponent(static_pointer_cast<Component>(oc));
+
+    //Luz
+    shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
+    lightSceneObject->m_transform->set_position(0.0f, 0.0f, 10.0f);
+    lightSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
+    lightSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
+    lightSceneObject->m_transform->refreshTRS();
+
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>();
+    lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
     float rx = 0.1f;
     do{
@@ -74,16 +84,23 @@ void RenderPass::execute() {
         Matrix4x4* v = oc->getViewMatrix();
         Matrix4x4* p = oc->getProjectionMatrix();
 
+        float* dirLight = dl->getDirLight();
+
         Matrix4x4* vm = (*v)*(*m);
         //Es column major por eso es pvm
         Matrix4x4* pvm = (*p)*(*vm);
 
+        shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
+        shaderProgram->setVec4("dirLight", dirLight[0], dirLight[1], dirLight[2], dirLight[3]);
+        //Le paso la normal de cada vertice para calcular la intesidad de la luz
+        //TODO normalizar cada vertice con norma2
+        shaderProgram->setVec4("normal", 0,0,-1,0);
 
-        camSceneObject->m_transform->set_rotation(rx, 0.0f, 0.0f);
+/*        camSceneObject->m_transform->set_rotation(rx, 0.0f, 0.0f);
         camSceneObject->m_transform->refreshTRS();
-        rx += 0.001f;
+        rx += 0.001f;*/
 
         //Su codigo
 //        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);

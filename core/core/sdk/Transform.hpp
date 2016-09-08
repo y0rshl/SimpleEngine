@@ -21,7 +21,7 @@ class Transform {
     float sx, sy, sz;
 
 public:
-    //Completar este TRS con el makeTRSMatrix
+
     Matrix4x4* TRS;
 
     Transform(Matrix4x4* TRS);
