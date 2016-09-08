@@ -34,6 +34,8 @@ public:
     static Matrix4x4 makeRotationMatrix(float rx, float ry, float rz);
     static Matrix4x4* makeTRSMatrix(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
 
+    float* multVec4(float * vec4);
+
     std::string toString();
 private:
     float matrix[16];

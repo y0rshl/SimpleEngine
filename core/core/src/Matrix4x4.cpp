@@ -135,6 +135,19 @@ Matrix4x4* Matrix4x4::makeTRSMatrix(float x, float y, float z, float rx, float r
 
 }
 
+float* Matrix4x4::multVec4(float * vec4){
+    float* m1 = this->matrix;
+    float* r = new float[4];
+
+    r[0] = m1[0]*vec4[0] + m1[4]*vec4[1] + m1[8]*vec4[2] + m1[12]*vec4[3];
+    r[1] = m1[1]*vec4[0] + m1[5]*vec4[1] + m1[9]*vec4[2] + m1[13]*vec4[3];
+    r[2] = m1[2]*vec4[0] + m1[6]*vec4[1] + m1[10]*vec4[2] + m1[14]*vec4[3];
+    r[3] = m1[3]*vec4[0] + m1[7]*vec4[1] + m1[11]*vec4[2] + m1[15]*vec4[3];
+
+    return r;
+
+}
+
 
 std::string Matrix4x4::toString() {
     std::string str;
