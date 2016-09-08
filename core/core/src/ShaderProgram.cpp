@@ -131,6 +131,14 @@ void ShaderProgram::setVec4(string var, float x, float y, float z, float w) {
     }
 }
 
+void ShaderProgram::setVec3(string var, float x, float y, float z) {
+    GLint loc = glGetUniformLocation(m_programId, var.c_str());
+    if (loc != -1)
+    {
+        glUniform3f(loc, x, y, z);
+    }
+}
+
 GLuint ShaderProgram::getProgramId(){
     return m_programId;
 }

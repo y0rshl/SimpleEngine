@@ -6,6 +6,7 @@
 #define SIMPLEENGINE_DIRECTIONALLIGHT_HPP
 
 #include "LightComponent.hpp"
+#include <math.h>
 
 class DirectionalLight:public LightComponent {
 public:

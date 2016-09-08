@@ -32,8 +32,8 @@ void RenderPass::execute() {
 
     initContext();
 
-    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-    
+    //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("VertexShader.vertexshader", "PhongDirectionalFragmentShader.fragmentshader");
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
     SceneObject meshObject;
@@ -70,6 +70,7 @@ void RenderPass::execute() {
 
     float rotation = 0.0f;
     do{
+        // Rotate Mesh
         sceneObject.m_transform->setRotation( rotation, 0.0f, 0.0f);
         sceneObject.m_transform->refreshTRS();
         rotation += 0.1/60;
@@ -82,6 +83,8 @@ void RenderPass::execute() {
 
         // MY CODE!
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
+        float* lightvec = light->getDirection();
+        shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
         printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
         Matrix4x4* m = meshObject.getPosition();

@@ -97,6 +97,34 @@ shared_ptr<Mesh> Mesh::createBox() {
             0.667979f, 1.0f-0.335851f
     };
 
+    static const GLfloat g_normal_buffer_data[] = {
+            //TODO: Calculate Normal of each vertex
+            -1.0f,1.0f,1.0f, //adelante - 0
+            1.0f,1.0f,1.0f,
+            1.0f,-1.0f,1.0f,
+            -1.0f,-1.0f,1.0f,
+            -1.0f,1.0f,-1.0f, //atras - 4
+            1.0f,1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+            -1.0f,1.0f,1.0f, //izq - 8
+            -1.0f,1.0f,-1.0f,
+            -1.0f,-1.0f,1.0f,
+            -1.0f,-1.0f,-1.0f,
+            1.0f,1.0f,1.0f, //der - 12
+            1.0f,1.0f,-1.0f,
+            1.0f,-1.0f,1.0f,
+            1.0f,-1.0f,-1.0f,
+            -1.0f, -1.0f, 1.0f, //abajo - 16
+            -1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f, //arriba - 20
+            -1.0f, 1.0f, -1.0f,
+            1.0f, 1.0f, -1.0f,
+            1.0f, 1.0f, 1.0f,
+    };
+
     //create vbo
     glGenBuffers(1, &mesh->m_positionBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, mesh->m_positionBuffer);
@@ -106,6 +134,11 @@ shared_ptr<Mesh> Mesh::createBox() {
     glGenBuffers(1, &mesh->m_uvbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, mesh->m_uvbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
+
+    // create normal
+    glGenBuffers(1, &mesh->m_normal);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->m_normal);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_normal_buffer_data), g_normal_buffer_data, GL_STATIC_DRAW);
 
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);

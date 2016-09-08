@@ -28,6 +28,7 @@ public:
     void use();
 
     void setVec4(string var, float x, float y, float z, float w);
+    void setVec3(string var, float x, float y, float z);
 
     GLuint getProgramId();
 
