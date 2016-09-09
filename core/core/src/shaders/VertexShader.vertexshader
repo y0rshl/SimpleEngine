@@ -1,21 +1,24 @@
 #version 330 core
 // Uniform es que no varía dentro del contexto actual
 // mat4 es un tipo de variable
-//mvp es el nombre de la variable
+// mvp es el nombre de la variable
 
 uniform mat4 mvp;
-
-layout(location = 1) in vec2 vertexUV;
-
-// Coordenadas de textura
-out vec2 UV;
+uniform mat4 m;
 
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition_modelspace;
+layout(location = 1) in vec2 vertexUV;
+layout(location = 2) in vec3 vertexNormal;
+
+// Coordenadas de textura
+out vec2 UV;
+out vec3 normal;
 
 void main(){
     gl_Position.w = 1.0;
     UV = vertexUV;
     gl_Position = mvp * vec4(vertexPosition_modelspace.xyz, 1.0);
+    normal = (m * vec4(vertexNormal, 0)).xyz;
 }
 

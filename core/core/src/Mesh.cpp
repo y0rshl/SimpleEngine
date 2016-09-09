@@ -111,30 +111,54 @@ shared_ptr<Mesh> Mesh::createBox() {
 
     static const GLfloat g_normal_buffer_data[] = {
             //TODO: Calculate Normal of each vertex
-            -1.0f,1.0f,1.0f, //adelante - 0
-            1.0f,1.0f,1.0f,
-            1.0f,-1.0f,1.0f,
-            -1.0f,-1.0f,1.0f,
-            -1.0f,1.0f,-1.0f, //atras - 4
-            1.0f,1.0f,-1.0f,
-            -1.0f,-1.0f,-1.0f,
-            1.0f,-1.0f,-1.0f,
-            -1.0f,1.0f,1.0f, //izq - 8
-            -1.0f,1.0f,-1.0f,
-            -1.0f,-1.0f,1.0f,
-            -1.0f,-1.0f,-1.0f,
-            1.0f,1.0f,1.0f, //der - 12
-            1.0f,1.0f,-1.0f,
-            1.0f,-1.0f,1.0f,
-            1.0f,-1.0f,-1.0f,
-            -1.0f, -1.0f, 1.0f, //abajo - 16
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f, //arriba - 20
-            -1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, 1.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f
+
     };
 
     //create vbo
@@ -191,6 +215,7 @@ shared_ptr<Mesh> Mesh::createBox() {
 Mesh::~Mesh() {
     glDeleteBuffers(1, &m_positionBuffer);
     glDeleteBuffers(1, &m_indexBuffer);
+    glDeleteBuffers(1, &m_normal);
     glDeleteVertexArrays(1, &m_vertexArrayID);
 }
 
@@ -228,6 +253,17 @@ void Mesh::draw() {
             (void*)0                          // array buffer offset
     );
 
+    // 3rd attribute buffer : vertices normals
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, m_normal);
+    glVertexAttribPointer(
+            2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            3,                  // size
+            GL_FLOAT,           // type
+            GL_FALSE,           // normalized?
+            0,                  // stride
+            (void*)0            // array buffer offset
+    );
 
     glDrawElements(
             GL_TRIANGLES,      // mode

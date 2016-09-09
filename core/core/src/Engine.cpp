@@ -33,7 +33,7 @@ void Engine::run() {
 }
 
 void Engine::update(double dt) {
-    std::cout << "f() took " << dt << " ms\n";
+    //std::cout << "f() took " << dt << " ms\n";
     //TODO: update systems
     //call update on App class
 }

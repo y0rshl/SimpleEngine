@@ -31,14 +31,14 @@ using namespace glm;
 void RenderPass::execute() {
 
     initContext();
-
-    //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+    glCullFace(GL_BACK);
+//    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("VertexShader.vertexshader", "PhongDirectionalFragmentShader.fragmentshader");
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
     SceneObject meshObject;
     meshObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
-    meshObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
+    meshObject.m_transform->setRotation( 0.0f, 1.0f, 1.0f);
     meshObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     meshObject.m_transform->refreshTRS();
 
@@ -49,6 +49,14 @@ void RenderPass::execute() {
     sceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     sceneObject.m_transform->refreshTRS();
 
+
+    SceneObject lightSceneObject;
+
+    lightSceneObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
+    lightSceneObject.m_transform->setRotation( 3.0f/2, 0.0f, 0.0f);
+    lightSceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
+    lightSceneObject.m_transform->refreshTRS();
+
     // Cameras
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(sceneObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
@@ -57,7 +65,7 @@ void RenderPass::execute() {
     OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
 
     // Lights
-    shared_ptr<SceneObject> sharedPtrLightOwner = make_shared<SceneObject>(sceneObject);
+    shared_ptr<SceneObject> sharedPtrLightOwner = make_shared<SceneObject>(lightSceneObject);
     weak_ptr<SceneObject> weakPtrLightOwner(sharedPtrLightOwner);
     DirectionalLight* light = new DirectionalLight(weakPtrLightOwner);
 
@@ -71,9 +79,9 @@ void RenderPass::execute() {
     float rotation = 0.0f;
     do{
         // Rotate Mesh
-        sceneObject.m_transform->setRotation( rotation, 0.0f, 0.0f);
-        sceneObject.m_transform->refreshTRS();
-        rotation += 0.1/60;
+//        sceneObject.m_transform->setRotation( rotation, 0.0f, 0.0f);
+//        sceneObject.m_transform->refreshTRS();
+//        rotation += 0.1/60;
 
         glClearColor(1.0f, 0, 0 ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT );
@@ -98,6 +106,8 @@ void RenderPass::execute() {
         printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
         shaderProgram->setMat4("mvp", *aux);
+        shaderProgram->setMat4("m", *m);
+
         printf("Shader Matrix ready!!!\n");
 
 
