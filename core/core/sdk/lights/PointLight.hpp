@@ -6,10 +6,13 @@
 #define SIMPLEENGINE_POINTLIGHT_HPP
 
 #include "LightComponent.hpp"
+#include <math.h>
 
 class PointLight:public LightComponent {
 public:
+    PointLight(weak_ptr<SceneObject> _owner);
     void update(double dt);
+    float* getPosition();
 };
 
 

@@ -58,6 +58,7 @@ set(SOURCE_FILES
 message(STATUS "Copy resources")
 configure_file(core/core/src/shaders/VertexShader.vertexshader VertexShader.vertexshader COPYONLY)
 configure_file(core/core/src/shaders/PhongDirectionalFragmentShader.fragmentshader PhongDirectionalFragmentShader.fragmentshader COPYONLY)
+configure_file(core/core/src/shaders/PhongPointLightFragmentShader.fragmentshader PhongPointLightFragmentShader.fragmentshader COPYONLY)
 configure_file(core/core/src/shaders/SimpleVertexShader.vertexshader SimpleVertexShader.vertexshader COPYONLY)
 configure_file(core/core/src/shaders/SimpleFragmentShader.fragmentshader SimpleFragmentShader.fragmentshader COPYONLY)
 configure_file(core/core/src/textures/uvtemplate.bmp uvtemplate.bmp COPYONLY)

@@ -19,6 +19,7 @@ GLFWwindow* window;
 #include <core/core/sdk/OrthographicCamera.hpp>
 #include <core/core/sdk/PerspectiveCamera.hpp>
 #include <core/core/sdk/lights/DirectionalLight.hpp>
+#include <core/core/sdk/lights/PointLight.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
 #include "SceneObject.hpp"
@@ -33,12 +34,12 @@ void RenderPass::execute() {
     initContext();
     glCullFace(GL_BACK);
 //    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("VertexShader.vertexshader", "PhongDirectionalFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("VertexShader.vertexshader", "PhongPointLightFragmentShader.fragmentshader");
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
     SceneObject meshObject;
     meshObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
-    meshObject.m_transform->setRotation( 0.0f, 1.0f, 1.0f);
+    meshObject.m_transform->setRotation( 0.0f, 2.0f, -2.0f);
     meshObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     meshObject.m_transform->refreshTRS();
 
@@ -52,7 +53,7 @@ void RenderPass::execute() {
 
     SceneObject lightSceneObject;
 
-    lightSceneObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
+    lightSceneObject.m_transform->setPosition( -5.0f, 0.0f, 0.0f);
     lightSceneObject.m_transform->setRotation( 3.0f/2, 0.0f, 0.0f);
     lightSceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     lightSceneObject.m_transform->refreshTRS();
@@ -67,8 +68,8 @@ void RenderPass::execute() {
     // Lights
     shared_ptr<SceneObject> sharedPtrLightOwner = make_shared<SceneObject>(lightSceneObject);
     weak_ptr<SceneObject> weakPtrLightOwner(sharedPtrLightOwner);
-    DirectionalLight* light = new DirectionalLight(weakPtrLightOwner);
-
+    //DirectionalLight* light = new DirectionalLight(weakPtrLightOwner);
+    PointLight* light = new PointLight(weakPtrLightOwner);
     printf("Before Do while\n");
 
     //Create Texture
@@ -77,10 +78,23 @@ void RenderPass::execute() {
     GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
 
     float rotation = 0.0f;
+    float lightTranslationCoef = 1.0f;
+    float lightTranslation = -5.0f;
     do{
+//      Move PointLight
+        lightSceneObject.m_transform->setRotation( lightTranslation, 0, 0.0f);
+        lightSceneObject.m_transform->refreshTRS();
+        lightTranslation += (lightTranslationCoef*0.01f);
+        printf("Trasnlacion %f", lightTranslation);
+        if(lightTranslation > 5.0f){
+            lightTranslationCoef = -1.0f;
+        }
+        if(lightTranslation < -5.0f){
+            lightTranslationCoef = 1.0f;
+        }
         // Rotate Mesh
-//        sceneObject.m_transform->setRotation( rotation, 0.0f, 0.0f);
-//        sceneObject.m_transform->refreshTRS();
+//        meshObject.m_transform->setRotation( 2.0f, rotation, 0.0f);
+//        meshObject.m_transform->refreshTRS();
 //        rotation += 0.1/60;
 
         glClearColor(1.0f, 0, 0 ,1.0f);
@@ -91,8 +105,11 @@ void RenderPass::execute() {
 
         // MY CODE!
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
-        float* lightvec = light->getDirection();
-        shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
+        //float* lightvec = light->getDirection();
+        //shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
+        float* lightPosition = light->getPosition();
+        printf("LightPosition: %f %f %f\n", lightPosition[0], lightPosition[1], lightPosition[2]);
+        shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
         printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
         Matrix4x4* m = meshObject.getPosition();

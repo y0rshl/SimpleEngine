@@ -1,0 +1,20 @@
+#version 330 core
+
+// uniform vec3 lightDirectional;
+uniform vec3 lightPosition;
+uniform vec4 outColor;
+uniform sampler2D u_texture;
+
+in vec3 fragVertex;
+in vec2 UV;
+// Normal de la superficice
+in vec3 normal;
+
+// Ouput data
+out vec4 color;
+
+void main()
+{
+	vec3 lightDirectional = fragVertex - lightPosition;
+	color =  dot(normal, lightDirectional) * texture(u_texture,UV);
+}

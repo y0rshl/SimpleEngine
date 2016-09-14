@@ -14,11 +14,13 @@ layout(location = 2) in vec3 vertexNormal;
 // Coordenadas de textura
 out vec2 UV;
 out vec3 normal;
+out vec3 fragVertex;
 
 void main(){
     gl_Position.w = 1.0;
     UV = vertexUV;
     gl_Position = mvp * vec4(vertexPosition_modelspace.xyz, 1.0);
+    fragVertex = gl_Position.xyz;
     normal = (m * vec4(vertexNormal, 0)).xyz;
 }
 
