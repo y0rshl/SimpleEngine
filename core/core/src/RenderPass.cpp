@@ -32,19 +32,36 @@ using namespace glm;
 void RenderPass::execute() {
 
     initContext();
-    glCullFace(GL_BACK);
+//    glFrontFace(GL_CCW);
+//    glCullFace(GL_BACK);
+//    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
 //    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("VertexShader.vertexshader", "PhongPointLightFragmentShader.fragmentshader");
     shared_ptr<Mesh> mesh = Mesh::createBox();
+    shared_ptr<Mesh> mesh2 = Mesh::createBox();
+    shared_ptr<Mesh> mesh3 = Mesh::createBox();
 
     SceneObject meshObject;
-    meshObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
-    meshObject.m_transform->setRotation( 0.0f, 2.0f, -2.0f);
+    meshObject.m_transform->setPosition( -2.0f, 0.0f, 0.0f);
+    meshObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
     meshObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     meshObject.m_transform->refreshTRS();
 
-    SceneObject sceneObject;
+    SceneObject meshObject2;
+    meshObject2.m_transform->setPosition( 2.0f, 0.0f, 0.0f);
+    meshObject2.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
+    meshObject2.m_transform->setScale( 1.0f, 1.0f, 1.0f);
+    meshObject2.m_transform->refreshTRS();
 
+    SceneObject meshObject3;
+    meshObject3.m_transform->setPosition( 2.0f, 0.0f, 0.0f);
+    meshObject3.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
+    meshObject3.m_transform->setScale( 0.25f, 0.25f, 0.25f);
+    meshObject3.m_transform->refreshTRS();
+
+    SceneObject sceneObject;
     sceneObject.m_transform->setPosition( 0.0f, 0.0f, 10.0f);
     sceneObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
     sceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
@@ -81,24 +98,13 @@ void RenderPass::execute() {
     float lightTranslationCoef = 1.0f;
     float lightTranslation = -5.0f;
     do{
-//      Move PointLight
-        lightSceneObject.m_transform->setRotation( lightTranslation, 0, 0.0f);
-        lightSceneObject.m_transform->refreshTRS();
-        lightTranslation += (lightTranslationCoef*0.01f);
-        printf("Trasnlacion %f", lightTranslation);
-        if(lightTranslation > 5.0f){
-            lightTranslationCoef = -1.0f;
-        }
-        if(lightTranslation < -5.0f){
-            lightTranslationCoef = 1.0f;
-        }
         // Rotate Mesh
-//        meshObject.m_transform->setRotation( 2.0f, rotation, 0.0f);
-//        meshObject.m_transform->refreshTRS();
-//        rotation += 0.1/60;
+        meshObject.m_transform->setRotation( 0.0f, rotation, 0.0f);
+        meshObject.m_transform->refreshTRS();
+        rotation += 0.1/60;
 
-        glClearColor(1.0f, 0, 0 ,1.0f);
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor(1.0f, 1.0f, 1.0f ,1.0f);
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         printf("Set up shader... ");
         // Use our shader
         shaderProgram->use();
@@ -108,8 +114,19 @@ void RenderPass::execute() {
         //float* lightvec = light->getDirection();
         //shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
         float* lightPosition = light->getPosition();
+        //      Move PointLight
+        lightSceneObject.m_transform->setPosition(lightTranslation, 2.0f, 0.0f);
+        lightSceneObject.m_transform->refreshTRS();
+        lightTranslation += (lightTranslationCoef*0.01f);
+        printf("Trasnlacion %f", lightTranslation);
+        if(lightTranslation > 5.0f){
+            lightTranslationCoef = -1.0f;
+        }
+        if(lightTranslation < -5.0f){
+            lightTranslationCoef = 1.0f;
+        }
         printf("LightPosition: %f %f %f\n", lightPosition[0], lightPosition[1], lightPosition[2]);
-        shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
+        shaderProgram->setVec3("lightPosition", lightTranslation, 10.0f, 0.0f);
         printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
         Matrix4x4* m = meshObject.getPosition();
@@ -143,6 +160,44 @@ void RenderPass::execute() {
 
 
         mesh->draw();
+
+
+        // Define MVP matrixes
+        Matrix4x4* m2 = meshObject2.getPosition();
+        Matrix4x4* v2 = camera->getViewMatrix();
+        Matrix4x4* p2 = camera->getProjectionMatrix();
+
+        printf("MPV Created!!!\nMultiply Matrixes... ");
+        // Multiply Matrixes
+        Matrix4x4* aux2 = p2->operator*(*v2);
+        aux2 = aux2->operator*(*m2);
+        printf("Multipy ready!!!\nSet shader matrix... ");
+        // Set matrix in shader Program
+        shaderProgram->setMat4("mvp", *aux2);
+        shaderProgram->setMat4("m", *m2);
+        mesh2->draw();
+
+
+
+        meshObject3.m_transform->setPosition(lightTranslation, 2.0f, 0.0f);
+        meshObject3.m_transform->refreshTRS();
+        // Define MVP matrixes
+        Matrix4x4* m3 = meshObject3.getPosition();
+        Matrix4x4* v3 = camera->getViewMatrix();
+        Matrix4x4* p3 = camera->getProjectionMatrix();
+
+        printf("MPV Created!!!\nMultiply Matrixes... ");
+        // Multiply Matrixes
+        Matrix4x4* aux3 = p3->operator*(*v3);
+        aux3 = aux3->operator*(*m3);
+        printf("Multipy ready!!!\nSet shader matrix... ");
+        // Set matrix in shader Program
+        shaderProgram->setMat4("mvp", *aux3);
+        shaderProgram->setMat4("m", *m3);
+        mesh3->draw();
+
+
+
 
 //        // Draw the triangle !
 //        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle

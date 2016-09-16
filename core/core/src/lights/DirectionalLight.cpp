@@ -21,7 +21,7 @@ float* DirectionalLight::getDirection(){
     cam = this->owner.lock();
     sceneObject = cam.get();
     m = sceneObject->getPosition();
-    float vec[] = {1, 0, 0, 0};
+    float vec[] = {0, 0, 1, 0};
     float* ans = m->vecRightMultiplyOperator(vec);
     float aux = sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]);
     ans[0] = ans[0]/aux;

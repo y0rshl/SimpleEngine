@@ -21,7 +21,7 @@ float* PointLight::getPosition() {
     cam = this->owner.lock();
     sceneObject = cam.get();
     m = sceneObject->getPosition();
-    float vec[] = {0, 0, 1, 0};
+    float vec[] = {0, 0, 0, 1};
     float* ans = m->vecRightMultiplyOperator(vec);
     return ans;
 }
