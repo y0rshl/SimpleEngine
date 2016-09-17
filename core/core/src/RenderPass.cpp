@@ -51,7 +51,7 @@ void RenderPass::execute() {
 
     SceneObject meshObject2;
     meshObject2.m_transform->setPosition( 2.0f, 0.0f, 0.0f);
-    meshObject2.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
+    meshObject2.m_transform->setRotation( 1.0f, 1.0f, 1.0f);
     meshObject2.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     meshObject2.m_transform->refreshTRS();
 
@@ -103,9 +103,9 @@ void RenderPass::execute() {
         meshObject.m_transform->refreshTRS();
         rotation += 0.1/60;
 
-        glClearColor(1.0f, 1.0f, 1.0f ,1.0f);
+        glClearColor(1.0f, 0.0f, 0.0f ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        printf("Set up shader... ");
+//        printf("Set up shader... ");
         // Use our shader
         shaderProgram->use();
 
@@ -118,7 +118,6 @@ void RenderPass::execute() {
         lightSceneObject.m_transform->setPosition(lightTranslation, 2.0f, 0.0f);
         lightSceneObject.m_transform->refreshTRS();
         lightTranslation += (lightTranslationCoef*0.01f);
-        printf("Trasnlacion %f", lightTranslation);
         if(lightTranslation > 5.0f){
             lightTranslationCoef = -1.0f;
         }
@@ -126,23 +125,23 @@ void RenderPass::execute() {
             lightTranslationCoef = 1.0f;
         }
         printf("LightPosition: %f %f %f\n", lightPosition[0], lightPosition[1], lightPosition[2]);
-        shaderProgram->setVec3("lightPosition", lightTranslation, 10.0f, 0.0f);
-        printf("Shader Ready!!!\nCreate MVP... ");
+        shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
+//        printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
         Matrix4x4* m = meshObject.getPosition();
         Matrix4x4* v = camera->getViewMatrix();
         Matrix4x4* p = camera->getProjectionMatrix();
 
-        printf("MPV Created!!!\nMultiply Matrixes... ");
+//        printf("MPV Created!!!\nMultiply Matrixes... ");
         // Multiply Matrixes
         Matrix4x4* aux = p->operator*(*v);
         aux = aux->operator*(*m);
-        printf("Multipy ready!!!\nSet shader matrix... ");
+//        printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
         shaderProgram->setMat4("mvp", *aux);
         shaderProgram->setMat4("m", *m);
 
-        printf("Shader Matrix ready!!!\n");
+//        printf("Shader Matrix ready!!!\n");
 
 
 //        MASTER CODE
@@ -167,16 +166,13 @@ void RenderPass::execute() {
         Matrix4x4* v2 = camera->getViewMatrix();
         Matrix4x4* p2 = camera->getProjectionMatrix();
 
-        printf("MPV Created!!!\nMultiply Matrixes... ");
-        // Multiply Matrixes
+      // Multiply Matrixes
         Matrix4x4* aux2 = p2->operator*(*v2);
         aux2 = aux2->operator*(*m2);
-        printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
         shaderProgram->setMat4("mvp", *aux2);
         shaderProgram->setMat4("m", *m2);
         mesh2->draw();
-
 
 
         meshObject3.m_transform->setPosition(lightTranslation, 2.0f, 0.0f);
@@ -186,11 +182,9 @@ void RenderPass::execute() {
         Matrix4x4* v3 = camera->getViewMatrix();
         Matrix4x4* p3 = camera->getProjectionMatrix();
 
-        printf("MPV Created!!!\nMultiply Matrixes... ");
         // Multiply Matrixes
         Matrix4x4* aux3 = p3->operator*(*v3);
         aux3 = aux3->operator*(*m3);
-        printf("Multipy ready!!!\nSet shader matrix... ");
         // Set matrix in shader Program
         shaderProgram->setMat4("mvp", *aux3);
         shaderProgram->setMat4("m", *m3);
