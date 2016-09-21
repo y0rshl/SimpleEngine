@@ -1,0 +1,23 @@
+#version 330 core
+
+uniform vec4 outColor;
+//Representa una direccion, el ultimo elemento del vector es 0
+uniform vec4 dirLight;
+uniform sampler2D u_texture;
+
+in vec2 UV;
+in vec4 normalW; //Normal en coordenadas mundo
+
+// Ouput data
+out vec4 color;
+
+void main()
+{
+
+	//----Calculo de la difusa
+	vec4 dirL = -1 * dirLight; //queremos la maxima iluminancia
+	float intensidad = dot(normalize(normalW),normalize(dirL));
+	color = intensidad * texture(u_texture,UV);
+
+
+}
