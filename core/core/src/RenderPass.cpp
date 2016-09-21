@@ -33,8 +33,9 @@ void RenderPass::execute() {
     initContext();
 
     //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DifusaDirectionalFragmentShader.fragmentshader");
-
+    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
+//    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SpotLightFragmentShader.fragmentshader");
+//    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("PointLightFragmentShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 

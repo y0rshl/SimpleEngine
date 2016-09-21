@@ -52,13 +52,15 @@ set(SOURCE_FILES
         core/core/src/shader.cpp
         core/core/test/MatrixTest.cpp core/core/test/MatrixTest.hpp core/core/test/JsonTest.cpp core/core/test/JsonTest.hpp core/core/test/SceneObjectTest.cpp core/core/test/SceneObjectTest.hpp core/core/src/Component.cpp core/core/sdk/Component.hpp core/core/src/RenderPass.cpp core/core/sdk/RenderPass.hpp core/core/src/MeshRenderer.cpp core/core/sdk/MeshRenderer.h core/core/src/Camera.cpp core/core/sdk/Camera.h core/core/src/PerspectiveCamera.cpp core/core/sdk/PerspectiveCamera.hpp core/core/src/OrthographicCamera.cpp core/core/sdk/OrthographicCamera.hpp
         core/core/src/shaders/SimpleVertexShader.vertexshader
-        core/core/src/shaders/SimpleFragmentShader.fragmentshader core/core/src/ShaderProgram.cpp core/core/src/ShaderProgram.hpp core/core/src/Texture.cpp core/core/sdk/Texture.hpp core/core/src/Light.cpp core/core/sdk/Light.hpp core/core/src/DirectionalLight.cpp core/core/sdk/DirectionalLight.hpp core/core/src/Vec4.cpp core/core/sdk/Vec4.hpp core/core/src/SpotLight.cpp core/core/sdk/SpotLight.hpp)
+        core/core/src/shaders/SimpleFragmentShader.fragmentshader core/core/src/ShaderProgram.cpp core/core/src/ShaderProgram.hpp core/core/src/Texture.cpp core/core/sdk/Texture.hpp core/core/src/Light.cpp core/core/sdk/Light.hpp core/core/src/DirectionalLight.cpp core/core/sdk/DirectionalLight.hpp core/core/src/Vec4.cpp core/core/sdk/Vec4.hpp core/core/src/SpotLight.cpp core/core/sdk/SpotLight.hpp core/core/src/PointLight.cpp core/core/sdk/PointLight.hpp)
 
 
 message(STATUS "Copy resources")
 configure_file(core/core/src/shaders/SimpleVertexShader.vertexshader SimpleVertexShader.vertexshader COPYONLY)
 configure_file(core/core/src/shaders/SimpleFragmentShader.fragmentshader SimpleFragmentShader.fragmentshader COPYONLY)
-configure_file(core/core/src/shaders/DifusaDirectionalFragmentShader.fragmentshader DifusaDirectionalFragmentShader.fragmentshader COPYONLY)
+configure_file(core/core/src/shaders/DirectionalFragmentShader.fragmentshader DirectionalFragmentShader.fragmentshader COPYONLY)
+configure_file(core/core/src/shaders/SpotLightFragmentShader.fragmentshader SpotLightFragmentShader.fragmentshader COPYONLY)
+configure_file(core/core/src/shaders/PointLightFragmentShader.fragmentshader PointLightFragmentShader.fragmentshader COPYONLY)
 configure_file(core/core/src/textures/uvtemplate.bmp uvtemplate.bmp COPYONLY)
 
 
