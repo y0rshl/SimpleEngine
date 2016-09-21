@@ -95,7 +95,6 @@ void RenderPass::execute() {
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
         shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
         //Le paso la normal de cada vertice para calcular la intesidad de la luz
-        //TODO normalizar cada vertice con norma2
         shaderProgram->setVec4("normal", 0,0,-1,0);
 
 /*        camSceneObject->m_transform->set_rotation(rx, 0.0f, 0.0f);

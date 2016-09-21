@@ -17,7 +17,8 @@ Vec4 Light::getDirLight () {
     SceneObject *so = light.get();
     Matrix4x4 *trs = so->getPosition();
 
-    return trs->multVec4(this->vec4);
+    Vec4 vec = trs->multVec4(this->vec4);
+    return vec.normalize();
 }
 
 void Light::update (double dt) {

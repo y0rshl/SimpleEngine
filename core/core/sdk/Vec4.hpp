@@ -15,6 +15,7 @@ public:
 
     float * getValues();
 
+    Vec4 normalize ();
 };
 
 
