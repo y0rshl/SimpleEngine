@@ -9,7 +9,7 @@ Light::Light () {
 
 }
 
-float *Light::getDirLight () {
+Vec4 Light::getDirLight () {
     //Muliplico TRS * (0,0,1)
     shared_ptr<SceneObject> light;
 

@@ -11,14 +11,14 @@
 class Light : public Component {
 
 protected:
-    float vec4[4] = {0,0,1,0};
+    Vec4 vec4 = Vec4(new float[4]{0,0,1,0});
 
 public:
 
     Light();
     void update(double dt);
 
-    float* getDirLight();
+    Vec4 getDirLight();
 };
 
 

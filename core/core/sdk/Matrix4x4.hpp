@@ -9,6 +9,7 @@
 #ifndef Matrix4x4_hpp
 #define Matrix4x4_hpp
 
+#include "Vec4.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory>
@@ -34,10 +35,11 @@ public:
     static Matrix4x4 makeRotationMatrix(float rx, float ry, float rz);
     static Matrix4x4* makeTRSMatrix(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
 
-    float* multVec4(float * vec4);
+    Vec4 multVec4(Vec4 vec4);
 
     std::string toString();
 private:
+    float* multVec4(float * vec4);
     float matrix[16];
 };
 #endif /* Matrix4x4_hpp */

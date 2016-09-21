@@ -47,8 +47,8 @@ int main( int argc, const char* argv[] )
      * Test SceneObjectTree
      */
 
-    SceneObjectTest* sceneObjectTest = new SceneObjectTest;
-    sceneObjectTest->testSceneTree();
+//    SceneObjectTest* sceneObjectTest = new SceneObjectTest;
+//    sceneObjectTest->testSceneTree();
 
     /**
      * Test json

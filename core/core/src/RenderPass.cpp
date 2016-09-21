@@ -84,7 +84,7 @@ void RenderPass::execute() {
         Matrix4x4* v = oc->getViewMatrix();
         Matrix4x4* p = oc->getProjectionMatrix();
 
-        float* dirLight = dl->getDirLight();
+        Vec4 dirLight = dl->getDirLight();
 
         Matrix4x4* vm = (*v)*(*m);
         //Es column major por eso es pvm
@@ -93,7 +93,7 @@ void RenderPass::execute() {
         shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
-        shaderProgram->setVec4("dirLight", dirLight[0], dirLight[1], dirLight[2], dirLight[3]);
+        shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
         //Le paso la normal de cada vertice para calcular la intesidad de la luz
         //TODO normalizar cada vertice con norma2
         shaderProgram->setVec4("normal", 0,0,-1,0);

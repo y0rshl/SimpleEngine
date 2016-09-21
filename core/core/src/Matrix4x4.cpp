@@ -148,6 +148,12 @@ float* Matrix4x4::multVec4(float * vec4){
 
 }
 
+Vec4 Matrix4x4::multVec4(Vec4 vec4){
+    float* vec = multVec4(vec4.getValues());
+
+    return Vec4(vec);
+}
+
 
 std::string Matrix4x4::toString() {
     std::string str;
