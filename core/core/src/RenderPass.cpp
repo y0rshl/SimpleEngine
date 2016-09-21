@@ -126,6 +126,9 @@ void RenderPass::execute() {
         }
         printf("LightPosition: %f %f %f\n", lightPosition[0], lightPosition[1], lightPosition[2]);
         shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
+        float* cameraPosition = camera->getPosition();
+        printf("CameraPosition: %f %f %f\n", cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+        shaderProgram->setVec3("cameraPosition", cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 //        printf("Shader Ready!!!\nCreate MVP... ");
         // Define MVP matrixes
         Matrix4x4* m = meshObject.getPosition();

@@ -14,6 +14,7 @@ public:
     void update(double dt);
     Matrix4x4* getViewMatrix();
     virtual Matrix4x4* getProjectionMatrix() = 0;
+    float* getPosition();
 };
 
 #endif //SIMPLEENGINE_CAMERACOMPONENT_H
