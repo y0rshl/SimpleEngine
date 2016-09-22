@@ -11,6 +11,7 @@ private:
     float vec[4];
 
 public:
+    Vec4(float x, float y, float z, float w);
     Vec4(float* values);
 
     float * getValues();

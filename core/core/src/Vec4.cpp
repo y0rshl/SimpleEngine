@@ -20,3 +20,10 @@ Vec4 Vec4::normalize () {
     float norm = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2] + vec[3] * vec[3]);
     return Vec4(new float[4]{vec[0]/norm,vec[1]/norm,vec[2]/norm,vec[3]/norm});;
 }
+
+Vec4::Vec4 (float x , float y , float z , float w) {
+    vec[0] = x;
+    vec[1] = y;
+    vec[2] = z;
+    vec[3] = w;
+}

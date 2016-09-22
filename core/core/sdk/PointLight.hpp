@@ -11,12 +11,10 @@
 class PointLight : public Light {
 
 public:
-    PointLight(Vec4 vec);
+    PointLight();
 
-    Vec4 getPosition();
+    Vec4 getPosition(); //un punto
 
-private:
-    Vec4 vec = 0;
 };
 
 

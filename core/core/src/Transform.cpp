@@ -42,3 +42,7 @@ void Transform::set_TRS(Matrix4x4* TRS){
 void Transform::refreshTRS(){
     this->TRS = TRS->makeTRSMatrix(x,y,z,rx,ry,rz,sx,sy,sz);
 }
+
+Vec4 Transform::get_position(){
+    return Vec4(x,y,z,0);
+}

@@ -1,0 +1,21 @@
+#version 330 core
+
+uniform vec4 outColor;
+uniform sampler2D u_texture;
+uniform vec4 position;
+
+in vec2 UV;
+in vec4 normalW; //Normal en coordenadas mundo
+in vec4 fragPosition; //posicion del fragmento en coordenadas mundo
+
+// Ouput data
+out vec4 color;
+
+void main()
+{
+	//----Calculo de la difusa
+	vec4 dirL = position - fragPosition;
+	float intensidad = dot(normalize(normalW),normalize(dirL));
+	color = intensidad * texture(u_texture,UV);
+
+}

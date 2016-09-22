@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include "Matrix4x4.hpp"
+#include "Vec4.hpp"
 
 class Transform {
     
@@ -35,6 +36,8 @@ public:
     void set_rotation(float rx, float ry, float rz);
 
     void set_scale(float sx, float sy, float sz);
+
+    Vec4 get_position();
 
     void refreshTRS();
 };

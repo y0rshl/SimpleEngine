@@ -3,21 +3,21 @@
 //
 
 #include "PointLight.hpp"
+#include <core/core/sdk/SceneObject.hpp>
 
-PointLight::PointLight (Vec4 vec) {
-    this->vec = vec;
+PointLight::PointLight () {
+
 }
-
 
 Vec4 PointLight::getPosition () {
-    //Muliplico TRS * (0,0,1)
-//    shared_ptr<SceneObject> light;
-//
-//    light = this->owner.lock();
-//    SceneObject *so = light.get();
-//    Matrix4x4 *trs = so->getPosition();
-//
-//    Vec4 vec = trs->multVec4(this->vec4);
-//    return vec.normalize(); //TODO el vector de posicion tambien va normalizado?
+    shared_ptr<SceneObject> light;
+
+    light = this->owner.lock();
+    SceneObject *so = light.get();
+
+    shared_ptr<Transform> t = so->m_transform;
+    return t.get()->get_position();
 }
+
+
 
