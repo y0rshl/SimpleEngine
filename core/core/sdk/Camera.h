@@ -21,6 +21,8 @@ public:
     //void setSO(SceneObject so);
 
     Matrix4x4* getViewMatrix();
+
+    Vec4 getPosition(); //un punto
 };
 
 
