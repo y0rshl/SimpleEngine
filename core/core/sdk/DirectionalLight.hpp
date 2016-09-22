@@ -10,11 +10,11 @@
 class DirectionalLight : public Light {
 
 protected:
-//    Vec4 vec4 = Vec4(new float[4]{0,0,1,0});
+    Vec4 vec4 = Vec4(new float[4]{0,0,1,0});
 
 public:
     DirectionalLight();
-//    Vec4 getDirLight(); TODO: me tira un error en el so->getPosition();
+    Vec4 getDirLight();
 };
 
 

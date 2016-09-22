@@ -10,15 +10,11 @@
 
 class Light : public Component {
 
-protected:
-    Vec4 vec4 = Vec4(new float[4]{0,0,1,0});
-
 public:
 
     Light();
     void update(double dt);
 
-    Vec4 getDirLight();
 };
 
 

@@ -3,11 +3,12 @@
 //
 
 #include "DirectionalLight.hpp"
+#include <core/core/sdk/SceneObject.hpp>
 
 DirectionalLight::DirectionalLight() {
 }
 
-/*Vec4 DirectionalLight::getDirLight () {
+Vec4 DirectionalLight::getDirLight () {
     //Muliplico TRS * (0,0,1)
     shared_ptr<SceneObject> light;
 
@@ -16,5 +17,5 @@ DirectionalLight::DirectionalLight() {
     Matrix4x4 *trs = so->getPosition();
 
     return trs->multVec4(this->vec4);
-}*/
+}
 
