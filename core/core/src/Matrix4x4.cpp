@@ -90,7 +90,6 @@ float* Matrix4x4::vecRightMultiplyOperator(const float vec[]){
     // TODO: Check vec size to avoid errors
     float* ans = new float[4];
     float* m1 = this->matrix;
-    printf("%f %f\n", ans[0], m1[0]);
     ans[0] = m1[0]*vec[0] + m1[4]*vec[1] + m1[8]*vec[2] + m1[12]*vec[3];
     ans[1] = m1[1]*vec[0] + m1[5]*vec[1] + m1[9]*vec[2] + m1[13]*vec[3];
     ans[2] = m1[2]*vec[0] + m1[6]*vec[1] + m1[10]*vec[2] + m1[14]*vec[3];

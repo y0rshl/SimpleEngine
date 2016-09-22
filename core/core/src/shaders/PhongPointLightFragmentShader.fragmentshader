@@ -5,6 +5,8 @@ uniform vec3 lightPosition;
 uniform vec3 cameraPosition;
 uniform vec4 outColor;
 uniform sampler2D u_texture;
+uniform sampler2D u_specularMap;
+uniform sampler2D u_normalMap;
 
 in vec3 fragVertex;
 in vec2 UV;
@@ -20,7 +22,7 @@ void main()
     vec3 cameraDirection = normalize(cameraPosition - fragVertex);
 	vec3 lightDirectional = normalize(lightPosition - fragVertex);
 	vec3 reflectDirection = reflect(-lightDirectional, normal);
-	float spec = pow(max(dot(cameraDirection, reflectDirection), 0.0), 32);
+	float spec = pow(max(dot(cameraDirection, reflectDirection), 0.0), texture(u_specularMap, UV).r*255);
 	float specular = specularStrength * spec;
 	float diffuse = dot(normal, lightDirectional);
 	color = (specular + diffuse) * texture(u_texture,UV);

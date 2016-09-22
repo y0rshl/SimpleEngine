@@ -62,6 +62,11 @@ configure_file(core/core/src/shaders/PhongPointLightFragmentShader.fragmentshade
 configure_file(core/core/src/shaders/SimpleVertexShader.vertexshader SimpleVertexShader.vertexshader COPYONLY)
 configure_file(core/core/src/shaders/SimpleFragmentShader.fragmentshader SimpleFragmentShader.fragmentshader COPYONLY)
 configure_file(core/core/src/textures/uvtemplate.bmp uvtemplate.bmp COPYONLY)
+configure_file(core/core/src/textures/diffuse.bmp diffuse.bmp COPYONLY)
+configure_file(core/core/src/textures/grey_diffuse.bmp grey_diffuse.bmp COPYONLY)
+configure_file(core/core/src/textures/specular.bmp specular.bmp COPYONLY)
+configure_file(core/core/src/textures/normal.bmp normal.bmp COPYONLY)
+
 
 
 add_executable(SimpleEngine ${SOURCE_FILES})

@@ -70,7 +70,7 @@ void RenderPass::execute() {
 
     SceneObject lightSceneObject;
 
-    lightSceneObject.m_transform->setPosition( -5.0f, 0.0f, 0.0f);
+    lightSceneObject.m_transform->setPosition( -5.0f, 0.0f, 10.0f);
     lightSceneObject.m_transform->setRotation( 3.0f/2, 0.0f, 0.0f);
     lightSceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
     lightSceneObject.m_transform->refreshTRS();
@@ -83,16 +83,16 @@ void RenderPass::execute() {
     OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
 
     // Lights
-    shared_ptr<SceneObject> sharedPtrLightOwner = make_shared<SceneObject>(lightSceneObject);
+    shared_ptr<SceneObject> sharedPtrLightOwner = make_shared<SceneObject>(meshObject3);
     weak_ptr<SceneObject> weakPtrLightOwner(sharedPtrLightOwner);
     //DirectionalLight* light = new DirectionalLight(weakPtrLightOwner);
     PointLight* light = new PointLight(weakPtrLightOwner);
     printf("Before Do while\n");
 
     //Create Texture
-    shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
-    // Get a handle for our "myTextureSampler" uniform
-    GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
+    shared_ptr<Texture> texture = Texture::loadBMP("grey_diffuse.bmp");
+    shared_ptr<Texture> specularTexture = Texture::loadBMP("specular.bmp");
+    shared_ptr<Texture> normalTexture = Texture::loadBMP("normal.bmp");
 
     float rotation = 0.0f;
     float lightTranslationCoef = 1.0f;
@@ -110,22 +110,15 @@ void RenderPass::execute() {
         shaderProgram->use();
 
         // MY CODE!
+        texture->bind(0);
+        shaderProgram->setInt("u_texture", 0);
+        specularTexture->bind(1);
+        shaderProgram->setInt("u_specularMap", 1);
+        normalTexture->bind(2);
+        shaderProgram->setInt("u_normalMap", 2);
+
         shaderProgram->setVec4("outColor", 1, 0, 1, 1);
-        //float* lightvec = light->getDirection();
-        //shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
-        float* lightPosition = light->getPosition();
-        //      Move PointLight
-        lightSceneObject.m_transform->setPosition(lightTranslation, 2.0f, 0.0f);
-        lightSceneObject.m_transform->refreshTRS();
-        lightTranslation += (lightTranslationCoef*0.01f);
-        if(lightTranslation > 5.0f){
-            lightTranslationCoef = -1.0f;
-        }
-        if(lightTranslation < -5.0f){
-            lightTranslationCoef = 1.0f;
-        }
-        printf("LightPosition: %f %f %f\n", lightPosition[0], lightPosition[1], lightPosition[2]);
-        shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
+
         float* cameraPosition = camera->getPosition();
         printf("CameraPosition: %f %f %f\n", cameraPosition[0], cameraPosition[1], cameraPosition[2]);
         shaderProgram->setVec3("cameraPosition", cameraPosition[0], cameraPosition[1], cameraPosition[2]);
@@ -153,11 +146,6 @@ void RenderPass::execute() {
 //        shaderProgram->setMat4("mvp", scale);
 //        shaderProgram->setVec4("outColor", 1, 1, 1, 1);
 //
-//        // Bind our texture in Texture Unit 0
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, texture->texture_id);
-//        // Set our "myTextureSampler" sampler to user Texture Unit 0
-//        glUniform1i(TextureID, 0);
 
 
 
@@ -178,8 +166,24 @@ void RenderPass::execute() {
         mesh2->draw();
 
 
-        meshObject3.m_transform->setPosition(lightTranslation, 2.0f, 0.0f);
+        //float* lightvec = light->getDirection();
+        //shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
+        float* lightPosition = light->getPosition();
+        //      Move PointLight
+        meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 8.0f);
         meshObject3.m_transform->refreshTRS();
+        lightTranslation += (lightTranslationCoef*0.01f);
+        if(lightTranslation > 5.0f){
+            lightTranslationCoef = -1.0f;
+        }
+        if(lightTranslation < -5.0f){
+            lightTranslationCoef = 1.0f;
+        }
+        printf("LightPosition: %f %f %f\n", lightPosition[0], lightPosition[1], lightPosition[2]);
+        shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
+
+//        meshObject3.m_transform->setPosition(lightTranslation, 2.0f, 0.0f);
+//        meshObject3.m_transform->refreshTRS();
         // Define MVP matrixes
         Matrix4x4* m3 = meshObject3.getPosition();
         Matrix4x4* v3 = camera->getViewMatrix();

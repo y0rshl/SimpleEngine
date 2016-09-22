@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include <stdio.h>
-
+#include <iostream>
 
 
 shared_ptr<Texture> Texture::loadBMP(const char * imagepath){
@@ -68,10 +68,10 @@ shared_ptr<Texture> Texture::loadBMP(const char * imagepath){
     fclose (file);
 
     // Create one OpenGL texture
-    glGenTextures(1, &texture->texture_id);
+    glGenTextures(1, &texture->m_textureId);
 
     // "Bind" the newly created texture : all future texture functions will modify this texture
-    glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture->m_textureId);
 
     // Give the image to OpenGL
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
@@ -93,3 +93,11 @@ shared_ptr<Texture> Texture::loadBMP(const char * imagepath){
     // Return the ID of the texture we just created
     return texture;
 }
+
+void Texture::bind(GLuint location) {
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0 + location);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, m_textureId);
+}
+

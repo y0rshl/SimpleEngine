@@ -172,6 +172,65 @@ shared_ptr<Mesh> Mesh::createBox() {
 
     };
 
+    static const GLfloat g_edges_and_uv[] = {
+            0.0f, 0.0f, 2.0f,
+            0.0f, 2.0f, 0.0f,
+            
+            -1.0f,-1.0f,-1.0f,
+            -1.0f,-1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+
+            1.0f, 1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f,-1.0f,
+
+            1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+
+            1.0f, 1.0f,-1.0f,
+            1.0f,-1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f,-1.0f,
+
+            1.0f,-1.0f, 1.0f, //15
+            -1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f,-1.0f,
+
+            -1.0f, 1.0f, 1.0f, //18
+            -1.0f,-1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f,
+
+            1.0f, 1.0f, 1.0f, //21
+            1.0f,-1.0f,-1.0f,
+            1.0f, 1.0f,-1.0f,
+
+            1.0f,-1.0f,-1.0f, //24
+            1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f,
+
+            1.0f, 1.0f, 1.0f, //27
+            1.0f, 1.0f,-1.0f,
+            -1.0f, 1.0f,-1.0f,
+
+            1.0f, 1.0f, 1.0f, //30
+            -1.0f, 1.0f,-1.0f,
+            -1.0f, 1.0f, 1.0f,
+
+            1.0f, 1.0f, 1.0f, //33
+            -1.0f, 1.0f, 1.0f,
+            1.0f,-1.0f, 1.0f
+    };
+
+    static const GLfloat g_tangent_data[] = {};
+
+    static const GLfloat g_bitangent_data[] = {
+
+    };
+
     //create vbo
     glGenBuffers(1, &mesh->m_positionBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, mesh->m_positionBuffer);
