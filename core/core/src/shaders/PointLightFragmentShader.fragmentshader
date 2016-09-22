@@ -2,7 +2,8 @@
 
 uniform vec4 outColor;
 uniform sampler2D u_texture;
-uniform vec4 position;
+uniform vec4 positionLight;
+uniform vec4 positionCam;
 
 in vec2 UV;
 in vec4 normalW; //Normal en coordenadas mundo
@@ -14,8 +15,18 @@ out vec4 color;
 void main()
 {
 	//----Calculo de la difusa
-	vec4 dirL = position - fragPosition;
-	float intensidad = dot(normalize(normalW),normalize(dirL));
-	color = intensidad * texture(u_texture,UV);
+	vec4 dirL = normalize(positionLight - fragPosition);
+	float diff = dot(normalize(normalW),normalize(dirL));
+
+	//----Calculo de especular
+	float m_shi = 10.0f;
+	float m_spec = 1.0f;
+	vec4 dirCam = normalize(positionCam - fragPosition);
+	vec4 r = -dirL + 2 * dot(normalW,dirL) * normalW;
+	float spec = max(0.0,pow(dot(r,dirCam),m_shi))*m_spec;
+
+	color = diff * texture(u_texture,UV);
+	//	color = vec4(0,0,diff,1);
+	color = vec4(0,0,spec,1);
 
 }
