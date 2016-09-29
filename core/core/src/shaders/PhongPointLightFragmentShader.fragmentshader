@@ -8,10 +8,10 @@ uniform sampler2D u_texture;
 uniform sampler2D u_specularMap;
 uniform sampler2D u_normalMap;
 
-in vec3 fragVertex;
 in vec2 UV;
 // Normal de la superficice
 in vec3 normal;
+in vec3 fragVertex;
 
 // Ouput data
 out vec4 color;
