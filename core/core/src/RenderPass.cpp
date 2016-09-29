@@ -34,8 +34,8 @@ void RenderPass::execute() {
     initContext();
 
     //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-//    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
-    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
+//    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 
@@ -66,16 +66,18 @@ void RenderPass::execute() {
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    lightSceneObject->m_transform->set_position(1.0f, 0.0f, 0.0f);
+    lightSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
     lightSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
     lightSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
     lightSceneObject->m_transform->refreshTRS();
 
- //   shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>();
- //   lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
+    //Directional Light
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>();
+    lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
-    shared_ptr<PointLight> pl = make_shared<PointLight>();
-    lightSceneObject->addComponent(static_pointer_cast<Component>(pl));
+    //Point Light
+ //   shared_ptr<PointLight> pl = make_shared<PointLight>();
+ //   lightSceneObject->addComponent(static_pointer_cast<Component>(pl));
 
     float y = 0.1f;
     do{
@@ -91,10 +93,10 @@ void RenderPass::execute() {
         Matrix4x4* p = oc->getProjectionMatrix();
 
         //Direccion de la luz en directionalLight
-       // Vec4 dirLight = dl->getDirLight();
+        Vec4 dirLight = dl->getDirLight();
 
         //Posicion de la luz en pointLight
-        Vec4 lightPosition = pl->getPosition();
+        //Vec4 lightPosition = pl->getPosition();
         //Posicion de la camara
         Vec4 camPosition = oc->getPosition();
 
@@ -105,14 +107,14 @@ void RenderPass::execute() {
         shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
-     //   shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
-        shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
+        shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
+     //   shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
         shaderProgram->setVec4("positionCam", camPosition.getValues()[0], camPosition.getValues()[1], camPosition.getValues()[2], camPosition.getValues()[3]);
         //Le paso la normal de cada vertice para calcular la intesidad de la luz
         shaderProgram->setVec4("normal", 0,0,-1,0);
 
-        lightSceneObject->m_transform->set_position(1.0f, y, 0.0f);
-        y += 0.01f;
+  //     lightSceneObject->m_transform->set_position(y, 0.0f, 10.0f);
+  //     y += 0.01f;
 
 /*        camSceneObject->m_transform->set_position(x, 0.0f, 0.0f);
         camSceneObject->m_transform->refreshTRS();
