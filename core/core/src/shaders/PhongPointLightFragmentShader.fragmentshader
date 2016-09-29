@@ -18,7 +18,7 @@ out vec4 color;
 
 void main()
 {
-    float specularStrength = 1.5f;
+    float specularStrength = 1.0f;
     vec3 cameraDirection = normalize(cameraPosition - fragVertex);
 	vec3 lightDirectional = normalize(lightPosition - fragVertex);
 	vec3 reflectDirection = reflect(-lightDirectional, normal);
