@@ -19,14 +19,15 @@ void main()
 	float diff = dot(normalize(normalW),normalize(dirL));
 
 	//----Calculo de especular
-	float m_shi = 10.0f;
+	float m_shi = 10.0f; //TODO revisar estos valores
 	float m_spec = 1.0f;
 	vec4 dirCam = normalize(positionCam - fragPosition);
 	vec4 r = -dirL + 2 * dot(normalW,dirL) * normalW;
-	float spec = max(0.0,pow(dot(r,dirCam),m_shi))*m_spec;
+	float spec = max(0.0,pow(dot(r,dirCam),m_shi))*m_spec; //TODO esta bien esta ecuacion?
 
 	color = diff * texture(u_texture,UV);
+	//color = (diff + spec) * texture(u_texture,UV);
 	//	color = vec4(0,0,diff,1);
-	color = vec4(0,0,spec,1);
+	//color = vec4(0,0,spec,1);
 
 }

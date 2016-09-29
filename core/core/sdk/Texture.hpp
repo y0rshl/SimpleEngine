@@ -16,8 +16,9 @@ public:
 
     void bind(GLuint location);
 
-private:
     GLuint texture_id;
+private:
+
 };
 
 
