@@ -1,9 +1,13 @@
 #version 330 core
 
 uniform vec3 lightDirectional;
+uniform vec3 cameraPosition;
 uniform vec4 outColor;
 uniform sampler2D u_texture;
+uniform sampler2D u_specularMap;
+uniform sampler2D u_normalMap;
 
+in vec3 fragVertex;
 in vec2 UV;
 // Normal de la superficice
 in vec3 normal;
@@ -13,5 +17,15 @@ out vec4 color;
 
 void main()
 {
-	color =  dot(normal, lightDirectional) * texture(u_texture,UV);
+    float specularStrength = 1.5f;
+    vec3 cameraDirection = normalize(cameraPosition - fragVertex);
+	vec3 reflectDirection = reflect(lightDirectional, normal);
+
+    float spec = pow(max(dot(cameraDirection, reflectDirection), 0.0), texture(u_specularMap, UV).r*255);
+
+	float diffuse = dot(normal, -lightDirectional);
+	float specular = specularStrength * spec;
+
+	color =  (diffuse + specular) * texture(u_texture,UV);
+
 }
