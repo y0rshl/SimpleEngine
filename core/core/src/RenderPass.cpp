@@ -32,6 +32,8 @@ using namespace glm;
 void RenderPass::execute() {
 
     initContext();
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
 
     //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
@@ -61,13 +63,13 @@ void RenderPass::execute() {
 
   //  shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
   //  camSceneObject->addComponent(static_pointer_cast<Component>(pc));
-    shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,1.0f,10.0f);
+    shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,1.0f,20.0f);
     camSceneObject->addComponent(static_pointer_cast<Component>(oc));
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    lightSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
-    lightSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
+    lightSceneObject->m_transform->set_position(0.0f, 0.0f, 10.0f);
+    lightSceneObject->m_transform->set_rotation(0.0f, 6.0f, 0.0f);
     lightSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
     lightSceneObject->m_transform->refreshTRS();
 
@@ -82,7 +84,8 @@ void RenderPass::execute() {
     float y = 0.1f;
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
-        glClear( GL_COLOR_BUFFER_BIT );
+        //glClear( GL_COLOR_BUFFER_BIT );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         // Use our shader
         shaderProgram->use();
@@ -110,15 +113,22 @@ void RenderPass::execute() {
         shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
      //   shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
         shaderProgram->setVec4("positionCam", camPosition.getValues()[0], camPosition.getValues()[1], camPosition.getValues()[2], camPosition.getValues()[3]);
-        //Le paso la normal de cada vertice para calcular la intesidad de la luz
-        shaderProgram->setVec4("normal", 0,0,-1,0);
 
+        //Movimiento de la posicion para la pointLight
   //     lightSceneObject->m_transform->set_position(y, 0.0f, 10.0f);
   //     y += 0.01f;
+
+        //Rotacion para la directionalLight
+ //       lightSceneObject->m_transform->set_rotation(0.0f, y, 0.0f);
+ //       y += 0.1f;
 
 /*        camSceneObject->m_transform->set_position(x, 0.0f, 0.0f);
         camSceneObject->m_transform->refreshTRS();
         x += -0.001f;*/
+
+        meshSceneObject->m_transform->set_rotation(0.0f, y, 0.0f);
+        meshSceneObject->m_transform->refreshTRS();
+        y+= 0.01f;
 
         //Su codigo
 //        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);

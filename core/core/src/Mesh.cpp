@@ -182,6 +182,10 @@ shared_ptr<Mesh> Mesh::createBox() {
     glBindBuffer(GL_ARRAY_BUFFER, mesh->m_uvbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
 
+    //create uv
+    glGenBuffers(1, &mesh->m_normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->m_normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_normal_data), g_normal_data, GL_STATIC_DRAW);
 
 
 //    static const GLuint indices[] = {
@@ -220,7 +224,9 @@ shared_ptr<Mesh> Mesh::createBox() {
 Mesh::~Mesh() {
     glDeleteBuffers(1, &m_positionBuffer);
     glDeleteBuffers(1, &m_indexBuffer);
+    glDeleteBuffers(1, &m_normalbuffer);
     glDeleteVertexArrays(1, &m_vertexArrayID);
+
 }
 
 void Mesh::use() {
@@ -255,6 +261,18 @@ void Mesh::draw() {
             GL_FALSE,                         // normalized?
             0,                                // stride
             (void*)0                          // array buffer offset
+    );
+
+    // 3rd attribute buffer : vertices normals
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, m_normalbuffer);
+    glVertexAttribPointer(
+            2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            3,                  // size
+            GL_FLOAT,           // type
+            GL_FALSE,           // normalized?
+            0,                  // stride
+            (void*)0            // array buffer offset
     );
 
     glDrawElements(
