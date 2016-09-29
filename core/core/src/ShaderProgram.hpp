@@ -31,6 +31,8 @@ public:
 
     void setMat4(string var, Matrix4x4& mat4);
 
+    void setInt(string var, int i);
+
 private:
     bool m_valid;
 //    GLuint m_vertexShaderId;

@@ -140,3 +140,11 @@ void ShaderProgram::setMat4(string var, Matrix4x4& mat4) {
         glUniformMatrix4fv(loc, 1, GL_FALSE, mat4.getValues());
     }
 }
+
+void ShaderProgram::setInt(string var, int i) {
+    GLint loc = glGetUniformLocation(m_programId, var.c_str());
+    if (loc != -1)
+    {
+        glUniform1i(loc, i);
+    }
+}

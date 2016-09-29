@@ -93,3 +93,10 @@ shared_ptr<Texture> Texture::loadBMP(const char * imagepath){
     // Return the ID of the texture we just created
     return texture;
 }
+
+void Texture::bind(GLuint location) {
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0 + location);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+}

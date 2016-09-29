@@ -14,9 +14,10 @@ public:
 
     static shared_ptr<Texture> loadBMP(const char * imagepath);
 
-    GLuint texture_id;
+    void bind(GLuint location);
 
 private:
+    GLuint texture_id;
 };
 
 
