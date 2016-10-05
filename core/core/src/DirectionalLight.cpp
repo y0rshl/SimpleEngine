@@ -16,6 +16,6 @@ Vec4 DirectionalLight::getDirLight () {
     SceneObject *so = light.get();
     Matrix4x4 *trs = so->getPosition();
 
-    return trs->multVec4(this->vec4);
+    return trs->multVec4(this->vec4); //con esta multiplicacion te quedas con el vector z (q es hacia donde apunta el objeto)
 }
 

@@ -23,7 +23,7 @@ void main(){
     gl_Position.w = 1.0;
     UV = vertexUV;
     gl_Position = mvp * vec4(vertexPosition_modelspace.xyz, 1.0);
-    normalW = m * vec4(normal.xyz,0);
+    normalW = normalize(m * vec4(normal.xyz,0));
     fragPosition = m * vec4(vertexPosition_modelspace.xyz, 1.0);
    // gl_Position.xyz = vertexPosition_modelspace;
    // gl_Position.w = 1.0;

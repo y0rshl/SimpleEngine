@@ -21,13 +21,19 @@ void main()
 	float diff = dot(normalize(normalW),normalize(dirL));
 
     //----Calculo de la especular
-	float m_shi = 10.0f; //TODO revisar estos valores
-	float m_spec = 1.0f;
+    float m_shi = 10.0f; //mas grande este valor mas brillante el objeto
+    vec4 matColor = texture(u_texture,UV);
     vec4 dirCam = normalize(positionCam - fragPosition);
-    vec4 r = -dirL + 2 * dot(normalW,dirL) * normalW;
-    float spec = max(0.0,pow(dot(r,dirCam),m_shi))*m_spec; //TODO esta bien esta ecuacion?
+    vec4 r = -dirLight + 2 * dot(normalW,dirLight) * normalW;
+    vec4 spec = max(0.0,pow(dot(r,dirCam),m_shi))*vec4(0.5,0.5,0.5,1); //la componente especular del material,
+                                                                        //la sacas de la textura
 
-    color = diff * texture(u_texture,UV);
-    //color = (diff + spec) * texture(u_texture,UV);
+    color = diff * matColor + spec;
+    //color = diff * matColor + spec;
+    //color = vec4(0,0,diff,1);
+    //color = normalW;
+    //color = spec;
+    //color = dirLight;
+    //color.w = 1;
 
 }
