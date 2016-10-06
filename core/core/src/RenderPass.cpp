@@ -20,7 +20,6 @@ GLFWwindow* window;
 #include <core/core/sdk/PerspectiveCamera.hpp>
 #include <core/core/sdk/lights/DirectionalLight.hpp>
 #include <core/core/sdk/lights/PointLight.hpp>
-#include "ShaderProgram.hpp"
 #include "Mesh.hpp"
 #include "SceneObject.hpp"
 #include "Texture.hpp"
@@ -34,6 +33,7 @@ void RenderPass::execute() {
     initContext();
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
+    // Use directional light or Point Light
     bool useDirectionalLight = false;
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
@@ -41,34 +41,19 @@ void RenderPass::execute() {
     shared_ptr<Mesh> mesh3 = Mesh::createBox();
 
     SceneObject meshObject;
-    meshObject.m_transform->setPosition( -2.0f, 0.0f, 0.0f);
-    meshObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
-    meshObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
-    meshObject.m_transform->refreshTRS();
+    placeSceneObject(&meshObject, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject meshObject2;
-    meshObject2.m_transform->setPosition( 2.0f, 0.0f, 0.0f);
-    meshObject2.m_transform->setRotation( 1.0f, 1.0f, 1.0f);
-    meshObject2.m_transform->setScale( 1.0f, 1.0f, 1.0f);
-    meshObject2.m_transform->refreshTRS();
+    placeSceneObject(&meshObject2, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject meshObject3;
-    meshObject3.m_transform->setPosition( 2.0f, 0.0f, 0.0f);
-    meshObject3.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
-    meshObject3.m_transform->setScale( 0.25f, 0.25f, 0.25f);
-    meshObject3.m_transform->refreshTRS();
+    placeSceneObject(&meshObject3, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.25f, 0.25f);
 
     SceneObject cameraObject;
-    cameraObject.m_transform->setPosition( 0.0f, 0.0f, 10.0f);
-    cameraObject.m_transform->setRotation( 0.0f, 0.0f, 0.0f);
-    cameraObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
-    cameraObject.m_transform->refreshTRS();
+    placeSceneObject(&cameraObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject lightSceneObject;
-    lightSceneObject.m_transform->setPosition( 0.0f, 0.0f, 0.0f);
-    lightSceneObject.m_transform->setRotation( 0.0f, 3.14f, 0.0f);
-    lightSceneObject.m_transform->setScale( 1.0f, 1.0f, 1.0f);
-    lightSceneObject.m_transform->refreshTRS();
+    placeSceneObject(&lightSceneObject, 0.0f, 0.0f, 0.0f, 0.0f, 3.14f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     //Create Texture
     shared_ptr<Texture> texture = Texture::loadBMP("grey_diffuse.bmp");
@@ -128,53 +113,29 @@ void RenderPass::execute() {
         mesh1Rotation += 0.1/60;
 
         // Draw meshObject1
-        Matrix4x4* m = meshObject.getPosition();
-        Matrix4x4* v = camera->getViewMatrix();
-        Matrix4x4* p = camera->getProjectionMatrix();
-        Matrix4x4* aux = p->operator*(*v);
-        aux = aux->operator*(*m);
-        shaderProgram->setMat4("mvp", *aux);
-        shaderProgram->setMat4("m", *m);
-        mesh->draw();
+        drawMesh(mesh, &meshObject, camera, shaderProgram);
 
         // Draw meshObject2
-        Matrix4x4* m2 = meshObject2.getPosition();
-        Matrix4x4* v2 = camera->getViewMatrix();
-        Matrix4x4* p2 = camera->getProjectionMatrix();
-        Matrix4x4* aux2 = p2->operator*(*v2);
-        aux2 = aux2->operator*(*m2);
-        shaderProgram->setMat4("mvp", *aux2);
-        shaderProgram->setMat4("m", *m2);
-        mesh2->draw();
+        drawMesh(mesh2, &meshObject2, camera, shaderProgram);
 
         // Draw meshObject3
+        lightTranslation += (lightTranslationCoef*0.01f);
+        if(lightTranslation > 5.0f){
+            lightTranslationCoef = -1.0f;
+        }
+        if(lightTranslation < -5.0f){
+            lightTranslationCoef = 1.0f;
+        }
         meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 5.0f);
         meshObject3.m_transform->refreshTRS();
-        Matrix4x4* m3 = meshObject3.getPosition();
-        Matrix4x4* v3 = camera->getViewMatrix();
-        Matrix4x4* p3 = camera->getProjectionMatrix();
-        Matrix4x4* aux3 = p3->operator*(*v3);
-        aux3 = aux3->operator*(*m3);
-        shaderProgram->setMat4("mvp", *aux3);
-        shaderProgram->setMat4("m", *m3);
-        mesh3->draw();
+        drawMesh(mesh3, &meshObject3, camera, shaderProgram);
 
         if(useDirectionalLight){
             float* lightvec = directionalLight->getDirection();
             shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
-            //      Move PointLight
-            meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 8.0f);
-            meshObject3.m_transform->refreshTRS();
         } else {
             float* lightPosition = pointLight->getPosition();
             shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
-            lightTranslation += (lightTranslationCoef*0.01f);
-            if(lightTranslation > 5.0f){
-                lightTranslationCoef = -1.0f;
-            }
-            if(lightTranslation < -5.0f){
-                lightTranslationCoef = 1.0f;
-            }
         }
 
         // Swap buffers
@@ -194,6 +155,25 @@ void RenderPass::execute() {
 
     return;
 }
+
+
+void RenderPass::placeSceneObject(SceneObject* sceneObject, float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz){
+    sceneObject->m_transform->setPosition( x, y, z);
+    sceneObject->m_transform->setRotation( rx, ry, rz);
+    sceneObject->m_transform->setScale( sx, sy, sz);
+    sceneObject->m_transform->refreshTRS();
+};
+
+void RenderPass::drawMesh(shared_ptr<Mesh> mesh, SceneObject* sceneObject, CameraComponent* camera, shared_ptr<ShaderProgram> shaderProgram){
+    Matrix4x4* m = sceneObject->getPosition();
+    Matrix4x4* v = camera->getViewMatrix();
+    Matrix4x4* p = camera->getProjectionMatrix();
+    Matrix4x4* aux = p->operator*(*v);
+    aux = aux->operator*(*m);
+    shaderProgram->setMat4("mvp", *aux);
+    shaderProgram->setMat4("m", *m);
+    mesh->draw();
+};
 
 void RenderPass::initContext(){
     // Initialise GLFW

@@ -7,6 +7,11 @@
 
 
 #include <GL/glew.h>
+#include "Mesh.hpp"
+#include "SceneObject.hpp"
+#include "shader.hpp"
+#include <core/core/src/ShaderProgram.hpp>
+#include "CameraComponent.hpp"
 
 class RenderPass {
 
@@ -21,6 +26,8 @@ protected:
 
 private:
     void initContext();
+    void placeSceneObject(SceneObject* sceneObject, float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
+    void drawMesh(shared_ptr<Mesh> mesh, SceneObject* sceneObject, CameraComponent* camera, shared_ptr<ShaderProgram> shaderProgram);
 };
 
 
