@@ -39,21 +39,25 @@ void RenderPass::execute() {
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> mesh2 = Mesh::createBox();
     shared_ptr<Mesh> mesh3 = Mesh::createBox();
+    shared_ptr<Mesh> mesh4 = Mesh::createBox();
 
     SceneObject meshObject;
     placeSceneObject(&meshObject, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject meshObject2;
-    placeSceneObject(&meshObject2, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+    placeSceneObject(&meshObject2, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject meshObject3;
     placeSceneObject(&meshObject3, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.25f, 0.25f);
 
     SceneObject cameraObject;
-    placeSceneObject(&cameraObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+    placeSceneObject(&cameraObject, 0.0f, 1.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject lightSceneObject;
     placeSceneObject(&lightSceneObject, 0.0f, 0.0f, 0.0f, 0.0f, 3.14f, 0.0f, 1.0f, 1.0f, 1.0f);
+
+    SceneObject floorObject;
+    placeSceneObject(&floorObject, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 1.0f, 10.0f);
 
     //Create Texture
     shared_ptr<Texture> texture = Texture::loadBMP("grey_diffuse.bmp");
@@ -64,8 +68,8 @@ void RenderPass::execute() {
     shared_ptr<SceneObject> sharedPtrSceneObject = make_shared<SceneObject>(cameraObject);
     weak_ptr<SceneObject> weakPtrSceneObject(sharedPtrSceneObject);
 
-//    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 1.5f, 1.5f, 1.0f, 100.0f);
-    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
+    PerspectiveCamera* camera = new PerspectiveCamera(weakPtrSceneObject, 60.0f, 60.0f, 0.1f, 100.0f);
+//    OrthographicCamera* camera = new OrthographicCamera(weakPtrSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
 
     shared_ptr<ShaderProgram> shaderProgram;
     shared_ptr<SceneObject> sharedPtrLightOwner;
@@ -89,6 +93,7 @@ void RenderPass::execute() {
     float mesh1Rotation = 0.0f;
     float lightTranslationCoef = 1.0f;
     float lightTranslation = -5.0f;
+    float movement = 0.5f;
 
     do{
         glClearColor(1.0f, 0.0f, 0.0f ,1.0f);
@@ -102,6 +107,9 @@ void RenderPass::execute() {
         shaderProgram->setInt("u_specularMap", 1);
         normalTexture->bind(2);
         shaderProgram->setInt("u_normalMap", 2);
+
+        // Move camera
+        moveCamera(camera, &cameraObject);
 
         // Set camera position
         float* cameraPosition = camera->getPosition();
@@ -129,6 +137,9 @@ void RenderPass::execute() {
         meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 5.0f);
         meshObject3.m_transform->refreshTRS();
         drawMesh(mesh3, &meshObject3, camera, shaderProgram);
+
+        // Draw floor
+        drawMesh(mesh4, &floorObject, camera, shaderProgram);
 
         if(useDirectionalLight){
             float* lightvec = directionalLight->getDirection();
@@ -173,6 +184,49 @@ void RenderPass::drawMesh(shared_ptr<Mesh> mesh, SceneObject* sceneObject, Camer
     shaderProgram->setMat4("mvp", *aux);
     shaderProgram->setMat4("m", *m);
     mesh->draw();
+};
+
+void RenderPass::moveCamera(CameraComponent* camera, SceneObject* sceneObject){
+    float step = 0.05f;
+    float leftX = 0.0f;
+    float rightX = 0.0f;
+    float forwardZ = 0.0f;
+    float backwardsZ = 0.0f;
+    float upY = 0.0f;
+    float downY = 0.0f;
+
+    bool move = false;
+
+    if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS){
+        leftX = step;
+        move = true;
+    }
+    if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
+        rightX = step;
+        move = true;
+    }
+    if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS){
+        forwardZ = step;
+        move = true;
+    }
+    if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS){
+        backwardsZ = step;
+        move = true;
+    }
+    if(glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS){
+        upY = step;
+        move = true;
+    }
+    if(glfwGetKey(window, GLFW_KEY_S ) == GLFW_PRESS){
+        downY = step;
+        move = true;
+    }
+
+    if(move){
+        float* cameraPosition = camera->getPosition();
+        sceneObject->m_transform->setPosition(cameraPosition[0]+rightX-leftX, cameraPosition[1]+upY - downY, cameraPosition[2]-forwardZ+backwardsZ);
+        sceneObject->m_transform->refreshTRS();
+    }
 };
 
 void RenderPass::initContext(){
