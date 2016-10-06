@@ -3,7 +3,6 @@
 // uniform vec3 lightDirectional;
 uniform vec3 lightPosition;
 uniform vec3 cameraPosition;
-uniform vec4 outColor;
 uniform sampler2D u_texture;
 uniform sampler2D u_specularMap;
 uniform sampler2D u_normalMap;
