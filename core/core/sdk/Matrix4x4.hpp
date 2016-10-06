@@ -35,6 +35,9 @@ public:
     static Matrix4x4 makeRotationMatrix(float rx, float ry, float rz);
     static Matrix4x4* makeTRSMatrix(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
 
+    static bool invertColumnMajor(float m[16], float invOut[16]);
+
+
     Vec4 multVec4(Vec4 vec4);
 
     std::string toString();

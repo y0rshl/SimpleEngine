@@ -10,8 +10,6 @@
 
 class Camera : public Component {
 
-    bool invertColumnMajor(float m[16], float invOut[16]);
-
 public:
     bool enabled;
 

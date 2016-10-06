@@ -7,6 +7,7 @@
 
 #include "Component.hpp"
 #include "Matrix4x4.hpp"
+#include "Transform.hpp"
 
 class Light : public Component {
 
@@ -14,6 +15,8 @@ public:
 
     Light();
     void update(double dt);
+
+    Matrix4x4* getViewMatrix();
 
 };
 

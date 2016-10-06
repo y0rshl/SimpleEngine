@@ -15,6 +15,18 @@ protected:
 public:
     DirectionalLight();
     Vec4 getDirLight();
+
+    DirectionalLight(float width, float height, float far, float near);
+
+    //Metodo que devuelve la matriz de view
+    Matrix4x4* getProjectionMatrix();
+
+private:
+    float width;
+    float height;
+    float far;
+    float near;
+
 };
 
 
