@@ -254,7 +254,7 @@ void RenderPass::moveCamera(CameraComponent* camera, SceneObject* sceneObject){
         float* cameraDirection = camera->getDirection();
         float* cameraHorizontalDirection = camera->getHorizontalDirection();
         float* cameraRotation = camera->getRotation();
-
+        
         float x = 0.0f;
         float y = 0.0f;
         float z = 0.0f;
@@ -287,9 +287,9 @@ void RenderPass::moveCamera(CameraComponent* camera, SceneObject* sceneObject){
                                               cameraPosition[1] + y,
                                               cameraPosition[2] + z);
 
-//        sceneObject->m_transform->setRotation(cameraRotation[0] + rx,
-//                                              cameraRotation[1] + ry,
-//                                              cameraRotation[2] + rz);
+        sceneObject->m_transform->setRotation(cameraRotation[0] + rx,
+                                              cameraRotation[1] + ry,
+                                              cameraRotation[2] + rz);
 
         sceneObject->m_transform->refreshTRS();
     }

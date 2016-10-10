@@ -36,7 +36,15 @@ void Transform::setScale(float sx, float sy, float sz) {
     this->sz = sz;
 }
 
+float* Transform::getRotation(){
+    float* rotation = new float[3];
+    rotation[0] = this->rx;
+    rotation[1] = this->ry;
+    rotation[2] = this->rz;
+    return rotation;
+}
+
 void Transform::refreshTRS() {
     Matrix4x4 *trs;
-    this->TRS = trs->makeTRS(x,y,z, rx, ry, rz, sx, sy, sz);
+    this->TRS = trs->makeTRS( x, y, z, rx, ry, rz, sx, sy, sz);
 }

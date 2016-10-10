@@ -28,6 +28,7 @@ public:
     void setRotation(float rx, float ry, float rz);
     void setScale(float sx, float sy, float sz);
     void refreshTRS();
+    float* getRotation();
 };
 
 #endif /* Transform_hpp */
