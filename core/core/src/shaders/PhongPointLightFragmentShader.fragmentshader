@@ -18,11 +18,12 @@ out vec4 color;
 void main()
 {
     float specularStrength = 1.0f;
+    float ambient = 0.05f;
     vec3 cameraDirection = normalize(cameraPosition - fragVertex);
 	vec3 lightDirectional = normalize(lightPosition - fragVertex);
 	vec3 reflectDirection = reflect(-lightDirectional, normal);
 	float spec = pow(max(dot(cameraDirection, reflectDirection), 0.0), texture(u_specularMap, UV).r*255);
 	float specular = specularStrength * spec;
 	float diffuse = dot(normal, lightDirectional);
-	color = (specular + diffuse) * texture(u_texture,UV);
+	color = (ambient + specular + diffuse) * texture(u_texture,UV);
 }

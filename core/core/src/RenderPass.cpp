@@ -188,43 +188,109 @@ void RenderPass::drawMesh(shared_ptr<Mesh> mesh, SceneObject* sceneObject, Camer
 
 void RenderPass::moveCamera(CameraComponent* camera, SceneObject* sceneObject){
     float step = 0.05f;
-    float leftX = 0.0f;
-    float rightX = 0.0f;
-    float forwardZ = 0.0f;
-    float backwardsZ = 0.0f;
-    float upY = 0.0f;
-    float downY = 0.0f;
 
+    float rx = 0.0f;
+    float ry = 0.0f;
+    float rz = 0.0f;
+
+    float forward = false;
+    float backward = false;
+    float left = false;
+    float right = false;
     bool move = false;
 
     if(glfwGetKey(window, GLFW_KEY_LEFT ) == GLFW_PRESS){
-        leftX = step;
+        left = true;
         move = true;
     }
+
     if(glfwGetKey(window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
-        rightX = step;
+        right = true;
         move = true;
     }
+
     if(glfwGetKey(window, GLFW_KEY_UP ) == GLFW_PRESS){
-        forwardZ = step;
+        forward = true;
         move = true;
     }
+
     if(glfwGetKey(window, GLFW_KEY_DOWN ) == GLFW_PRESS){
-        backwardsZ = step;
+        backward = true;
         move = true;
     }
+
+    if(glfwGetKey(window, GLFW_KEY_Q ) == GLFW_PRESS){
+        rx += step;
+        move = true;
+    }
+
     if(glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS){
-        upY = step;
+        rx -= step;
         move = true;
     }
+
+    if(glfwGetKey(window, GLFW_KEY_A ) == GLFW_PRESS){
+        ry += step;
+        move = true;
+    }
+
     if(glfwGetKey(window, GLFW_KEY_S ) == GLFW_PRESS){
-        downY = step;
+        ry -= step;
+        move = true;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_Z ) == GLFW_PRESS){
+        rz += step;
+        move = true;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_X ) == GLFW_PRESS){
+        rz -= step;
         move = true;
     }
 
     if(move){
         float* cameraPosition = camera->getPosition();
-        sceneObject->m_transform->setPosition(cameraPosition[0]+rightX-leftX, cameraPosition[1]+upY - downY, cameraPosition[2]-forwardZ+backwardsZ);
+        float* cameraDirection = camera->getDirection();
+        float* cameraHorizontalDirection = camera->getHorizontalDirection();
+        float* cameraRotation = camera->getRotation();
+
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
+
+        if(forward){
+            x -= cameraDirection[0]*step;
+            y -= cameraDirection[1]*step;
+            z -= cameraDirection[2]*step;
+        }
+
+        if(backward){
+            x += cameraDirection[0]*step;
+            y += cameraDirection[1]*step;
+            z += cameraDirection[2]*step;
+        }
+
+        if(left){
+            x -= cameraHorizontalDirection[0]*step;
+            y -= cameraHorizontalDirection[1]*step;
+            z -= cameraHorizontalDirection[2]*step;
+        }
+
+        if(right){
+            x += cameraHorizontalDirection[0]*step;
+            y += cameraHorizontalDirection[1]*step;
+            z += cameraHorizontalDirection[2]*step;
+        }
+
+        sceneObject->m_transform->setPosition(cameraPosition[0] + x,
+                                              cameraPosition[1] + y,
+                                              cameraPosition[2] + z);
+
+//        sceneObject->m_transform->setRotation(cameraRotation[0] + rx,
+//                                              cameraRotation[1] + ry,
+//                                              cameraRotation[2] + rz);
+
         sceneObject->m_transform->refreshTRS();
     }
 };

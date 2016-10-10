@@ -7,6 +7,7 @@
 
 #include "Component.hpp"
 #include "Matrix4x4.hpp"
+#include <math.h>
 
 class CameraComponent:public Component {
 public:
@@ -15,6 +16,9 @@ public:
     Matrix4x4* getViewMatrix();
     virtual Matrix4x4* getProjectionMatrix() = 0;
     float* getPosition();
+    float* getDirection();
+    float* getHorizontalDirection();
+    float* getRotation();
 };
 
 #endif //SIMPLEENGINE_CAMERACOMPONENT_H
