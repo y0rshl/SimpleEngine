@@ -442,7 +442,7 @@ void Mesh::draw() {
             (void*)0            // array buffer offset
     );
     // 4th attribute buffer : vertices tangents
-    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
     glBindBuffer(GL_ARRAY_BUFFER, m_tangent);
     glVertexAttribPointer(
             2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -453,7 +453,7 @@ void Mesh::draw() {
             (void*)0            // array buffer offset
     );
     // 5th attribute buffer : vertices bitangents
-    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(4);
     glBindBuffer(GL_ARRAY_BUFFER, m_bitangent);
     glVertexAttribPointer(
             2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
