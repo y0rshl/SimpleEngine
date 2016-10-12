@@ -121,7 +121,6 @@ shared_ptr<Mesh> Mesh::createBox() {
     };
 
     static const GLfloat g_normal_buffer_data[] = {
-            //TODO: Calculate Normal of each vertex
             -1.0f, 0.0f, 0.0f,
             -1.0f, 0.0f, 0.0f,
             -1.0f, 0.0f, 0.0f,
@@ -225,9 +224,105 @@ shared_ptr<Mesh> Mesh::createBox() {
             1.0f,-1.0f, 1.0f
     };
 
-    static const GLfloat g_tangent_data[] = {};
+    static const GLfloat g_tangent_buffer_data[] = {
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
 
-    static const GLfloat g_bitangent_data[] = {
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f, //15
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f, //18
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f, //21
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f, //24
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f, //27
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f
+
+    };
+
+    static const GLfloat g_bitangent_buffer_data[] = {
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            0.0f, 0.0f, -1.0f, //15
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            -1.0f, 0.0f, 0.0f, //18
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, 0.0f, 1.0f, //21
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            0.0f, 0.0f, 1.0f, //24
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            0.0f, 0.0f, 1.0f, //27
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f
 
     };
 
@@ -245,6 +340,16 @@ shared_ptr<Mesh> Mesh::createBox() {
     glGenBuffers(1, &mesh->m_normal);
     glBindBuffer(GL_ARRAY_BUFFER, mesh->m_normal);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_normal_buffer_data), g_normal_buffer_data, GL_STATIC_DRAW);
+
+    // create tangent
+    glGenBuffers(1, &mesh->m_tangent);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->m_tangent);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_tangent_buffer_data), g_tangent_buffer_data, GL_STATIC_DRAW);
+
+    // create bitangent
+    glGenBuffers(1, &mesh->m_bitangent);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->m_bitangent);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_bitangent_buffer_data), g_bitangent_buffer_data, GL_STATIC_DRAW);
 
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
@@ -286,6 +391,8 @@ Mesh::~Mesh() {
     glDeleteBuffers(1, &m_positionBuffer);
     glDeleteBuffers(1, &m_indexBuffer);
     glDeleteBuffers(1, &m_normal);
+    glDeleteBuffers(1, &m_tangent);
+    glDeleteBuffers(1, &m_bitangent);
     glDeleteVertexArrays(1, &m_vertexArrayID);
 }
 
@@ -334,7 +441,28 @@ void Mesh::draw() {
             0,                  // stride
             (void*)0            // array buffer offset
     );
-
+    // 4th attribute buffer : vertices tangents
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, m_tangent);
+    glVertexAttribPointer(
+            2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            3,                  // size
+            GL_FLOAT,           // type
+            GL_FALSE,           // normalized?
+            0,                  // stride
+            (void*)0            // array buffer offset
+    );
+    // 5th attribute buffer : vertices bitangents
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, m_bitangent);
+    glVertexAttribPointer(
+            2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            3,                  // size
+            GL_FLOAT,           // type
+            GL_FALSE,           // normalized?
+            0,                  // stride
+            (void*)0            // array buffer offset
+    );
     glDrawElements(
             GL_TRIANGLES,      // mode
             36,    // count
