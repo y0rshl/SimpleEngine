@@ -445,7 +445,7 @@ void Mesh::draw() {
     glEnableVertexAttribArray(3);
     glBindBuffer(GL_ARRAY_BUFFER, m_tangent);
     glVertexAttribPointer(
-            2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            3,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
             3,                  // size
             GL_FLOAT,           // type
             GL_FALSE,           // normalized?
@@ -456,7 +456,7 @@ void Mesh::draw() {
     glEnableVertexAttribArray(4);
     glBindBuffer(GL_ARRAY_BUFFER, m_bitangent);
     glVertexAttribPointer(
-            2,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+            4,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
             3,                  // size
             GL_FLOAT,           // type
             GL_FALSE,           // normalized?
