@@ -26,8 +26,9 @@ GLFWwindow* window;
 #include "Mesh.hpp"
 #include "Texture.hpp"
 
-using namespace glm;
+#define pi 3.14
 
+using namespace glm;
 
 void RenderPass::execute() {
 
@@ -40,6 +41,7 @@ void RenderPass::execute() {
 //    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
+    shared_ptr<Mesh> meshLight = Mesh::createBox();
 
     //Create Texture
     shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
@@ -50,7 +52,7 @@ void RenderPass::execute() {
     //Objeto
     shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
     meshSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
-    meshSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
+    meshSceneObject->m_transform->set_rotation(pi/4, pi/3, 0.0f);
     meshSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
     meshSceneObject->m_transform->refreshTRS();
 
@@ -63,25 +65,25 @@ void RenderPass::execute() {
 
   //  shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
   //  camSceneObject->addComponent(static_pointer_cast<Component>(pc));
-    shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,1.0f,20.0f);
+    shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,20.0f,1.0f);
     camSceneObject->addComponent(static_pointer_cast<Component>(oc));
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    lightSceneObject->m_transform->set_position(0.0f, 0.0f, 10.0f);
-    lightSceneObject->m_transform->set_rotation(0.0f, 6.0f, 0.0f);
-    lightSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
+    lightSceneObject->m_transform->set_position(2.0f, 2.0f, 10.0f);
+    lightSceneObject->m_transform->set_rotation(0.0f, pi, 0.0f);
+    lightSceneObject->m_transform->set_scale(0.5f,0.5f,1.0f);
     lightSceneObject->m_transform->refreshTRS();
 
     //Directional Light
-    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>();
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,20.0f,1.0f);
     lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
     //Point Light
  //   shared_ptr<PointLight> pl = make_shared<PointLight>();
  //   lightSceneObject->addComponent(static_pointer_cast<Component>(pl));
 
-    float y = 0.1f;
+  //  float y = 0.0f;
     do{
         glClearColor(1.0f, 0, 0 ,1.0f);
         //glClear( GL_COLOR_BUFFER_BIT );
@@ -91,6 +93,18 @@ void RenderPass::execute() {
         shaderProgram->use();
 
         //mi codigo
+        //MVP de la luz
+        Matrix4x4* mL = meshSceneObject->getPosition();
+        Matrix4x4* vL = dl->getViewMatrix();
+        Matrix4x4* pL = dl->getProjectionMatrix();
+
+        Matrix4x4* vmL = (*vL)*(*mL);
+        Matrix4x4* pvmL = (*pL)*(*vmL);
+
+      //  shaderProgram->setMat4("mvp", *pvmL);
+
+
+        //MVP de la camara
         Matrix4x4* m = meshSceneObject->getPosition();
         Matrix4x4* v = oc->getViewMatrix();
         Matrix4x4* p = oc->getProjectionMatrix();
@@ -119,16 +133,17 @@ void RenderPass::execute() {
   //     y += 0.01f;
 
         //Rotacion para la directionalLight
- //       lightSceneObject->m_transform->set_rotation(0.0f, y, 0.0f);
- //       y += 0.1f;
+   //     lightSceneObject->m_transform->set_rotation(0.0f, y, 0.0f);
+   //     y += pi/8;
 
 /*        camSceneObject->m_transform->set_position(x, 0.0f, 0.0f);
         camSceneObject->m_transform->refreshTRS();
         x += -0.001f;*/
 
-        meshSceneObject->m_transform->set_rotation(0.0f, y, 0.0f);
-        meshSceneObject->m_transform->refreshTRS();
-        y+= 0.01f;
+        //Rotacion del objeto
+//        meshSceneObject->m_transform->set_rotation(pi/4, y, 0.0f);
+//        meshSceneObject->m_transform->refreshTRS();
+//        y+= 0.01f;
 
         //Su codigo
 //        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
@@ -142,6 +157,19 @@ void RenderPass::execute() {
         glUniform1i(TextureID, 0);
 
         mesh->draw();
+
+        //Agrego un mesh con la posicion de la luz
+        Matrix4x4* m2 = lightSceneObject->getPosition();
+        Matrix4x4* v2 = oc->getViewMatrix();
+        Matrix4x4* p2 = oc->getProjectionMatrix();
+
+        Matrix4x4* vm2 = (*v2)*(*m2);
+        //Es column major por eso es pvm
+        Matrix4x4* pvm2 = (*p2)*(*vm2);
+
+        shaderProgram->setMat4("mvp", *pvm2);
+        shaderProgram->setMat4("m", *m2);
+        meshLight->draw();
 
 //        // Draw the triangle !
 //        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
@@ -182,7 +210,7 @@ void RenderPass::initContext(){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Open a window and create its OpenGL context
-    window = glfwCreateWindow( 1024, 768, "Simple window", NULL, NULL);
+    window = glfwCreateWindow( 768, 768, "Simple window", NULL, NULL);
     if( window == NULL ){
         fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
         getchar();
