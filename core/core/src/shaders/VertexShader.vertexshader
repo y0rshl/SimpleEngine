@@ -17,6 +17,7 @@ layout(location = 4) in vec3 bitangent;
 out vec2 UV;
 out vec3 normal;
 out vec3 fragVertex;
+out mat3 TBN;
 
 void main(){
     UV = vertexUV;
