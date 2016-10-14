@@ -66,7 +66,8 @@ configure_file(core/core/src/textures/diffuse.bmp diffuse.bmp COPYONLY)
 configure_file(core/core/src/textures/grey_diffuse.bmp grey_diffuse.bmp COPYONLY)
 configure_file(core/core/src/textures/specular.bmp specular.bmp COPYONLY)
 configure_file(core/core/src/textures/normal.bmp normal.bmp COPYONLY)
-
+configure_file(core/core/src/textures/brickwall.bmp brickwall.bmp COPYONLY)
+configure_file(core/core/src/textures/brickwall_normal.bmp brickwall_normal.bmp COPYONLY)
 
 
 add_executable(SimpleEngine ${SOURCE_FILES})
