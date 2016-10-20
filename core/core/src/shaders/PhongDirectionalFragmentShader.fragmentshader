@@ -24,11 +24,11 @@ void main()
     l_normal = normalize(TBN * l_normal);
 
     vec3 cameraDirection = normalize(cameraPosition - fragVertex);
-	vec3 reflectDirection = reflect(lightDirectional, normal);
+	vec3 reflectDirection = reflect(lightDirectional, l_normal);
 
     float spec = pow(max(dot(cameraDirection, reflectDirection), 0.0), texture(u_specularMap, UV).r*255);
 
-	float diffuse = dot(normal, -lightDirectional);
+	float diffuse = dot(l_normal, -lightDirectional);
 	float specular = specularStrength * spec;
 
 	color =  (ambient + diffuse + specular) * texture(u_texture,UV);

@@ -34,7 +34,7 @@ void RenderPass::execute() {
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
     // Use directional light or Point Light
-    bool useDirectionalLight = false;
+    bool useDirectionalLight = true;
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> mesh2 = Mesh::createBox();
@@ -114,8 +114,13 @@ void RenderPass::execute() {
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+    float moveMeshes = true;
     do{
+
+        if(glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
+            moveMeshes = !moveMeshes;
+        }
+
         glClearColor(0.5f, 0.8f, 0.98f ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         shaderProgram->use();
@@ -136,9 +141,11 @@ void RenderPass::execute() {
         shaderProgram->setVec3("cameraPosition", cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 
         // Rotate Mesh1
-        meshObject.m_transform->setRotation( 0.0f, mesh1Rotation, 0.0f);
-        meshObject.m_transform->refreshTRS();
-        mesh1Rotation += 0.1/60;
+        if(moveMeshes){
+            meshObject.m_transform->setRotation( 0.0f, mesh1Rotation, 0.0f);
+            meshObject.m_transform->refreshTRS();
+            mesh1Rotation += 0.1/60;
+        }
 
         // Draw meshObject1
         drawMesh(mesh, &meshObject, camera, shaderProgram);
@@ -147,15 +154,17 @@ void RenderPass::execute() {
         drawMesh(mesh2, &meshObject2, camera, shaderProgram);
 
         // Draw meshObject3
-        lightTranslation += (lightTranslationCoef*0.01f);
-        if(lightTranslation > 5.0f){
-            lightTranslationCoef = -1.0f;
+        if(moveMeshes){
+            lightTranslation += (lightTranslationCoef*0.01f);
+            if(lightTranslation > 5.0f){
+                lightTranslationCoef = -1.0f;
+            }
+            if(lightTranslation < -5.0f){
+                lightTranslationCoef = 1.0f;
+            }
+            meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 5.0f);
+            meshObject3.m_transform->refreshTRS();
         }
-        if(lightTranslation < -5.0f){
-            lightTranslationCoef = 1.0f;
-        }
-        meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 5.0f);
-        meshObject3.m_transform->refreshTRS();
         drawMesh(mesh3, &meshObject3, camera, shaderProgram);
 
         // Draw floor
