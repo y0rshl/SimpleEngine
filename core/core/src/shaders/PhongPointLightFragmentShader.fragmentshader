@@ -12,7 +12,6 @@ in vec3 normal;
 in vec3 fragVertex;
 in mat3 TBN;
 
-
 // Ouput data
 out vec4 color;
 

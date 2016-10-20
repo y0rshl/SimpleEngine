@@ -8,8 +8,8 @@ uniform sampler2D u_normalMap;
 
 in vec3 fragVertex;
 in vec2 UV;
-// Normal de la superficice
 in vec3 normal;
+in mat3 TBN;
 
 // Ouput data
 out vec4 color;
@@ -21,9 +21,13 @@ void main()
     vec3 cameraDirection = normalize(cameraPosition - fragVertex);
 	vec3 reflectDirection = reflect(lightDirectional, normal);
 
+	vec3 l_normal = texture(u_normalMap, UV).rgb;
+    l_normal = normalize(l_normal * 2.0 - 1.0);
+    l_normal = normalize(TBN * l_normal);
+
     float spec = pow(max(dot(cameraDirection, reflectDirection), 0.0), texture(u_specularMap, UV).r*255);
 
-	float diffuse = dot(normal, -lightDirectional);
+	float diffuse = dot(l_normal, -lightDirectional);
 	float specular = specularStrength * spec;
 
 	color =  (ambient + diffuse + specular) * texture(u_texture,UV);
