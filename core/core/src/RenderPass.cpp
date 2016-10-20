@@ -35,6 +35,12 @@ void RenderPass::execute() {
     glEnable(GL_DEPTH_TEST);
     // Use directional light or Point Light
     bool useDirectionalLight = true;
+    float mesh1Rotation = 0.0f;
+    float lightTranslationCoef = 1.0f;
+    float lightTranslation = -5.0f;
+
+    shared_ptr<ShaderProgram> shadowShaderProgram;
+    shadowShaderProgram = ShaderProgram::loadProgram("SimpleDepthVertexShader.vertexshader", "SimpleDepthFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> mesh2 = Mesh::createBox();
@@ -54,7 +60,7 @@ void RenderPass::execute() {
     placeSceneObject(&cameraObject, 0.0f, 1.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject lightSceneObject;
-    placeSceneObject(&lightSceneObject, 0.0f, 0.0f, 0.0f, 0.0f, 3.14f, 0.0f, 1.0f, 1.0f, 1.0f);
+    placeSceneObject(&lightSceneObject, 0.0f, 0.0f, 1000.0f, 0.0f, 3.14f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject floorObject;
     placeSceneObject(&floorObject, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 1.0f, 10.0f);
@@ -90,9 +96,10 @@ void RenderPass::execute() {
         pointLight = new PointLight(weakPtrLightOwner);
     }
 
-    float mesh1Rotation = 0.0f;
-    float lightTranslationCoef = 1.0f;
-    float lightTranslation = -5.0f;
+    // Light Camera for Shadow Mapping
+    shared_ptr<SceneObject> sharedPtrLightSceneObject = make_shared<SceneObject>(lightSceneObject);
+    weak_ptr<SceneObject> weakPtrLightSceneObject(sharedPtrLightSceneObject);
+    OrthographicCamera* lightCamera = new OrthographicCamera(weakPtrLightSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
 
     // Depth Buffer
     GLuint depthMapFBO;
@@ -116,7 +123,23 @@ void RenderPass::execute() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     float moveMeshes = true;
     do{
+        // 1. Render to depht Map from light point of view
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+        shadowShaderProgram->setInt("u_texture", 0);
+
+        // Draw meshes
+        drawMesh(mesh, &meshObject, lightCamera, shadowShaderProgram);
+        drawMesh(mesh2, &meshObject2, lightCamera, shadowShaderProgram);
+        drawMesh(mesh3, &meshObject3, lightCamera, shadowShaderProgram);
+        drawMesh(mesh4, &floorObject, lightCamera, shadowShaderProgram);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // 2. Render from camera
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         if(glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
             moveMeshes = !moveMeshes;
         }
@@ -172,7 +195,6 @@ void RenderPass::execute() {
 
         if(useDirectionalLight){
             float* lightvec = directionalLight->getDirection();
-            printf("Light direction: %f %f %f\n", lightvec[0], lightvec[1], lightvec[2]);
             shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
         } else {
             float* lightPosition = pointLight->getPosition();
