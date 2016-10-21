@@ -61,6 +61,8 @@ configure_file(core/core/src/shaders/SimpleFragmentShader.fragmentshader SimpleF
 configure_file(core/core/src/shaders/DirectionalFragmentShader.fragmentshader DirectionalFragmentShader.fragmentshader COPYONLY)
 configure_file(core/core/src/shaders/SpotLightFragmentShader.fragmentshader SpotLightFragmentShader.fragmentshader COPYONLY)
 configure_file(core/core/src/shaders/PointLightFragmentShader.fragmentshader PointLightFragmentShader.fragmentshader COPYONLY)
+configure_file(core/core/src/shaders/LightMapFragmentShader.fragmentshader LightMapFragmentShader.fragmentshader COPYONLY)
+configure_file(core/core/src/shaders/DepthVertexShader.vertexshader DepthVertexShader.vertexshader COPYONLY)
 configure_file(core/core/src/textures/uvtemplate.bmp uvtemplate.bmp COPYONLY)
 
 

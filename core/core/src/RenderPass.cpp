@@ -28,6 +28,9 @@ GLFWwindow* window;
 
 #define pi 3.14
 
+//Tamaño de la textura
+const GLuint SHADOW_WIDTH = 768, SHADOW_HEIGHT = 768;
+
 using namespace glm;
 
 void RenderPass::execute() {
@@ -38,6 +41,7 @@ void RenderPass::execute() {
 
     //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> depthShader = ShaderProgram::loadProgram("DepthVertexShader.vertexshader", "LightMapFragmentShader.fragmentshader");
 //    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
@@ -48,7 +52,29 @@ void RenderPass::execute() {
     // Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
 
-    //Mi codigo
+    //GENERATE a depth map
+    //create a framebuffer object for rendering the depth map
+    GLuint depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+
+    //TODO investigar cada metodo
+    GLuint depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    //TODO sacar afuera del excute.. tipo un addSceneObject y metes todos los SceneObject
     //Objeto
     shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
     meshSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
@@ -70,27 +96,24 @@ void RenderPass::execute() {
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    lightSceneObject->m_transform->set_position(2.0f, 2.0f, 10.0f);
-    lightSceneObject->m_transform->set_rotation(0.0f, pi, 0.0f);
-    lightSceneObject->m_transform->set_scale(0.5f,0.5f,1.0f);
+    lightSceneObject->m_transform->set_position(0.0f, 0.0f, 3.0f);
+    lightSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
+    lightSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
     lightSceneObject->m_transform->refreshTRS();
 
     //Directional Light
-    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,20.0f,1.0f);
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,5.0f,1.0f);
     lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
     //Point Light
  //   shared_ptr<PointLight> pl = make_shared<PointLight>();
  //   lightSceneObject->addComponent(static_pointer_cast<Component>(pl));
 
-  //  float y = 0.0f;
-    do{
-        glClearColor(1.0f, 0, 0 ,1.0f);
-        //glClear( GL_COLOR_BUFFER_BIT );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    //---------------------------------
 
-        // Use our shader
-        shaderProgram->use();
+    do{
+        glClearColor(1.0f, 1.0f, 1.0f ,1.0f); //el fondo que nunca dibujaste, va en blanco para que sea un shadow map
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         //mi codigo
         //MVP de la luz
@@ -101,11 +124,16 @@ void RenderPass::execute() {
         Matrix4x4* vmL = (*vL)*(*mL);
         Matrix4x4* pvmL = (*pL)*(*vmL);
 
-      //  shaderProgram->setMat4("mvp", *pvmL);
-
+        // 1. first render to depth map
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        depthShader->use();
+        depthShader->setMat4("mvp", *pvmL);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         //MVP de la camara
-        Matrix4x4* m = meshSceneObject->getPosition();
+/*        Matrix4x4* m = meshSceneObject->getPosition();
         Matrix4x4* v = oc->getViewMatrix();
         Matrix4x4* p = oc->getProjectionMatrix();
 
@@ -121,35 +149,17 @@ void RenderPass::execute() {
         //Es column major por eso es pvm
         Matrix4x4* pvm = (*p)*(*vm);
 
+
+        // Use our shader
+        shaderProgram->use();
+
         shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
         shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
      //   shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
         shaderProgram->setVec4("positionCam", camPosition.getValues()[0], camPosition.getValues()[1], camPosition.getValues()[2], camPosition.getValues()[3]);
-
-        //Movimiento de la posicion para la pointLight
-  //     lightSceneObject->m_transform->set_position(y, 0.0f, 10.0f);
-  //     y += 0.01f;
-
-        //Rotacion para la directionalLight
-   //     lightSceneObject->m_transform->set_rotation(0.0f, y, 0.0f);
-   //     y += pi/8;
-
-/*        camSceneObject->m_transform->set_position(x, 0.0f, 0.0f);
-        camSceneObject->m_transform->refreshTRS();
-        x += -0.001f;*/
-
-        //Rotacion del objeto
-//        meshSceneObject->m_transform->set_rotation(pi/4, y, 0.0f);
-//        meshSceneObject->m_transform->refreshTRS();
-//        y+= 0.01f;
-
-        //Su codigo
-//        Matrix4x4 scale = Matrix4x4::makeScaleMatrix(0.5f, 0.5f, 0.5f);
-//        shaderProgram->setMat4("mvp", scale);
-//        shaderProgram->setVec4("outColor", 1, 1, 1, 1);
-
+*/
         // Bind our texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->texture_id);
@@ -157,19 +167,6 @@ void RenderPass::execute() {
         glUniform1i(TextureID, 0);
 
         mesh->draw();
-
-        //Agrego un mesh con la posicion de la luz
-        Matrix4x4* m2 = lightSceneObject->getPosition();
-        Matrix4x4* v2 = oc->getViewMatrix();
-        Matrix4x4* p2 = oc->getProjectionMatrix();
-
-        Matrix4x4* vm2 = (*v2)*(*m2);
-        //Es column major por eso es pvm
-        Matrix4x4* pvm2 = (*p2)*(*vm2);
-
-        shaderProgram->setMat4("mvp", *pvm2);
-        shaderProgram->setMat4("m", *m2);
-        meshLight->draw();
 
 //        // Draw the triangle !
 //        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle

@@ -36,6 +36,8 @@ public:
     void update(double dt);
 
     void addComponent(shared_ptr<Component> component);
+
+    //TODO agregar getViewMatrix
 };
 
 #endif /* SceneObject_hpp */

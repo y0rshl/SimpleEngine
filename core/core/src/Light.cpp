@@ -13,6 +13,7 @@ void Light::update (double dt) {
 
 }
 
+//TODO pasarlo al sceneObject
 Matrix4x4 *Light::getViewMatrix () {
     //this.owner.m_transform.inverse()
     shared_ptr<SceneObject> light;
