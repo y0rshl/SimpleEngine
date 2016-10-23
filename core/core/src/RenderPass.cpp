@@ -45,7 +45,6 @@ void RenderPass::execute() {
 //    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
-    shared_ptr<Mesh> meshLight = Mesh::createBox();
 
     //Create Texture
     shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
@@ -74,20 +73,13 @@ void RenderPass::execute() {
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    //TODO sacar afuera del excute.. tipo un addSceneObject y metes todos los SceneObject
     //Objeto
     shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
-    meshSceneObject->m_transform->set_position(0.0f, 0.0f, 0.0f);
-    meshSceneObject->m_transform->set_rotation(pi/4, pi/3, 0.0f);
-    meshSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
-    meshSceneObject->m_transform->refreshTRS();
+    createSceneObject(meshSceneObject, 0.0f, 0.0f, 0.0f, pi/4, pi/3, 0.0f, 1.0f,1.0f,1.0f);
 
     //Camara
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
-    camSceneObject->m_transform->set_position(0.0f, 0.0f, 10.0f);
-    camSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
-    camSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
-    camSceneObject->m_transform->refreshTRS();
+    createSceneObject(camSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
   //  shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
   //  camSceneObject->addComponent(static_pointer_cast<Component>(pc));
@@ -96,10 +88,7 @@ void RenderPass::execute() {
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    lightSceneObject->m_transform->set_position(0.0f, 0.0f, 3.0f);
-    lightSceneObject->m_transform->set_rotation(0.0f, 0.0f, 0.0f);
-    lightSceneObject->m_transform->set_scale(1.0f,1.0f,1.0f);
-    lightSceneObject->m_transform->refreshTRS();
+    createSceneObject(lightSceneObject, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
     //Directional Light
     shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,5.0f,1.0f);
@@ -233,4 +222,15 @@ void RenderPass::setViewport(int viewportX, int viewportY, int viewportWidth, in
     this->viewportY = viewportY;
     this->viewportWidth = viewportWidth;
     this->viewportHeight = viewportHeight;
+}
+
+
+void RenderPass::createSceneObject (const shared_ptr<SceneObject> &meshSceneObject,
+                                    float x, float y, float z,
+                                    float rx, float ry, float rz,
+                                    float sx, float sy, float sz) const {
+    meshSceneObject->m_transform->set_position(x, y, z);
+    meshSceneObject->m_transform->set_rotation(rx, ry, rz);
+    meshSceneObject->m_transform->set_scale(sx,sy,sz);
+    meshSceneObject->m_transform->refreshTRS();
 }

@@ -7,6 +7,8 @@
 
 
 #include <GL/glew.h>
+#include <memory>
+#include <SceneObject.hpp>
 
 class RenderPass {
 
@@ -21,6 +23,11 @@ protected:
 
 private:
     void initContext();
+
+    void createSceneObject (const std::__1::shared_ptr <SceneObject> &meshSceneObject,
+                            float x, float y, float z,
+                            float rx, float ry, float rz,
+                            float sx, float sy, float sz) const;
 };
 
 
