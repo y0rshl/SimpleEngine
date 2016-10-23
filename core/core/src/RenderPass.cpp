@@ -81,9 +81,9 @@ void RenderPass::execute() {
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
     createSceneObject(camSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
-  //  shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
+  //  shared_ptr<Camera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
   //  camSceneObject->addComponent(static_pointer_cast<Component>(pc));
-    shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,20.0f,1.0f);
+    shared_ptr<Camera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,20.0f,1.0f);
     camSceneObject->addComponent(static_pointer_cast<Component>(oc));
 
     //Luz
@@ -106,12 +106,7 @@ void RenderPass::execute() {
 
         //mi codigo
         //MVP de la luz
-        Matrix4x4* mL = meshSceneObject->getPosition();
-        Matrix4x4* vL = lightSceneObject->getViewMatrix();
-        Matrix4x4* pL = dl->getProjectionMatrix();
-
-        Matrix4x4* vmL = (*vL)*(*mL);
-        Matrix4x4* pvmL = (*pL)*(*vmL);
+        Matrix4x4* pvmL = getMVPLight(meshSceneObject, lightSceneObject, dl);
 
         // 1. first render to depth map
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -123,8 +118,7 @@ void RenderPass::execute() {
 
         //MVP de la camara
 /*        Matrix4x4* m = meshSceneObject->getPosition();
-        Matrix4x4* v = camSceneObject->getViewMatrix();
-        Matrix4x4* p = oc->getProjectionMatrix();
+        Matrix4x4* pvm = getMVPCamera(meshSceneObject, camSceneObject, oc);
 
         //Direccion de la luz en directionalLight
         Vec4 dirLight = dl->getDirLight();
@@ -133,11 +127,6 @@ void RenderPass::execute() {
         //Vec4 lightPosition = pl->getPosition();
         //Posicion de la camara
         Vec4 camPosition = oc->getPosition();
-
-        Matrix4x4* vm = (*v)*(*m);
-        //Es column major por eso es pvm
-        Matrix4x4* pvm = (*p)*(*vm);
-
 
         // Use our shader
         shaderProgram->use();
@@ -228,9 +217,31 @@ void RenderPass::setViewport(int viewportX, int viewportY, int viewportWidth, in
 void RenderPass::createSceneObject (const shared_ptr<SceneObject> &meshSceneObject,
                                     float x, float y, float z,
                                     float rx, float ry, float rz,
-                                    float sx, float sy, float sz) const {
+                                    float sx, float sy, float sz) {
     meshSceneObject->m_transform->set_position(x, y, z);
     meshSceneObject->m_transform->set_rotation(rx, ry, rz);
     meshSceneObject->m_transform->set_scale(sx,sy,sz);
     meshSceneObject->m_transform->refreshTRS();
+}
+
+Matrix4x4 *RenderPass::getMVPLight (shared_ptr<SceneObject> &meshSceneObject , shared_ptr<SceneObject> &lightSceneObject ,
+                               shared_ptr<DirectionalLight> &dl) {
+    Matrix4x4* m = meshSceneObject->getPosition();
+    Matrix4x4* v = lightSceneObject->getViewMatrix();
+    Matrix4x4* p = dl->getProjectionMatrix();
+
+    Matrix4x4* vm = (*v)*(*m);
+    Matrix4x4* pvm = (*p)*(*vm);
+    return pvm;
+}
+
+Matrix4x4 *RenderPass::getMVPCamera (shared_ptr<SceneObject> &meshSceneObject , shared_ptr<SceneObject> &camSceneObject ,
+                               shared_ptr<Camera> &cam) {
+    Matrix4x4* m = meshSceneObject->getPosition();
+    Matrix4x4* v = camSceneObject->getViewMatrix();
+    Matrix4x4* p = cam->getProjectionMatrix();
+
+    Matrix4x4* vm = (*v)*(*m);
+    Matrix4x4* pvm = (*p)*(*vm);
+    return pvm;
 }

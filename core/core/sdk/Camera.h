@@ -19,6 +19,8 @@ public:
     //void setSO(SceneObject so);
 
     Vec4 getPosition(); //un punto
+
+    virtual Matrix4x4* getProjectionMatrix() = 0;
 };
 
 

@@ -9,6 +9,8 @@
 #include <GL/glew.h>
 #include <memory>
 #include <SceneObject.hpp>
+#include "DirectionalLight.hpp"
+#include "Camera.h"
 
 class RenderPass {
 
@@ -27,7 +29,13 @@ private:
     void createSceneObject (const std::__1::shared_ptr <SceneObject> &meshSceneObject,
                             float x, float y, float z,
                             float rx, float ry, float rz,
-                            float sx, float sy, float sz) const;
+                            float sx, float sy, float sz);
+
+    Matrix4x4 *getMVPLight (shared_ptr<SceneObject> &meshSceneObject , shared_ptr<SceneObject> &lightSceneObject ,
+                       shared_ptr<DirectionalLight> &dl);
+
+    Matrix4x4 *getMVPCamera (shared_ptr<SceneObject> &meshSceneObject , shared_ptr<SceneObject> &camSceneObject ,
+            shared_ptr<Camera> &cam);
 };
 
 
