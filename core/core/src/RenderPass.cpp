@@ -47,6 +47,9 @@ void RenderPass::execute() {
 //    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
+    shared_ptr<Mesh> mesh2 = Mesh::createBox();
+    shared_ptr<Mesh> mesh3 = Mesh::createBox();
+    shared_ptr<Mesh> floor = Mesh::createBox();
 
     //Create Texture
     shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
@@ -77,7 +80,16 @@ void RenderPass::execute() {
 
     //Objeto
     shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
-    createSceneObject(meshSceneObject, 0.0f, 0.0f, 0.0f, pi/4, pi/3, 0.0f, 1.0f,1.0f,1.0f);
+    createSceneObject(meshSceneObject, -2.0f, 0.0f, 0.0f, pi/4, pi/3, 0.0f, 1.0f,1.0f,1.0f);
+
+    shared_ptr<SceneObject> meshSceneObject2 = make_shared<SceneObject>();
+    createSceneObject(meshSceneObject2, 2.0f, 2.0f, 1.0f, pi/6, pi/6, 0.0f, 0.5f, 0.5f, 0.5f);
+
+    shared_ptr<SceneObject> meshSceneObject3 = make_shared<SceneObject>();
+    createSceneObject(meshSceneObject3, 0.5f, -2.0f, -1.0f, pi/3, pi/6, 0.0f, 0.25f, 0.5f, 0.5f);
+
+//    shared_ptr<SceneObject> floorSceneObject = make_shared<SceneObject>();
+//    createSceneObject(floorSceneObject, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f);
 
     //Camara
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
@@ -145,6 +157,22 @@ void RenderPass::execute() {
         glUniform1i(TextureID, 0);
 
         mesh->draw();
+
+        //Draw mesh2
+        Matrix4x4* pvmL2 = getMVPLight(meshSceneObject2, lightSceneObject, dl);
+        depthShader->setMat4("mvp", *pvmL2);
+        mesh2->draw();
+
+        //Draw mesh3
+        Matrix4x4* pvmL3 = getMVPLight(meshSceneObject3, lightSceneObject, dl);
+        depthShader->setMat4("mvp", *pvmL3);
+        mesh3->draw();
+
+        //Draw floor
+//        Matrix4x4* pvmLF = getMVPLight(floorSceneObject, lightSceneObject, dl);
+//        depthShader->setMat4("mvp", *pvmLF);
+//        floor->draw();
+
 
 //        // Draw the triangle !
 //        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
