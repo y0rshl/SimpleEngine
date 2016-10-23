@@ -107,7 +107,7 @@ void RenderPass::execute() {
         //mi codigo
         //MVP de la luz
         Matrix4x4* mL = meshSceneObject->getPosition();
-        Matrix4x4* vL = dl->getViewMatrix();
+        Matrix4x4* vL = lightSceneObject->getViewMatrix();
         Matrix4x4* pL = dl->getProjectionMatrix();
 
         Matrix4x4* vmL = (*vL)*(*mL);
@@ -123,7 +123,7 @@ void RenderPass::execute() {
 
         //MVP de la camara
 /*        Matrix4x4* m = meshSceneObject->getPosition();
-        Matrix4x4* v = oc->getViewMatrix();
+        Matrix4x4* v = camSceneObject->getViewMatrix();
         Matrix4x4* p = oc->getProjectionMatrix();
 
         //Direccion de la luz en directionalLight

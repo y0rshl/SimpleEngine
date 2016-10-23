@@ -16,8 +16,6 @@ public:
     Light();
     void update(double dt);
 
-    Matrix4x4* getViewMatrix();
-
 };
 
 

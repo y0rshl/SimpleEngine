@@ -14,24 +14,6 @@ void Camera::update(double dt) {
 
 }
 
-Matrix4x4* Camera::getViewMatrix() {
-    //this.owner.m_transform.inverse()
-    shared_ptr<SceneObject> cam;
-
-    cam = this->owner.lock();
-
-    SceneObject *so = cam.get();
-
-    Matrix4x4* m = so->getPosition();
-    float* inverse = new float[16];
-    if(Matrix4x4::invertColumnMajor(m->getValues(), inverse)){
-        return new Matrix4x4(inverse);
-    }
-
-    //nunca deberia salir por aca
-    return nullptr;
-}
-
 Vec4 Camera::getPosition () {
     shared_ptr<SceneObject> cam;
 

@@ -37,7 +37,7 @@ public:
 
     void addComponent(shared_ptr<Component> component);
 
-    //TODO agregar getViewMatrix
+    Matrix4x4* getViewMatrix();
 };
 
 #endif /* SceneObject_hpp */

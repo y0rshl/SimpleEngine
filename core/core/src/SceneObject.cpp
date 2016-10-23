@@ -35,3 +35,17 @@ void SceneObject::addComponent(shared_ptr<Component> component) {
     m_components.push_back(component);
     component->owner = shared_from_this();
 }
+
+Matrix4x4* SceneObject::getViewMatrix() {
+
+    SceneObject *so = this;
+
+    Matrix4x4* m = so->getPosition();
+    float* inverse = new float[16];
+    if(Matrix4x4::invertColumnMajor(m->getValues(), inverse)){
+        return new Matrix4x4(inverse);
+    }
+
+    //nunca deberia salir por aca
+    return nullptr;
+}
