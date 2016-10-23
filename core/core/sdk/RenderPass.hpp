@@ -36,6 +36,9 @@ private:
 
     Matrix4x4 *getMVPCamera (shared_ptr<SceneObject> &meshSceneObject , shared_ptr<SceneObject> &camSceneObject ,
             shared_ptr<Camera> &cam);
+
+    shared_ptr<Camera> setCamera (shared_ptr<SceneObject> camSceneObject , int camera,
+                                  float width, float height, float far, float near);
 };
 
 

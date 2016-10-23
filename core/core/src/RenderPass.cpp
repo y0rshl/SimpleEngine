@@ -27,6 +27,8 @@ GLFWwindow* window;
 #include "Texture.hpp"
 
 #define pi 3.14
+#define orthographic 1
+#define perspective 2
 
 //Tamaño de la textura
 const GLuint SHADOW_WIDTH = 768, SHADOW_HEIGHT = 768;
@@ -81,10 +83,8 @@ void RenderPass::execute() {
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
     createSceneObject(camSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
-  //  shared_ptr<Camera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
-  //  camSceneObject->addComponent(static_pointer_cast<Component>(pc));
-    shared_ptr<Camera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,20.0f,1.0f);
-    camSceneObject->addComponent(static_pointer_cast<Component>(oc));
+    shared_ptr<Camera> cam = setCamera(camSceneObject, orthographic, 8.0f, 8.0f, 1.0f, 20.0f);
+   // shared_ptr<Camera> cam = setCamera(camSceneObject, perspective, 1.0f,1.0f,1.0f,10.0f);
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
@@ -118,7 +118,7 @@ void RenderPass::execute() {
 
         //MVP de la camara
 /*        Matrix4x4* m = meshSceneObject->getPosition();
-        Matrix4x4* pvm = getMVPCamera(meshSceneObject, camSceneObject, oc);
+        Matrix4x4* pvm = getMVPCamera(meshSceneObject, camSceneObject, cam);
 
         //Direccion de la luz en directionalLight
         Vec4 dirLight = dl->getDirLight();
@@ -126,7 +126,7 @@ void RenderPass::execute() {
         //Posicion de la luz en pointLight
         //Vec4 lightPosition = pl->getPosition();
         //Posicion de la camara
-        Vec4 camPosition = oc->getPosition();
+        Vec4 camPosition = cam->getPosition();
 
         // Use our shader
         shaderProgram->use();
@@ -138,7 +138,7 @@ void RenderPass::execute() {
      //   shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
         shaderProgram->setVec4("positionCam", camPosition.getValues()[0], camPosition.getValues()[1], camPosition.getValues()[2], camPosition.getValues()[3]);
 */
-        // Bind our texture in Texture Unit 0
+    // Bind our texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->texture_id);
         // Set our "myTextureSampler" sampler to user Texture Unit 0
@@ -244,4 +244,19 @@ Matrix4x4 *RenderPass::getMVPCamera (shared_ptr<SceneObject> &meshSceneObject , 
     Matrix4x4* vm = (*v)*(*m);
     Matrix4x4* pvm = (*p)*(*vm);
     return pvm;
+}
+
+shared_ptr<Camera> RenderPass::setCamera (shared_ptr<SceneObject> camSceneObject , int camera,
+                                          float width, float height, float far, float near) {
+    shared_ptr<Camera> cam;
+    if(camera == orthographic){
+        cam = make_shared<OrthographicCamera>(width, height, near, far);
+        camSceneObject->addComponent(static_pointer_cast<Component>(cam));
+    }else if(camera == perspective){
+        cam = make_shared<PerspectiveCamera>(width,height,near,far);
+        camSceneObject->addComponent(static_pointer_cast<Component>(cam));
+    }
+    return cam;
+
+
 }

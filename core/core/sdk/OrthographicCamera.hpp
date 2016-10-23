@@ -18,7 +18,7 @@ private:
 
 public:
 
-    OrthographicCamera(float width, float height, float far, float near);
+    OrthographicCamera(float width, float height, float near, float far);
 
     void setWidth(float width);
 
