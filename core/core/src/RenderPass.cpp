@@ -1,6 +1,9 @@
 //
 // Created by SANDSTORM04 on 8/18/16.
 //
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 #include "RenderPass.hpp"
 //#include <opengl/gl.h>
@@ -124,10 +127,14 @@ void RenderPass::execute() {
     float moveMeshes = true;
     do{
         // 1. Render to depht Map from light point of view
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClearColor(0.5f, 0.8f, 0.98f ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear( GL_DEPTH_BUFFER_BIT );
+
+        shadowShaderProgram->use();
         shadowShaderProgram->setInt("u_texture", 0);
 
         // Draw meshes
@@ -218,7 +225,6 @@ void RenderPass::execute() {
 
     return;
 }
-
 
 void RenderPass::placeSceneObject(SceneObject* sceneObject, float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz){
     sceneObject->m_transform->setPosition( x, y, z);
