@@ -63,7 +63,7 @@ void RenderPass::execute() {
     placeSceneObject(&cameraObject, 0.0f, 1.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject lightSceneObject;
-    placeSceneObject(&lightSceneObject, 0.0f, 0.0f, 1000.0f, 0.0f, 3.14f, 0.0f, 1.0f, 1.0f, 1.0f);
+    placeSceneObject(&lightSceneObject, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 
     SceneObject floorObject;
     placeSceneObject(&floorObject, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 10.0f, 1.0f, 10.0f);
@@ -102,7 +102,7 @@ void RenderPass::execute() {
     // Light Camera for Shadow Mapping
     shared_ptr<SceneObject> sharedPtrLightSceneObject = make_shared<SceneObject>(lightSceneObject);
     weak_ptr<SceneObject> weakPtrLightSceneObject(sharedPtrLightSceneObject);
-    OrthographicCamera* lightCamera = new OrthographicCamera(weakPtrLightSceneObject, 8.0f, 8.0f, 1.0f, 100.0f);
+    OrthographicCamera* lightCamera = new OrthographicCamera(weakPtrLightSceneObject, 8.0f, 8.0f, 1.0f, 20.0f);
 
     // Depth Buffer
     GLuint depthMapFBO;
@@ -120,19 +120,22 @@ void RenderPass::execute() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+//    glDrawBuffer(GL_NONE);
+//    glReadBuffer(GL_NONE);
+//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     float moveMeshes = true;
+
     do{
         // 1. Render to depht Map from light point of view
-        glClearColor(0.5f, 0.8f, 0.98f ,1.0f);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+//        glClearColor(0.5f, 0.8f, 0.98f ,1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear( GL_DEPTH_BUFFER_BIT );
+//        glClear( GL_DEPTH_BUFFER_BIT );
 
         shadowShaderProgram->use();
         shadowShaderProgram->setInt("u_texture", 0);
@@ -145,68 +148,84 @@ void RenderPass::execute() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 2. Render from camera
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        if(glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
-            moveMeshes = !moveMeshes;
-        }
-
-        glClearColor(0.5f, 0.8f, 0.98f ,1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f ,1.0f);
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        shaderProgram->use();
 
-        // Set textures
-        texture->bind(0);
-        shaderProgram->setInt("u_texture", 0);
-        specularTexture->bind(1);
-        shaderProgram->setInt("u_specularMap", 1);
-        normalTexture->bind(2);
-        shaderProgram->setInt("u_normalMap", 2);
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+//        glClear( GL_DEPTH_BUFFER_BIT );
 
-        // Move camera
-        moveCamera(camera, &cameraObject);
+        shadowShaderProgram->use();
+        shadowShaderProgram->setInt("u_texture", 0);
 
-        // Set camera position
-        float* cameraPosition = camera->getPosition();
-        shaderProgram->setVec3("cameraPosition", cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+        // Draw meshes
+        drawMesh(mesh, &meshObject, lightCamera, shadowShaderProgram);
+        drawMesh(mesh2, &meshObject2, lightCamera, shadowShaderProgram);
+        drawMesh(mesh3, &meshObject3, lightCamera, shadowShaderProgram);
+        drawMesh(mesh4, &floorObject, lightCamera, shadowShaderProgram);
 
-        // Rotate Mesh1
-        if(moveMeshes){
-            meshObject.m_transform->setRotation( 0.0f, mesh1Rotation, 0.0f);
-            meshObject.m_transform->refreshTRS();
-            mesh1Rotation += 0.1/60;
-        }
 
-        // Draw meshObject1
-        drawMesh(mesh, &meshObject, camera, shaderProgram);
-
-        // Draw meshObject2
-        drawMesh(mesh2, &meshObject2, camera, shaderProgram);
-
-        // Draw meshObject3
-        if(moveMeshes){
-            lightTranslation += (lightTranslationCoef*0.01f);
-            if(lightTranslation > 5.0f){
-                lightTranslationCoef = -1.0f;
-            }
-            if(lightTranslation < -5.0f){
-                lightTranslationCoef = 1.0f;
-            }
-            meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 5.0f);
-            meshObject3.m_transform->refreshTRS();
-        }
-        drawMesh(mesh3, &meshObject3, camera, shaderProgram);
-
-        // Draw floor
-        drawMesh(mesh4, &floorObject, camera, shaderProgram);
-
-        if(useDirectionalLight){
-            float* lightvec = directionalLight->getDirection();
-            shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
-        } else {
-            float* lightPosition = pointLight->getPosition();
-            shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
-        }
+        // 2. Render from camera
+//        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+//        if(glfwGetKey(window, GLFW_KEY_P ) == GLFW_PRESS){
+//            moveMeshes = !moveMeshes;
+//        }
+//
+//        glClearColor(0.5f, 0.8f, 0.98f ,1.0f);
+//        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+//        shaderProgram->use();
+//
+//        // Set textures
+//        texture->bind(0);
+//        shaderProgram->setInt("u_texture", 0);
+//        specularTexture->bind(1);
+//        shaderProgram->setInt("u_specularMap", 1);
+//        normalTexture->bind(2);
+//        shaderProgram->setInt("u_normalMap", 2);
+//
+//        // Move camera
+//        moveCamera(camera, &cameraObject);
+//
+//        // Set camera position
+//        float* cameraPosition = camera->getPosition();
+//        shaderProgram->setVec3("cameraPosition", cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+//
+//        // Rotate Mesh1
+//        if(moveMeshes){
+//            meshObject.m_transform->setRotation( 0.0f, mesh1Rotation, 0.0f);
+//            meshObject.m_transform->refreshTRS();
+//            mesh1Rotation += 0.1/60;
+//        }
+//
+//        // Draw meshObject1
+//        drawMesh(mesh, &meshObject, camera, shaderProgram);
+//
+//        // Draw meshObject2
+//        drawMesh(mesh2, &meshObject2, camera, shaderProgram);
+//
+//        // Draw meshObject3
+//        if(moveMeshes){
+//            lightTranslation += (lightTranslationCoef*0.01f);
+//            if(lightTranslation > 5.0f){
+//                lightTranslationCoef = -1.0f;
+//            }
+//            if(lightTranslation < -5.0f){
+//                lightTranslationCoef = 1.0f;
+//            }
+//            meshObject3.m_transform->setPosition(lightTranslation, 0.0f, 5.0f);
+//            meshObject3.m_transform->refreshTRS();
+//        }
+//        drawMesh(mesh3, &meshObject3, camera, shaderProgram);
+//
+//        // Draw floor
+//        drawMesh(mesh4, &floorObject, camera, shaderProgram);
+//
+//        if(useDirectionalLight){
+//            float* lightvec = directionalLight->getDirection();
+//            shaderProgram->setVec3("lightDirectional", lightvec[0], lightvec[1], lightvec[2]);
+//        } else {
+//            float* lightPosition = pointLight->getPosition();
+//            shaderProgram->setVec3("lightPosition", lightPosition[0], lightPosition[1], lightPosition[2]);
+//        }
 
         // Swap buffers
         glfwSwapBuffers(window);
