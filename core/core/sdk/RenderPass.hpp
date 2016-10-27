@@ -27,7 +27,7 @@ protected:
 private:
     void initContext();
     void placeSceneObject(SceneObject* sceneObject, float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
-    void drawMesh(shared_ptr<Mesh> mesh, SceneObject* sceneObject, CameraComponent* camera, shared_ptr<ShaderProgram> shaderProgram);
+    void drawMesh(shared_ptr<Mesh> mesh, SceneObject* sceneObject, SceneObject* lightSceneObject, CameraComponent* camera, CameraComponent* lightCamera, shared_ptr<ShaderProgram> shaderProgram);
     void moveCamera(CameraComponent* camera, SceneObject* sceneObject);
 };
 
