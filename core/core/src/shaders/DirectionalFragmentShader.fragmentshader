@@ -8,7 +8,8 @@ uniform vec4 positionCam;
 
 in vec2 UV;
 in vec4 normalW; //Normal en coordenadas mundo
-in vec4 fragPosition; //posicion del fragmento en coordenadas mundo
+in vec4 fragPosition; //posicion del fragmento en coordenadas mundo (llega del vertex shader)
+in vec4 lightPosition; //posicion del fragmento en coordenadas luz (llega del vertex shader)
 
 // Ouput data
 out vec4 color;
@@ -28,12 +29,14 @@ void main()
     vec4 spec = max(0.0,pow(dot(r,dirCam),m_shi))*vec4(0.5,0.5,0.5,1); //la componente especular del material,
                                                                         //la sacas de la textura
 
+    //-----Calculo del shadow (TODO como hago para levantar la textura desde aca?)
+    //para que vaya entre 0 y 1
+    //vec4 lightNomalize = (lightPosition + vec4(1,1,1,1)) / 2.0;
+    //float closestDepth = texture(depthMap, lightNomalize.xy).r;
+    //float currentDepth = lightNomalize.z;
+    //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+
+    //color = (1.0 - shadow) * diff * matColor + spec;
     color = diff * matColor + spec;
-    //color = diff * matColor + spec;
-    //color = vec4(0,0,diff,1);
-    //color = normalW;
-    //color = spec;
-    //color = dirLight;
-    //color.w = 1;
 
 }

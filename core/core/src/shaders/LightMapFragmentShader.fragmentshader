@@ -5,6 +5,7 @@ out vec4 color;
 
 void main()
 {
+    //Esto no se esta mostrando, no nos importa cuando dibujamos el shadow map
     //para que vaya entre 0 y 1
     vec3 convertedShadowCoor = (gl_FragCoord.xyz + vec3(1,1,1)) / 2.0;
     float depthBuffer = convertedShadowCoor.z;

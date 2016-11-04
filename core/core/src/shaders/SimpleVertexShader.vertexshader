@@ -2,8 +2,10 @@
 
 // Uniform es que no varía dentro del contexto actual
 // mat4 es un tipo de variable
-//mvp es el nombre de la variable
+//mvp de la camara
 uniform mat4 mvp;
+//mvp de la luz
+uniform mat4 mvpLight;
 //Matriz mundo
 uniform mat4 m;
 //Normal del vertice
@@ -14,6 +16,7 @@ out vec2 UV;
 //normal en las coordenadas mundo
 out vec4 normalW;
 out vec4 fragPosition;
+out vec4 lightPosition;
 
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition_modelspace;
@@ -25,6 +28,8 @@ void main(){
     gl_Position = mvp * vec4(vertexPosition_modelspace.xyz, 1.0);
     normalW = normalize(m * vec4(normal.xyz,0));
     fragPosition = m * vec4(vertexPosition_modelspace.xyz, 1.0);
+    lightPosition = mvpLight * vec4(vertexPosition_modelspace.xyz, 1.0);
+
    // gl_Position.xyz = vertexPosition_modelspace;
    // gl_Position.w = 1.0;
 

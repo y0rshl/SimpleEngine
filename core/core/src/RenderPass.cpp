@@ -88,19 +88,20 @@ void RenderPass::execute() {
     shared_ptr<SceneObject> meshSceneObject3 = make_shared<SceneObject>();
     createSceneObject(meshSceneObject3, 0.5f, -2.0f, -1.0f, pi/3, pi/6, 0.0f, 0.25f, 0.5f, 0.5f);
 
-//    shared_ptr<SceneObject> floorSceneObject = make_shared<SceneObject>();
-//    createSceneObject(floorSceneObject, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f);
+    //PARED
+    shared_ptr<SceneObject> floorSceneObject = make_shared<SceneObject>();
+    createSceneObject(floorSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 4.0f, 4.0f, 2.0f);
 
     //Camara
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
     createSceneObject(camSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
-    shared_ptr<Camera> cam = setCamera(camSceneObject, orthographic, 8.0f, 8.0f, 1.0f, 20.0f);
+    shared_ptr<Camera> cam = setCamera(camSceneObject, orthographic, 8.0f, 8.0f, 1.0f, 50.0f);
    // shared_ptr<Camera> cam = setCamera(camSceneObject, perspective, 1.0f,1.0f,1.0f,10.0f);
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    createSceneObject(lightSceneObject, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+    createSceneObject(lightSceneObject, 0.0f, 2.0f, 3.0f, pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
     //Directional Light
     shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,5.0f,1.0f);
@@ -117,19 +118,34 @@ void RenderPass::execute() {
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         //mi codigo
-        //MVP de la luz
-        Matrix4x4* pvmL = getMVPLight(meshSceneObject, lightSceneObject, dl);
 
         // 1. first render to depth map
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
+
         depthShader->use();
-        depthShader->setMat4("mvp", *pvmL);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //MVP de la luz
+        Matrix4x4* pvmL = getMVPLight(meshSceneObject, lightSceneObject, dl);
+        setMVPLight(depthShader , mesh , pvmL);
+
+        //Draw mesh2
+        Matrix4x4* pvmL2 = getMVPLight(meshSceneObject2, lightSceneObject, dl);
+        setMVPLight(depthShader , mesh2 , pvmL2);
+
+        //Draw mesh3
+        Matrix4x4* pvmL3 = getMVPLight(meshSceneObject3, lightSceneObject, dl);
+        setMVPLight(depthShader , mesh3 , pvmL3);
+
+        //Draw floor
+        Matrix4x4* pvmLF = getMVPLight(floorSceneObject, lightSceneObject, dl);
+        setMVPLight(depthShader , floor , pvmLF);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0); //cambie el frameBuffer a la pantalla
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         //MVP de la camara
-/*        Matrix4x4* m = meshSceneObject->getPosition();
+        Matrix4x4* m = meshSceneObject->getPosition();
         Matrix4x4* pvm = getMVPCamera(meshSceneObject, camSceneObject, cam);
 
         //Direccion de la luz en directionalLight
@@ -145,34 +161,34 @@ void RenderPass::execute() {
 
         shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
+        shaderProgram->setMat4("mvpLight", *pvmL);
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
         shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
      //   shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
         shaderProgram->setVec4("positionCam", camPosition.getValues()[0], camPosition.getValues()[1], camPosition.getValues()[2], camPosition.getValues()[3]);
-*/
+
     // Bind our texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+
         // Set our "myTextureSampler" sampler to user Texture Unit 0
         glUniform1i(TextureID, 0);
+
+        //Bind del depthMap
+        glActiveTexture(GL_TEXTURE0 + 3);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
 
         mesh->draw();
 
         //Draw mesh2
-        Matrix4x4* pvmL2 = getMVPLight(meshSceneObject2, lightSceneObject, dl);
-        depthShader->setMat4("mvp", *pvmL2);
-        mesh2->draw();
+        drawMesh(shaderProgram, mesh2, pvmL2, meshSceneObject2, camSceneObject, cam);
 
         //Draw mesh3
-        Matrix4x4* pvmL3 = getMVPLight(meshSceneObject3, lightSceneObject, dl);
-        depthShader->setMat4("mvp", *pvmL3);
-        mesh3->draw();
+        drawMesh(shaderProgram, mesh3, pvmL3, meshSceneObject3, camSceneObject, cam);
 
         //Draw floor
-//        Matrix4x4* pvmLF = getMVPLight(floorSceneObject, lightSceneObject, dl);
-//        depthShader->setMat4("mvp", *pvmLF);
-//        floor->draw();
-
+        drawMesh(shaderProgram, floor, pvmLF, floorSceneObject, camSceneObject, cam);
 
 //        // Draw the triangle !
 //        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
@@ -193,6 +209,22 @@ void RenderPass::execute() {
     glfwTerminate();
 
     return;
+}
+
+void RenderPass::setMVPLight (shared_ptr<ShaderProgram> &depthShader , shared_ptr<Mesh> mesh , Matrix4x4 *pvmL) {
+    depthShader->setMat4("mvp", *pvmL);
+    mesh->draw();
+}
+
+void RenderPass::drawMesh (shared_ptr<ShaderProgram> &shaderProgram , shared_ptr<Mesh> mesh , Matrix4x4 *mvpL ,
+                           shared_ptr<SceneObject> &meshSceneObject , shared_ptr<SceneObject> &camSceneObject ,
+                           shared_ptr<Camera> &cam) {
+    Matrix4x4* pvm2 = getMVPCamera(meshSceneObject, camSceneObject, cam);
+    Matrix4x4* m2 = meshSceneObject->getPosition();
+    shaderProgram->setMat4("m", *m2);
+    shaderProgram->setMat4("mvp", *pvm2);
+    shaderProgram->setMat4("mvpLight", *mvpL);
+    mesh->draw();
 }
 
 void RenderPass::initContext(){

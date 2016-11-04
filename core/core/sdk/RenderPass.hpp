@@ -9,8 +9,10 @@
 #include <GL/glew.h>
 #include <memory>
 #include <SceneObject.hpp>
+#include <core/core/src/ShaderProgram.hpp>
 #include "DirectionalLight.hpp"
 #include "Camera.h"
+#include "Mesh.hpp"
 
 class RenderPass {
 
@@ -39,6 +41,12 @@ private:
 
     shared_ptr<Camera> setCamera (shared_ptr<SceneObject> camSceneObject , int camera,
                                   float width, float height, float far, float near);
+
+    void drawMesh (shared_ptr<ShaderProgram> &shaderProgram , shared_ptr<Mesh> mesh , Matrix4x4 *mvpL ,
+                   shared_ptr<SceneObject> &meshSceneObject , shared_ptr<SceneObject> &camSceneObject ,
+                   shared_ptr<Camera> &cam);
+
+    void setMVPLight (shared_ptr<ShaderProgram> &depthShader , shared_ptr<Mesh> mesh , Matrix4x4 *pvmL);
 };
 
 
