@@ -178,6 +178,7 @@ void RenderPass::execute() {
         glActiveTexture(GL_TEXTURE0 + 3);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, depthMap);
+        shaderProgram->setInt("u_textureShadow",3);
 
         mesh->draw();
 

@@ -5,6 +5,7 @@ uniform vec4 outColor;
 uniform vec4 dirLight;
 uniform sampler2D u_texture;
 uniform vec4 positionCam;
+uniform sampler2D u_textureShadow;
 
 in vec2 UV;
 in vec4 normalW; //Normal en coordenadas mundo
@@ -31,12 +32,12 @@ void main()
 
     //-----Calculo del shadow (TODO como hago para levantar la textura desde aca?)
     //para que vaya entre 0 y 1
-    //vec4 lightNomalize = (lightPosition + vec4(1,1,1,1)) / 2.0;
-    //float closestDepth = texture(depthMap, lightNomalize.xy).r;
-    //float currentDepth = lightNomalize.z;
-    //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+    vec4 lightNomalize = (lightPosition + vec4(1,1,1,1)) / 2.0;
+    float closestDepth = texture(u_textureShadow, lightNomalize.xy).r;
+    float currentDepth = lightNomalize.z;
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 
-    //color = (1.0 - shadow) * diff * matColor + spec;
-    color = diff * matColor + spec;
+    color = (1.0 - shadow) * diff * matColor + spec;
+    //color = diff * matColor + spec;
 
 }
