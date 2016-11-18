@@ -46,3 +46,7 @@ void Transform::refreshTRS(){
 Vec4 Transform::get_position(){
     return Vec4(x,y,z,0);
 }
+
+Vec4 Transform::get_rotation(){
+    return Vec4(rx,ry,rz,0);
+}

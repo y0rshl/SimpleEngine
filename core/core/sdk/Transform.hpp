@@ -39,6 +39,8 @@ public:
 
     Vec4 get_position();
 
+    Vec4 get_rotation();
+
     void refreshTRS();
 };
 

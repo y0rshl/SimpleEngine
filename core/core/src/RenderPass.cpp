@@ -53,6 +53,7 @@ void RenderPass::execute() {
 
     //Create Texture
     shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
+
     // Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
 
@@ -143,6 +144,9 @@ void RenderPass::execute() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0); //cambie el frameBuffer a la pantalla
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        //muevo la camara
+        moveCamera(camSceneObject.get(), 0.05f);
 
         //MVP de la camara
         Matrix4x4* m = meshSceneObject->getPosition();
@@ -321,3 +325,69 @@ shared_ptr<Camera> RenderPass::setCamera (shared_ptr<SceneObject> camSceneObject
 
 
 }
+
+void RenderPass::moveCamera (SceneObject* so , float step) {
+
+    bool move = false;
+    Vec4 position = so->m_transform->get_position();
+    Vec4 rotation = so->m_transform->get_rotation();
+
+    float x = position.getX();
+    float y = position.getY();
+    float z = position.getZ();
+    float rx = rotation.getX();
+    float ry = rotation.getY();
+    float rz = rotation.getZ();
+
+    //mover a la izquierda la camara
+    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+        x = x - step;
+        move = true;
+    }
+
+    //mover a la derecha la camara
+    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+        x = x + step;
+        move = true;
+    }
+
+    //mover hacia arriba la camara
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+        y = y + step;
+        move = true;
+    }
+
+    //mover hacia abajo la camara
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+        y = y - step;
+        move = true;
+    }
+
+    //alejar la camara
+    if(glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS){
+        z = z - step;
+        move = true;
+    }
+
+    //acercar la camara
+    if(glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS){
+        z = z + step;
+        move = true;
+    }
+
+    //rotar la camara hacia la izquierda
+  /*  if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+        rx = rx + step;
+        move = true;
+    }*/
+
+    if(move){
+        so->m_transform->set_position(x, y, z);
+        //so->m_transform->set_rotation(rx,ry,rz);
+        so->m_transform->refreshTRS();
+    }
+
+
+
+}
+

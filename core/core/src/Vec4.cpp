@@ -27,3 +27,27 @@ Vec4::Vec4 (float x , float y , float z , float w) {
     vec[2] = z;
     vec[3] = w;
 }
+
+float Vec4::getX () {
+    return vec[0];
+}
+
+float Vec4::getY () {
+    return vec[1];
+}
+
+float Vec4::getZ () {
+    return vec[2];
+}
+
+void Vec4::setX (float x) {
+    vec[0] = x;
+}
+
+void Vec4::setY (float y) {
+    vec[1] = y;
+}
+
+void Vec4::setZ (float z) {
+    vec[2] = z;
+}

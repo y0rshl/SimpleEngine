@@ -17,6 +17,18 @@ public:
     float * getValues();
 
     Vec4 normalize ();
+
+    float getX();
+
+    float getY();
+
+    float getZ();
+
+    void setX(float x);
+
+    void setY(float y);
+
+    void setZ(float z);
 };
 
 
