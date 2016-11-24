@@ -22,6 +22,8 @@ out vec4 color;
 void main()
 {
 
+    float amb = 0.01f;
+
 	//----Calculo de la difusa
 	vec4 dirL = -1 * dirLight; //queremos la maxima iluminancia
 	float diff = dot(normalize(normalW),normalize(dirL));
@@ -31,8 +33,7 @@ void main()
     vec4 matColor = texture(u_texture,UV);
     vec4 dirCam = normalize(positionCam - fragPosition);
     vec4 r = -dirLight + 2 * dot(normalW,dirLight) * normalW;
-    vec4 spec = max(0.0,pow(dot(r,dirCam),m_shi))*vec4(0.5,0.5,0.5,1); //la componente especular del material,
-                                                                        //la sacas de la textura
+    vec4 spec = max(0.0,pow(dot(r,dirCam),m_shi))*texture(u_mapSpecular, UV);
 
     //-----Calculo del shadow
     //para que vaya entre 0 y 1
@@ -41,7 +42,7 @@ void main()
     float currentDepth = lightNomalize.z;
     float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 
-    color = (1.0 - shadow) * diff * matColor + spec; //Agrego el shadow
+    color = (1.0 - shadow) * diff * matColor + spec + amb; //Agrego el shadow
     //color = diff * matColor + spec;
 
 }
