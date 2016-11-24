@@ -8,18 +8,24 @@ uniform mat4 mvp;
 uniform mat4 mvpLight;
 //Matriz mundo
 uniform mat4 m;
-//Normal del vertice
+
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec2 vertexUV;
+//Normal del vertice
 layout(location = 2) in vec3 normal;
+//tangente
+layout(location = 3) in vec3 tangent;
+//bitangente
+layout(location = 4) in vec3 bitangent;
 
 out vec2 UV;
 //normal en las coordenadas mundo
 out vec4 normalW;
 out vec4 fragPosition;
 out vec4 lightPosition;
+out mat4 TBN;
 
-// Input vertex data, different for all executions of this shader.
-layout(location = 0) in vec3 vertexPosition_modelspace;
 
 void main(){
 
@@ -29,6 +35,9 @@ void main(){
     normalW = normalize(m * vec4(normal.xyz,0));
     fragPosition = m * vec4(vertexPosition_modelspace.xyz, 1.0);
     lightPosition = mvpLight * vec4(vertexPosition_modelspace.xyz, 1.0);
+    vec4 T = normalize(m * vec4(tangent.xyz, 0));
+    vec4 B = normalize(m * vec4(bitangent.xyz, 0));
+    TBN = mat4(T, B, normalW, vec4(0,0,0,0));
 
    // gl_Position.xyz = vertexPosition_modelspace;
    // gl_Position.w = 1.0;

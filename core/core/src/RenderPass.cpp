@@ -52,7 +52,10 @@ void RenderPass::execute() {
     shared_ptr<Mesh> floor = Mesh::createBox();
 
     //Create Texture
-    shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
+    shared_ptr<Texture> texture = Texture::loadBMP("trestraou2_Base_Color.bmp");
+    //TODO encontrar una textura especular correcta
+    shared_ptr<Texture> textureSpec = Texture::loadBMP("trestraou2_Base_Color.bmp");
+    shared_ptr<Texture> textureNormal = Texture::loadBMP("trestraou2_Normal.bmp");
 
     // Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
@@ -62,7 +65,6 @@ void RenderPass::execute() {
     GLuint depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);
 
-    //TODO investigar cada metodo
     GLuint depthMap;
     glGenTextures(1, &depthMap);
     glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -171,12 +173,14 @@ void RenderPass::execute() {
      //   shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
         shaderProgram->setVec4("positionCam", camPosition.getValues()[0], camPosition.getValues()[1], camPosition.getValues()[2], camPosition.getValues()[3]);
 
-    // Bind our texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture->texture_id);
 
-        // Set our "myTextureSampler" sampler to user Texture Unit 0
-        glUniform1i(TextureID, 0);
+        //Set texture
+        texture->bind(0);
+        shaderProgram->setInt("u_texture", 0);
+        textureSpec->bind(1);
+        shaderProgram->setInt("u_mapSpecular",1);
+        textureNormal->bind(2);
+        shaderProgram->setInt("u_mapNormal",2);
 
         //Bind del depthMap
         glActiveTexture(GL_TEXTURE0 + 3);

@@ -64,7 +64,9 @@ configure_file(core/core/src/shaders/PointLightFragmentShader.fragmentshader Poi
 configure_file(core/core/src/shaders/LightMapFragmentShader.fragmentshader LightMapFragmentShader.fragmentshader COPYONLY)
 configure_file(core/core/src/shaders/DepthVertexShader.vertexshader DepthVertexShader.vertexshader COPYONLY)
 configure_file(core/core/src/textures/uvtemplate.bmp uvtemplate.bmp COPYONLY)
-
+configure_file(core/core/src/textures/trestraou2_Base_Color.bmp trestraou2_Base_Color.bmp COPYONLY)
+configure_file(core/core/src/textures/trestraou1_Glossiness.bmp trestraou1_Glossiness.bmp COPYONLY)
+configure_file(core/core/src/textures/trestraou2_Normal.bmp trestraou2_Normal.bmp COPYONLY)
 
 add_executable(SimpleEngine ${SOURCE_FILES})
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )

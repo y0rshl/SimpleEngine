@@ -35,6 +35,8 @@ private:
     GLuint m_vertexArrayID;
     GLuint m_uvbuffer;
     GLuint m_normalbuffer;
+    GLuint m_tangent;
+    GLuint m_bitangent;
 
     unsigned int m_indexCount;
 };
