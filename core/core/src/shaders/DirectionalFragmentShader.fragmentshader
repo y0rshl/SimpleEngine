@@ -30,14 +30,14 @@ void main()
     vec4 spec = max(0.0,pow(dot(r,dirCam),m_shi))*vec4(0.5,0.5,0.5,1); //la componente especular del material,
                                                                         //la sacas de la textura
 
-    //-----Calculo del shadow (TODO como hago para levantar la textura desde aca?)
+    //-----Calculo del shadow
     //para que vaya entre 0 y 1
     vec4 lightNomalize = (lightPosition + vec4(1,1,1,1)) / 2.0;
     float closestDepth = texture(u_textureShadow, lightNomalize.xy).r;
     float currentDepth = lightNomalize.z;
     float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 
-    color = (1.0 - shadow) * diff * matColor + spec;
+    color = (1.0 - shadow) * diff * matColor + spec; //Agrego el shadow
     //color = diff * matColor + spec;
 
 }

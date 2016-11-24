@@ -102,10 +102,10 @@ void RenderPass::execute() {
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    createSceneObject(lightSceneObject, 0.0f, 2.0f, 3.0f, pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+    createSceneObject(lightSceneObject, 0.0f, -5.0f, 1.0f, -pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
     //Directional Light
-    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,5.0f,1.0f);
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,10.0f,1.0f);
     lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
     //Point Light
@@ -376,14 +376,29 @@ void RenderPass::moveCamera (SceneObject* so , float step) {
     }
 
     //rotar la camara hacia la izquierda
-  /*  if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+/*    if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
+        rx = rx - step;
+        move = true;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
         rx = rx + step;
+        move = true;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+        rx = ry - step;
+        move = true;
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+        rx = ry + step;
         move = true;
     }*/
 
     if(move){
         so->m_transform->set_position(x, y, z);
-        //so->m_transform->set_rotation(rx,ry,rz);
+       // so->m_transform->set_rotation(rx,ry,rz);
         so->m_transform->refreshTRS();
     }
 
