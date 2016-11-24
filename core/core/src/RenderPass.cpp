@@ -105,7 +105,7 @@ void RenderPass::execute() {
     createSceneObject(lightSceneObject, 0.0f, -5.0f, 1.0f, -pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
     //Directional Light
-    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,10.0f,1.0f);
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,8.0f,1.0f);
     lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
     //Point Light
