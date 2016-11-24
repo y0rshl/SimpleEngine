@@ -89,11 +89,11 @@ void RenderPass::execute() {
     createSceneObject(meshSceneObject2, 2.0f, 2.0f, 1.0f, pi/6, pi/6, 0.0f, 0.5f, 0.5f, 0.5f);
 
     shared_ptr<SceneObject> meshSceneObject3 = make_shared<SceneObject>();
-    createSceneObject(meshSceneObject3, 0.5f, -2.0f, -1.0f, pi/3, pi/6, 0.0f, 0.25f, 0.5f, 0.5f);
+    createSceneObject(meshSceneObject3, 0.5f, -2.0f, -2.0f, pi/3, pi/6, 0.0f, 0.25f, 0.5f, 0.5f);
 
     //PARED
     shared_ptr<SceneObject> floorSceneObject = make_shared<SceneObject>();
-    createSceneObject(floorSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 4.0f, 4.0f, 2.0f);
+    createSceneObject(floorSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 5.0f, 5.0f, 2.0f);
 
     //Camara
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
@@ -104,7 +104,7 @@ void RenderPass::execute() {
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    createSceneObject(lightSceneObject, 0.0f, -5.0f, 1.0f, -pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+    createSceneObject(lightSceneObject, 0.0f, -5.0f, -3.0f, -pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
     //Directional Light
     shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,8.0f,1.0f);
