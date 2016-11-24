@@ -3,14 +3,18 @@
 uniform vec4 outColor;
 //Representa una direccion, el ultimo elemento del vector es 0
 uniform vec4 dirLight;
-uniform sampler2D u_texture;
 uniform vec4 positionCam;
+
+uniform sampler2D u_texture;
+uniform sampler2D u_mapSpecular;
+//uniform sampler2D u_mapNormal;
 uniform sampler2D u_textureShadow;
 
 in vec2 UV;
 in vec4 normalW; //Normal en coordenadas mundo
 in vec4 fragPosition; //posicion del fragmento en coordenadas mundo (llega del vertex shader)
 in vec4 lightPosition; //posicion del fragmento en coordenadas luz (llega del vertex shader)
+in mat3 TBN;
 
 // Ouput data
 out vec4 color;

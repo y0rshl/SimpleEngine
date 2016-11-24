@@ -24,7 +24,7 @@ out vec2 UV;
 out vec4 normalW;
 out vec4 fragPosition;
 out vec4 lightPosition;
-out mat4 TBN;
+out mat3 TBN;
 
 
 void main(){
@@ -37,7 +37,7 @@ void main(){
     lightPosition = mvpLight * vec4(vertexPosition_modelspace.xyz, 1.0);
     vec4 T = normalize(m * vec4(tangent.xyz, 0));
     vec4 B = normalize(m * vec4(bitangent.xyz, 0));
-    TBN = mat4(T, B, normalW, vec4(0,0,0,0));
+    TBN = mat3(T.xyz, B.xyz, normalW.xyz);
 
    // gl_Position.xyz = vertexPosition_modelspace;
    // gl_Position.w = 1.0;
