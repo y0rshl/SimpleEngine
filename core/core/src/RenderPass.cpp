@@ -22,12 +22,19 @@ GLFWwindow* window;
 
 using namespace glm;
 
+#define pi 3.14
+#define orthographic 1
+#define perspective 2
+
 
 void RenderPass::execute() {
 
     initContext();
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST); //Passes if the fragment's depth value is less than the stored depth value.
 
-    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> shaderProgram;
+    shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
 

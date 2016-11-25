@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <memory>
 #include <vector>
+#include "Vec4.hpp"
 
 /**
  * Column-major matrix
@@ -30,9 +31,17 @@ public:
 //    std::vector<std::vector<float>> matrix;
 
     static Matrix4x4 makeScaleMatrix(float sx, float sy, float sz);
+    static Matrix4x4 makeTranslationMatrix(float x, float y, float z);
+    static Matrix4x4 makeRotationMatrix(float rx, float ry, float rz);
+    static Matrix4x4* makeTRSMatrix(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz);
+
+    static bool invertColumnMajor(float m[16], float invOut[16]);
+
+    Vec4 multVec4(Vec4 vec4);
 
     std::string toString();
 private:
+    float* mVec4(float * vec4);
     float matrix[16];
 };
 #endif /* Matrix4x4_hpp */

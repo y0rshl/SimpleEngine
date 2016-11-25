@@ -7,6 +7,8 @@
 //
 
 #include <string>
+#include <cmath>
+#include <core/core/sdk/Vec4.hpp>
 #include "Matrix4x4.hpp"
 
 
@@ -62,9 +64,9 @@ Matrix4x4* Matrix4x4::operator*(const Matrix4x4& matrix) {
     float r[16];
 
     r[0] = m1[0]*m2[0] + m1[4]*m2[1] + m1[8]*m2[2] + m1[12]*m2[3];
-    r[1] = m1[1]*m2[0] + m1[5]*m2[1] + m1[9]+m2[2] + m1[13]*m2[3];
-    r[2] = m1[2]*m2[0] + m1[6]*m2[1] + m1[10]+m2[2] + m1[14]*m2[3];
-    r[3] = m1[3]*m2[0] + m1[7]*m2[1] + m1[11]+m2[2] + m1[15]*m2[3];
+    r[1] = m1[1]*m2[0] + m1[5]*m2[1] + m1[9]*m2[2] + m1[13]*m2[3];
+    r[2] = m1[2]*m2[0] + m1[6]*m2[1] + m1[10]*m2[2] + m1[14]*m2[3];
+    r[3] = m1[3]*m2[0] + m1[7]*m2[1] + m1[11]*m2[2] + m1[15]*m2[3];
 
     r[4] = m1[0]*m2[4] + m1[4]*m2[5] + m1[8]*m2[6] + m1[12]*m2[7];
     r[5] = m1[1]*m2[4] + m1[5]*m2[5] + m1[9]*m2[6] + m1[13]*m2[7];
@@ -91,6 +93,99 @@ Matrix4x4 Matrix4x4::makeScaleMatrix(float sx, float sy, float sz) {
     result.matrix[5] = sy;
     result.matrix[10] = sz;
     return result;
+}
+
+Matrix4x4 Matrix4x4::makeTranslationMatrix(float x, float y, float z) {
+    Matrix4x4 result;
+    result.matrix[12] = x;
+    result.matrix[13] = y;
+    result.matrix[14] = z;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::makeRotationMatrix(float rx, float ry, float rz) {
+    Matrix4x4 mx, my, mz;
+    mx.matrix[5] = float(cos(rx));
+    mx.matrix[6] = float(sin(rx));
+    mx.matrix[9] = float(-sin(rx));
+    mx.matrix[10] = float(cos(rx));
+
+    my.matrix[0] = float(cos(ry));
+    my.matrix[2] = -float(sin(ry));
+    my.matrix[8] = float(sin(ry));
+    my.matrix[10] = float(cos(ry));
+
+    mz.matrix[0] = float(cos(rz));
+    mz.matrix[1] = float(sin(rz));
+    mz.matrix[4] = float(-sin(rz));
+    mz.matrix[5] = float(cos(rz));
+    return *mx.operator*(my)->operator*(mz);
+}
+
+Matrix4x4* Matrix4x4::makeTRSMatrix(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, float sz){
+    Matrix4x4 t, r, s;
+    t = makeTranslationMatrix(x,y,z);
+    r = makeRotationMatrix(rx, ry, rz);
+    s = makeScaleMatrix(sx, sy, sz);
+
+    Matrix4x4* tr = t.operator*(r);
+    return tr->operator*(s);
+
+}
+
+bool Matrix4x4::invertColumnMajor(float *m, float *invOut) {
+
+    float inv[16], det;
+    int i;
+
+    inv[ 0] =  m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10];
+    inv[ 4] = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10];
+    inv[ 8] =  m[4] * m[ 9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[ 9];
+    inv[12] = -m[4] * m[ 9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[ 9];
+    inv[ 1] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
+    inv[ 5] =  m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
+    inv[ 9] = -m[0] * m[ 9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[ 9];
+    inv[13] =  m[0] * m[ 9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[ 9];
+    inv[ 2] =  m[1] * m[ 6] * m[15] - m[1] * m[ 7] * m[14] - m[5] * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[ 7] - m[13] * m[3] * m[ 6];
+    inv[ 6] = -m[0] * m[ 6] * m[15] + m[0] * m[ 7] * m[14] + m[4] * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[ 7] + m[12] * m[3] * m[ 6];
+    inv[10] =  m[0] * m[ 5] * m[15] - m[0] * m[ 7] * m[13] - m[4] * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[ 7] - m[12] * m[3] * m[ 5];
+    inv[14] = -m[0] * m[ 5] * m[14] + m[0] * m[ 6] * m[13] + m[4] * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[ 6] + m[12] * m[2] * m[ 5];
+    inv[ 3] = -m[1] * m[ 6] * m[11] + m[1] * m[ 7] * m[10] + m[5] * m[2] * m[11] - m[5] * m[3] * m[10] - m[ 9] * m[2] * m[ 7] + m[ 9] * m[3] * m[ 6];
+    inv[ 7] =  m[0] * m[ 6] * m[11] - m[0] * m[ 7] * m[10] - m[4] * m[2] * m[11] + m[4] * m[3] * m[10] + m[ 8] * m[2] * m[ 7] - m[ 8] * m[3] * m[ 6];
+    inv[11] = -m[0] * m[ 5] * m[11] + m[0] * m[ 7] * m[ 9] + m[4] * m[1] * m[11] - m[4] * m[3] * m[ 9] - m[ 8] * m[1] * m[ 7] + m[ 8] * m[3] * m[ 5];
+    inv[15] =  m[0] * m[ 5] * m[10] - m[0] * m[ 6] * m[ 9] - m[4] * m[1] * m[10] + m[4] * m[2] * m[ 9] + m[ 8] * m[1] * m[ 6] - m[ 8] * m[2] * m[ 5];
+
+    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+    if(det == 0)
+        return false;
+
+    det = 1.f / det;
+
+    for(i = 0; i < 16; i++)
+        invOut[i] = inv[i] * det;
+
+    return true;
+}
+
+float* Matrix4x4::mVec4(float * vec4){
+    float* m1 = this->matrix;
+    float* r = new float[4];
+
+    r[0] = m1[0]*vec4[0] + m1[4]*vec4[1] + m1[8]*vec4[2] + m1[12]*vec4[3];
+    r[1] = m1[1]*vec4[0] + m1[5]*vec4[1] + m1[9]*vec4[2] + m1[13]*vec4[3];
+    r[2] = m1[2]*vec4[0] + m1[6]*vec4[1] + m1[10]*vec4[2] + m1[14]*vec4[3];
+    r[3] = m1[3]*vec4[0] + m1[7]*vec4[1] + m1[11]*vec4[2] + m1[15]*vec4[3];
+
+    //  printf("DirLight = (%f, %f, %f, %f)\n",r[0], r[1], r[2], r[3]);
+    return r;
+
+}
+
+Vec4 Matrix4x4::multVec4(Vec4 vec4){
+    float* vec = mVec4(vec4.getValues());
+
+    return Vec4(vec);
 }
 
 std::string Matrix4x4::toString() {
