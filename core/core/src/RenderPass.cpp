@@ -42,9 +42,19 @@ void RenderPass::execute() {
     glEnable(GL_DEPTH_TEST);
 
     //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
-    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
+ //   shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> depthShader = ShaderProgram::loadProgram("DepthVertexShader.vertexshader", "LightMapFragmentShader.fragmentshader");
-//    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
+
+    bool directionalLight = false;
+    bool shadowMap = false;
+
+ /*   shared_ptr<ShaderProgram> shaderProgram;
+    if(directionalLight){
+        shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
+    }else{
+        shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
+    }*/
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> mesh2 = Mesh::createBox();
@@ -104,61 +114,64 @@ void RenderPass::execute() {
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    createSceneObject(lightSceneObject, 0.0f, -5.0f, -3.0f, -pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+    if(directionalLight){
+        createSceneObject(lightSceneObject, 0.0f, -5.0f, -3.0f, -pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+    }else{
+        createSceneObject(lightSceneObject, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+    }
 
     //Directional Light
     shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,8.0f,1.0f);
     lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
     //Point Light
- //   shared_ptr<PointLight> pl = make_shared<PointLight>();
- //   lightSceneObject->addComponent(static_pointer_cast<Component>(pl));
+    shared_ptr<PointLight> pl = make_shared<PointLight>();
+    lightSceneObject->addComponent(static_pointer_cast<Component>(pl));
 
     //---------------------------------
-
+    float y = 0.1f;
     do{
         glClearColor(1.0f, 1.0f, 1.0f ,1.0f); //el fondo que nunca dibujaste, va en blanco para que sea un shadow map
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         //mi codigo
+        Matrix4x4* pvmL, *pvmL2, *pvmL3, *pvmLF;
 
-        // 1. first render to depth map
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear(GL_DEPTH_BUFFER_BIT);
+        if(shadowMap){
+            // 1. first render to depth map
+            glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+            glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+            glClear(GL_DEPTH_BUFFER_BIT);
 
-        depthShader->use();
-        //MVP de la luz
-        Matrix4x4* pvmL = getMVPLight(meshSceneObject, lightSceneObject, dl);
-        setMVPLight(depthShader , mesh , pvmL);
+            depthShader->use();
+            //MVP de la luz
+            pvmL = getMVPLight(meshSceneObject, lightSceneObject, dl);
+            setMVPLight(depthShader , mesh , pvmL);
 
-        //Draw mesh2
-        Matrix4x4* pvmL2 = getMVPLight(meshSceneObject2, lightSceneObject, dl);
-        setMVPLight(depthShader , mesh2 , pvmL2);
+            //Draw mesh2
+            pvmL2 = getMVPLight(meshSceneObject2, lightSceneObject, dl);
+            setMVPLight(depthShader , mesh2 , pvmL2);
 
-        //Draw mesh3
-        Matrix4x4* pvmL3 = getMVPLight(meshSceneObject3, lightSceneObject, dl);
-        setMVPLight(depthShader , mesh3 , pvmL3);
+            //Draw mesh3
+            pvmL3 = getMVPLight(meshSceneObject3, lightSceneObject, dl);
+            setMVPLight(depthShader , mesh3 , pvmL3);
 
-        //Draw floor
-        Matrix4x4* pvmLF = getMVPLight(floorSceneObject, lightSceneObject, dl);
-        setMVPLight(depthShader , floor , pvmLF);
+            //Draw floor
+            pvmLF = getMVPLight(floorSceneObject, lightSceneObject, dl);
+            setMVPLight(depthShader , floor , pvmLF);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0); //cambie el frameBuffer a la pantalla
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            glBindFramebuffer(GL_FRAMEBUFFER, 0); //cambie el frameBuffer a la pantalla
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        }
 
         //muevo la camara
         moveCamera(camSceneObject.get(), 0.05f);
+        moveLight(lightSceneObject.get(), 0.1f);
 
         //MVP de la camara
         Matrix4x4* m = meshSceneObject->getPosition();
         Matrix4x4* pvm = getMVPCamera(meshSceneObject, camSceneObject, cam);
 
-        //Direccion de la luz en directionalLight
-        Vec4 dirLight = dl->getDirLight();
-
-        //Posicion de la luz en pointLight
-        //Vec4 lightPosition = pl->getPosition();
         //Posicion de la camara
         Vec4 camPosition = cam->getPosition();
 
@@ -167,12 +180,20 @@ void RenderPass::execute() {
 
         shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
-        shaderProgram->setMat4("mvpLight", *pvmL);
+        if(shadowMap){
+            shaderProgram->setMat4("mvpLight", *pvmL);
+        }
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
-        shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
-     //   shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
+        if(directionalLight){
+            //Direccion de la luz en directionalLight
+            Vec4 dirLight = dl->getDirLight();
+            shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
+        }else{
+            //Posicion de la luz en pointLight
+            Vec4 lightPosition = pl->getPosition();
+            shaderProgram->setVec4("positionLight", lightPosition.getValues()[0], lightPosition.getValues()[1], lightPosition.getValues()[2], lightPosition.getValues()[3]);
+        }
         shaderProgram->setVec4("positionCam", camPosition.getValues()[0], camPosition.getValues()[1], camPosition.getValues()[2], camPosition.getValues()[3]);
-
 
         //Set texture
         texture->bind(0);
@@ -379,34 +400,46 @@ void RenderPass::moveCamera (SceneObject* so , float step) {
         move = true;
     }
 
-    //rotar la camara hacia la izquierda
-/*    if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
-        rx = rx - step;
-        move = true;
+    if(move){
+        so->m_transform->set_position(x, y, z);
+        so->m_transform->refreshTRS();
     }
+
+}
+
+void RenderPass::moveLight (SceneObject *lightSO , float step) {
+    bool move = false;
+    Vec4 position = lightSO->m_transform->get_position();
+    Vec4 rotation = lightSO->m_transform->get_rotation();
+
+    float x = position.getX();
+    float y = position.getY();
+    float z = position.getZ();
 
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        rx = rx + step;
-        move = true;
-    }
-
-    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        rx = ry - step;
+        y = y + step;
         move = true;
     }
 
     if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        rx = ry + step;
+        y = y - step;
         move = true;
-    }*/
-
-    if(move){
-        so->m_transform->set_position(x, y, z);
-       // so->m_transform->set_rotation(rx,ry,rz);
-        so->m_transform->refreshTRS();
     }
 
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+        x = x - step;
+        move = true;
+    }
 
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+        x = x + step;
+        move = true;
+    }
+
+    if(move){
+        lightSO->m_transform->set_position(x, y, z);
+        lightSO->m_transform->refreshTRS();
+    }
 
 }
 

@@ -49,6 +49,8 @@ private:
     void setMVPLight (shared_ptr<ShaderProgram> &depthShader , shared_ptr<Mesh> mesh , Matrix4x4 *pvmL);
 
     void moveCamera(SceneObject* so, float step);
+
+    void moveLight (SceneObject *lightSO , float step);
 };
 
 
