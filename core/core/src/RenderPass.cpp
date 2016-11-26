@@ -42,19 +42,13 @@ void RenderPass::execute() {
     glEnable(GL_DEPTH_TEST);
 
     //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
- //   shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> depthShader = ShaderProgram::loadProgram("DepthVertexShader.vertexshader", "LightMapFragmentShader.fragmentshader");
-    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
+ //   shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
-    bool directionalLight = false;
-    bool shadowMap = false;
-
- /*   shared_ptr<ShaderProgram> shaderProgram;
-    if(directionalLight){
-        shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
-    }else{
-        shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
-    }*/
+    bool isDirectionalLight = true;
+    bool isShadowMap = true;
+    bool isOrthographic = false;
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> mesh2 = Mesh::createBox();
@@ -109,12 +103,14 @@ void RenderPass::execute() {
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
     createSceneObject(camSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
-    shared_ptr<Camera> cam = setCamera(camSceneObject, orthographic, 8.0f, 8.0f, 1.0f, 50.0f);
-   // shared_ptr<Camera> cam = setCamera(camSceneObject, perspective, 1.0f,1.0f,1.0f,10.0f);
+    shared_ptr<Camera> cam = setCamera(camSceneObject, perspective, 1.0f,1.0f,1.0f,10.0f);
+    if(isOrthographic){
+        cam = setCamera(camSceneObject, orthographic, 8.0f, 8.0f, 1.0f, 50.0f);
+    }
 
     //Luz
     shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
-    if(directionalLight){
+    if(isDirectionalLight){
         createSceneObject(lightSceneObject, 0.0f, -5.0f, -3.0f, -pi/8, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
     }else{
         createSceneObject(lightSceneObject, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
@@ -137,7 +133,7 @@ void RenderPass::execute() {
         //mi codigo
         Matrix4x4* pvmL, *pvmL2, *pvmL3, *pvmLF;
 
-        if(shadowMap){
+        if(isShadowMap){
             // 1. first render to depth map
             glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
             glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -180,12 +176,12 @@ void RenderPass::execute() {
 
         shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
-        if(shadowMap){
+        if(isShadowMap){
             shaderProgram->setMat4("mvpLight", *pvmL);
         }
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
-        if(directionalLight){
-            //Direccion de la luz en directionalLight
+        if(isDirectionalLight){
+            //Direccion de la luz en isDirectionalLight
             Vec4 dirLight = dl->getDirLight();
             shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
         }else{
