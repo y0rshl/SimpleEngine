@@ -41,14 +41,13 @@ void RenderPass::execute() {
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
 
-    //shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
     shared_ptr<ShaderProgram> depthShader = ShaderProgram::loadProgram("DepthVertexShader.vertexshader", "LightMapFragmentShader.fragmentshader");
  //   shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
 
     bool isDirectionalLight = true;
     bool isShadowMap = true;
-    bool isOrthographic = false;
+    bool isOrthographic = true;
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> mesh2 = Mesh::createBox();
@@ -133,7 +132,7 @@ void RenderPass::execute() {
         //mi codigo
         Matrix4x4* pvmL, *pvmL2, *pvmL3, *pvmLF;
 
-        if(isShadowMap){
+        if(isDirectionalLight){
             // 1. first render to depth map
             glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
             glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -176,11 +175,9 @@ void RenderPass::execute() {
 
         shaderProgram->setMat4("m", *m);
         shaderProgram->setMat4("mvp", *pvm);
-        if(isShadowMap){
-            shaderProgram->setMat4("mvpLight", *pvmL);
-        }
         shaderProgram->setVec4("outColor", 1, 1, 1, 1);
         if(isDirectionalLight){
+            shaderProgram->setMat4("mvpLight", *pvmL);
             //Direccion de la luz en isDirectionalLight
             Vec4 dirLight = dl->getDirLight();
             shaderProgram->setVec4("dirLight", dirLight.getValues()[0], dirLight.getValues()[1], dirLight.getValues()[2], dirLight.getValues()[3]);
@@ -215,9 +212,6 @@ void RenderPass::execute() {
 
         //Draw floor
         drawMesh(shaderProgram, floor, pvmLF, floorSceneObject, camSceneObject, cam);
-
-//        // Draw the triangle !
-//        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
 
         // Swap buffers
         glfwSwapBuffers(window);
