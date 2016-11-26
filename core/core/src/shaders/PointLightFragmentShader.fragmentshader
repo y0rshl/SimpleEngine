@@ -1,9 +1,13 @@
 #version 330 core
 
 uniform vec4 outColor;
-uniform sampler2D u_texture;
 uniform vec4 positionLight;
 uniform vec4 positionCam;
+
+uniform sampler2D u_texture;
+uniform sampler2D u_mapSpecular;
+//uniform sampler2D u_mapNormal;
+uniform sampler2D u_textureShadow;
 
 in vec2 UV;
 in vec4 normalW; //Normal en coordenadas mundo
@@ -14,6 +18,8 @@ out vec4 color;
 
 void main()
 {
+    float amb = 0.01f;
+
 	//----Calculo de la difusa
 	vec4 dirL = normalize(positionLight - fragPosition);
 	float diff = dot(normalize(normalW),normalize(-dirL));
@@ -24,10 +30,9 @@ void main()
 	vec4 matColor = texture(u_texture,UV);
 	vec4 dirCam = normalize(positionCam - fragPosition);
 	vec4 r = -dirL + 2 * dot(normalW,dirL) * normalW;
-	vec4 spec = max(0.0,pow(dot(r,dirCam),m_shi))*vec4(0.5,0.5,0.5,1); //la componente especular del material,
-	                                                                   //la sacas de la textura
+	float spec = max(0.0,pow(dot(r,dirCam),(texture(u_mapSpecular, UV).r*32)));
 
-	color = diff * matColor + spec;
+	color = (diff + spec + amb) * matColor;
 	//color = spec;
 	//	color = vec4(0,0,diff,1);
 
