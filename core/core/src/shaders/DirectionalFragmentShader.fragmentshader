@@ -33,7 +33,7 @@ void main()
     vec4 matColor = texture(u_texture,UV);
     vec4 dirCam = normalize(positionCam - fragPosition);
     vec4 r = -dirLight + 2 * dot(normalW,dirLight) * normalW;
-    vec4 spec = max(0.0,pow(dot(r,dirCam),m_shi))*texture(u_mapSpecular, UV);
+    float spec = max(0.0,pow(dot(r,dirCam),(texture(u_mapSpecular, UV).r*32)));
 
     //-----Calculo del shadow
     //para que vaya entre 0 y 1
@@ -42,7 +42,7 @@ void main()
     float currentDepth = lightNomalize.z;
     float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 
-    color = (1.0 - shadow) * diff * matColor + spec + amb; //Agrego el shadow
+    color = ((1.0 - shadow) * (diff + spec) + amb)* matColor; //Agrego el shadow
     //color = diff * matColor + spec;
 
 }
