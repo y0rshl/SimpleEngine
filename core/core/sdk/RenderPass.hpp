@@ -18,6 +18,7 @@ class RenderPass {
 
 public:
     void execute();
+    void executeDepthBuffer();
     void setViewport(int viewportX, int viewportY, int viewportWidth, int viewportHeight);
 protected:
     int viewportX;

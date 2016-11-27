@@ -47,7 +47,7 @@ void RenderPass::execute() {
 
     bool isDirectionalLight = true;
     bool isShadowMap = true;
-    bool isOrthographic = true;
+    bool isOrthographic = false;
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> mesh2 = Mesh::createBox();
@@ -430,6 +430,111 @@ void RenderPass::moveLight (SceneObject *lightSO , float step) {
         lightSO->m_transform->set_position(x, y, z);
         lightSO->m_transform->refreshTRS();
     }
+
+}
+
+void RenderPass::executeDepthBuffer () {
+    initContext();
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+
+    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "DirectionalFragmentShader.fragmentshader");
+    shared_ptr<ShaderProgram> depthShader = ShaderProgram::loadProgram("DepthVertexShader.vertexshader", "LightMapFragmentShader.fragmentshader");
+//    shared_ptr<ShaderProgram> shaderProgram = ShaderProgram::loadProgram("SimpleVertexShader.vertexshader", "PointLightFragmentShader.fragmentshader");
+
+    shared_ptr<Mesh> mesh = Mesh::createBox();
+    shared_ptr<Mesh> meshLight = Mesh::createBox();
+
+    //Create Texture
+    shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
+    // Get a handle for our "myTextureSampler" uniform
+    GLuint TextureID  = glGetUniformLocation(shaderProgram->getProgramId(), "u_texture");
+
+    //GENERATE a depth map
+    //create a framebuffer object for rendering the depth map
+    GLuint depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+
+    GLuint depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    //Objeto
+    shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
+    //createSceneObject(meshSceneObject, -2.0f, 0.0f, 0.0f, pi/4, pi/3, 0.0f, 1.0f,1.0f,1.0f);
+    createSceneObject(meshSceneObject, 0.0f, 0.0f, 0.0f, pi/8, pi/4, 0.0f, 1.0f,1.0f,1.0f);
+
+    //Camara
+    shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
+    createSceneObject(camSceneObject,0.0f, 0.0f, 10.0f,0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+
+    //  shared_ptr<PerspectiveCamera> pc = make_shared<PerspectiveCamera>(1.0f,1.0f,1.0f,10.0f);
+    //  camSceneObject->addComponent(static_pointer_cast<Component>(pc));
+    shared_ptr<OrthographicCamera> oc = make_shared<OrthographicCamera>(8.0f,8.0f,20.0f,1.0f);
+    camSceneObject->addComponent(static_pointer_cast<Component>(oc));
+
+    //Luz
+    shared_ptr<SceneObject> lightSceneObject = make_shared<SceneObject>();
+    createSceneObject(lightSceneObject,0.0f, 0.0f, 3.0f,0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
+
+    //Directional Light
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,5.0f,1.0f);
+    lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
+
+    //Point Light
+    //   shared_ptr<PointLight> pl = make_shared<PointLight>();
+    //   lightSceneObject->addComponent(static_pointer_cast<Component>(pl));
+
+    //---------------------------------
+
+    do{
+        glClearColor(1.0f, 1.0f, 1.0f ,1.0f); //el fondo que nunca dibujaste, va en blanco para que sea un shadow map
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        //mi codigo
+        //MVP de la luz
+        Matrix4x4* pvmL = getMVPLight(meshSceneObject, lightSceneObject, dl);
+
+        // 1. first render to depth map
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        depthShader->use();
+        depthShader->setMat4("mvp", *pvmL);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // Bind our texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+        // Set our "myTextureSampler" sampler to user Texture Unit 0
+        glUniform1i(TextureID, 0);
+
+        mesh->draw();
+
+        // Swap buffers
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+
+    } // Check if the ESC key was pressed or the window was closed
+    while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+           glfwWindowShouldClose(window) == 0 );
+
+    // Close OpenGL window and terminate GLFW
+    glfwTerminate();
+
+    return;
 
 }
 
