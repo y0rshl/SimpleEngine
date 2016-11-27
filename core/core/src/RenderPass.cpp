@@ -444,6 +444,8 @@ void RenderPass::executeDepthBuffer () {
 
     shared_ptr<Mesh> mesh = Mesh::createBox();
     shared_ptr<Mesh> meshLight = Mesh::createBox();
+    shared_ptr<Mesh> mesh2 = Mesh::createBox();
+    shared_ptr<Mesh> mesh3 = Mesh::createBox();
 
     //Create Texture
     shared_ptr<Texture> texture = Texture::loadBMP("uvtemplate.bmp");
@@ -472,9 +474,19 @@ void RenderPass::executeDepthBuffer () {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     //Objeto
-    shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
+    //shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
     //createSceneObject(meshSceneObject, -2.0f, 0.0f, 0.0f, pi/4, pi/3, 0.0f, 1.0f,1.0f,1.0f);
-    createSceneObject(meshSceneObject, 0.0f, 0.0f, 0.0f, pi/8, pi/4, 0.0f, 1.0f,1.0f,1.0f);
+   // createSceneObject(meshSceneObject, 0.0f, 0.0f, 0.0f, pi/8, pi/4, 0.0f, 1.0f,1.0f,1.0f);
+
+    //Objeto
+    shared_ptr<SceneObject> meshSceneObject = make_shared<SceneObject>();
+    createSceneObject(meshSceneObject, -2.0f, 0.0f, 0.0f, pi/4, pi/3, 0.0f, 1.0f,1.0f,1.0f);
+
+    shared_ptr<SceneObject> meshSceneObject2 = make_shared<SceneObject>();
+    createSceneObject(meshSceneObject2, 2.0f, 2.0f, 1.0f, pi/6, pi/6, 0.0f, 0.5f, 0.5f, 0.5f);
+
+    shared_ptr<SceneObject> meshSceneObject3 = make_shared<SceneObject>();
+    createSceneObject(meshSceneObject3, 0.5f, -2.0f, -2.0f, pi/3, pi/6, 0.0f, 0.25f, 0.5f, 0.5f);
 
     //Camara
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
@@ -490,7 +502,7 @@ void RenderPass::executeDepthBuffer () {
     createSceneObject(lightSceneObject,0.0f, 0.0f, 3.0f,0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
     //Directional Light
-    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,5.0f,1.0f);
+    shared_ptr<DirectionalLight> dl = make_shared<DirectionalLight>(8.0f,8.0f,8.0f,1.0f);
     lightSceneObject->addComponent(static_pointer_cast<Component>(dl));
 
     //Point Light
@@ -522,6 +534,14 @@ void RenderPass::executeDepthBuffer () {
         glUniform1i(TextureID, 0);
 
         mesh->draw();
+
+        //Draw mesh2
+        Matrix4x4* pvmL2 = getMVPLight(meshSceneObject2, lightSceneObject, dl);
+        setMVPLight(depthShader , mesh2 , pvmL2);
+
+        //Draw mesh3
+        Matrix4x4* pvmL3 = getMVPLight(meshSceneObject3, lightSceneObject, dl);
+        setMVPLight(depthShader , mesh3 , pvmL3);
 
         // Swap buffers
         glfwSwapBuffers(window);
