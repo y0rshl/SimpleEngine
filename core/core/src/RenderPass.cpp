@@ -102,7 +102,7 @@ void RenderPass::execute() {
     shared_ptr<SceneObject> camSceneObject = make_shared<SceneObject>();
     createSceneObject(camSceneObject, 0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 1.0f,1.0f,1.0f);
 
-    shared_ptr<Camera> cam = setCamera(camSceneObject, perspective, 1.0f,1.0f,1.0f,10.0f);
+    shared_ptr<Camera> cam = setCamera(camSceneObject, perspective, 1.0f,1.0f,1.0f,20.0f);
     if(isOrthographic){
         cam = setCamera(camSceneObject, orthographic, 8.0f, 8.0f, 1.0f, 50.0f);
     }

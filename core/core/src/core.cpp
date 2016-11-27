@@ -61,6 +61,7 @@ int main( int argc, const char* argv[] )
 	RenderPass* renderPass = new RenderPass();
 	renderPass->setViewport(200,200,200,200);
 	renderPass->execute();
+    //renderPass->executeDepthBuffer();
     Engine engine;
     engine.run();
 
